@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Full Partner List{% endblock %}
+{% block title_head %}Full List{% endblock %}
+
+
+ {% block main %}
+
+<table class="table">
+<tr>
+  <th>Partner</th>
+  <th>PI</th>
+  <th>Time</th>
+</tr>
+
+{% for object in object_list %}
+  <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
+    <td><a href="{% url 'partner' object.proposal %}">{{object.name}}</a></td>
+    <td>{{object.pi}}</td>
+    <td id="{{object.proposal}}" style="width:20%;"></td>
+  </tr>
+{% endfor %}
+</table>
+
+ {% endblock %}
+
+ {% block script-content %}
+ <script>
+   var semester = '{{semester}}';
+   var datestamp = '{{datestamp}}';
+   $( document ).ready(function() {
+     time_allocation_all(semester).then(content =>{
+       for (const prop in content){
+       $('#'+prop).html(content[prop]);
+       }
+     });
+});
+
+ </script>
+ {% endblock %}

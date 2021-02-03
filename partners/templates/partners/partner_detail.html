@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title_head %}{{object.name}}{% endblock %}
+{% block title %}{{object.name}}{% endblock %}
+
+{% block mainfull %}
+
+<h3>Proposal: {{object.proposal}}</h3>
+
+<p>{{object.summary}}</p>
+
+<div class="columns">
+
+  <div class="column">
+    <h5>Success Rate in current semester</h5>
+    <div class="card">
+    <div class="card-content">
+      <div class="columns">
+        <div class="column is-half">
+            <div id="success-requests" class="title has-text-centered">0</div>
+            <p class="has-text-centered">
+            successful requests
+            </p>
+        </div>
+        <div class="column is-half">
+            <div id="total-requests" class="title has-text-centered">0</div>
+            <p class="has-text-centered">
+            total requests
+            </p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <h5>Requests made in last 7 days</h5>
+    <table id="request-table" class="table is-fullwidth">
+      <tr>
+        <td>Name</td>
+        <td>User</td>
+        <td>Request Duration</td>
+        <td>State</td>
+      </tr>
+    </table>
+    <div class="fa-3x" id="req-spinner">
+      <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+  </div>
+  <div class="column is-half">
+    <h5>Time Allocation</h5>
+    <table id="time-table" class="table is-fullwidth">
+      <tr>
+        <td>Semester</td>
+        <td>Time Used</td>
+        <td>Telescope</td>
+      </tr>
+    </table>
+    <div class="fa-3x" id="ta-spinner">
+      <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+  </div>
+</div>
+ {% endblock %}
+
+ {% block script-content %}
+ <script>
+   var proposal = '{{object.proposal}}';
+   var datestamp = '{{datestamp}}';
+   $( document ).ready(function() {
+     time_allocation(proposal).then(content =>{
+       $('#time-table tr:last').after(content);
+       $('#ta-spinner').hide();
+     });
+     user_requests(proposal).then(content =>{
+       $('#request-table tr:last').after(content);
+       $('#req-spinner').hide();
+     });
+     success_rate(proposal, datestamp, 'COMPLETED').then(num =>{
+       $('#success-requests').html(num)
+     });
+     success_rate(proposal, datestamp, null).then(num =>{
+       $('#total-requests').html(num)
+     });
+});
+
+ </script>
+ {% endblock %}

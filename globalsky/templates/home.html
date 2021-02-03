@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title_head %}Dashboard{% endblock %}
+{% block title %}Dashboard{% endblock %}
+
+ {% block main %}
+ <div class="tile is-ancestor">
+   <div class="tile is-vertical">
+     <div class="tile">
+       <div class="tile is-parent is-vertical">
+         <article class="tile is-child notification is-primary">
+           <p id="num-partners" class="title">{{proposals|length}}</p>
+           <p class="subtitle">Partners</p>
+         </article>
+       </div>
+       <div class="tile is-parent">
+         <article class="tile is-child notification is-info">
+           <p id="total-hours" class="title"></p>
+           <p class="subtitle">Time Allocated</p>
+         </article>
+       </div>
+       <div class="tile is-parent">
+         <article class="tile is-child notification is-danger">
+           <p id="used-hours" class="title"></p>
+           <p class="subtitle">Time Used</p>
+         </article>
+       </div>
+     </div>
+   </div>
+ </div>
+ {% endblock %}
+
+ {% block script-content %}
+<script>
+  var proposals = {{proposals|safe}};
+  var semesters = {{semesters|safe}};
+  $( document ).ready(function() {
+    total_time(proposals, semesters).then(totals =>{
+      $('#total-hours').html(Number.parseFloat(totals.total).toFixed(1));
+      $('#used-hours').html(Number.parseFloat(totals.used).toFixed(1));
+    });
+
+});
+</script>
+ {% endblock %}
