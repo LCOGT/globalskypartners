@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_head %}Partner Application{% endblock %}
+{% block title %}Apply{% endblock %}
+
+{% block mainfull %}
+
+<form action="" method="post">
+  {% csrf_token %}
+
+  {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+  {% endfor %}
+
+<div class="field">
+  <label class="label">{{form.title.label|capfirst}}</label>
+  {{form.title}}
+</div>
+
+<div class="field">
+  <label class="label">{{form.title_options.label|capfirst}}</label>
+  <div class="select">
+      {{form.title_options}}
+  </div>
+</div>
+
+  {% for field in form %}
+  <div class="field">
+    <label class="label">{{field.label|capfirst}}</label>
+    <span class="has-text-danger">{{ field.errors.as_ul }}</span>
+    <div class="control">
+      {% if field.name in exclusions %}
+       {% if field.name == 'size' %}
+       <div class="control">
+        <div class="select">
+          {{field}}
+          </div>
+        </div>
+        {% elif field.name == 'institution' %}
+        <div class="control has-icons-left has-icons-right">
+         <input class="input is-success" type="text" name="{{field.name}}" value="{{field.value}}" />
+         <span class="icon is-small is-left">
+           <i class="fas fa-building"></i>
+         </span>
+       </div>
+       {% elif field.name == 'time' %}
+       <div class="control has-icons-left has-icons-right">
+        <input class="input is-success" type="number" name="{{field.name}}" value="{{field.value}}" />
+        <span class="icon is-small is-left">
+          <i class="fas fa-clock"></i>
+        </span>
+      </div>
+       {% endif %}
+      {% else %}
+      <textarea class="textarea" name="{{ field.name }}">{{field.value}}</textarea>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  <div class="field is-grouped">
+    <div class="control">
+      <input type="submit" class="button is-link" value="Submit" />
+    </div>
+    <div class="control">
+      <button class="button is-link is-light">Cancel</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

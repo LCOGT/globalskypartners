@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.models import User
+
 REGION_CHOICES = (
     (0, 'Online Only'),
     (1, 'Europe'),
@@ -17,6 +19,13 @@ PROGRAM_CHOICES = (
     (1, 'Online workshops/training/mentoring'),
     (2, 'General audience'),
     (3, 'Citizen science')
+)
+
+AUDIENCE_SIZE = (
+    (0, 'Small (<50)'),
+    (1, 'Medium (50 - 200)'),
+    (2, 'Large (200 - 1000)'),
+    (3, 'Very large (> 1000)')
 )
 
 class Region(models.Model):
@@ -54,7 +63,8 @@ class Semester(models.Model):
 
 class Partner(models.Model):
     name = models.CharField(max_length=200)
-    proposal = models.CharField(max_length=50, unique=True)
+    proposal_code = models.CharField(max_length=50, blank=True)
+    submitter = models.ForeignKey(User, on_delete=models.CASCADE)
     pi = models.CharField(max_length=100)
     pi_email = models.EmailField()
     summary = models.TextField()
@@ -66,7 +76,7 @@ class Partner(models.Model):
 
     def __str__(self):
         if self.active:
-            state = f"({self.proposal})"
+            state = f"({self.proposal_code})"
         elif self.rejected:
             state = "[REJECTED]"
         else:
@@ -75,3 +85,22 @@ class Partner(models.Model):
 
     class Meta:
         ordering = ('name',)
+
+class Proposal(models.Model):
+    people = models.TextField('people involved in coordinating the project')
+    institution = models.CharField('supporting institution or organization',max_length=120)
+    description = models.TextField('project description')
+    use = models.TextField('how will this project make use of LCO’s unique capabilities?')
+    experience = models.TextField('what experience do you have of running educational programs')
+    size = models.PositiveSmallIntegerField(choices=AUDIENCE_SIZE)
+    support = models.TextField('how will you support your users?')
+    help = models.TextField('what help do you need from LCO in setting up your project?')
+    extension = models.TextField('is this an extension of an existing or previous project?')
+    time = models.IntegerField('hours requested')
+    time_reason = models.TextField('justification of time requested')
+    comments = models.TextField('any comments', blank=True)
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.partner} {self.cohort}"

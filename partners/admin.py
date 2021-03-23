@@ -4,7 +4,7 @@ from .models import Partner, Region, ProgramType, Semester, Cohort
 
 class PartnerAdmin(admin.ModelAdmin):
     list_filter = ['active',]
-    list_display = ['name','proposal','pi','active']
+    list_display = ['name','proposal_code','pi','active']
     order_by = 'name'
 
 class SemesterInline(admin.TabularInline):

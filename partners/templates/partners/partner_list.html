@@ -15,9 +15,9 @@
 
 {% for object in object_list %}
   <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
-    <td><a href="{% url 'partner' object.proposal %}">{{object.name}}</a></td>
+    <td><a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a></td>
     <td>{{object.pi}}</td>
-    <td id="{{object.proposal}}" style="width:20%;"></td>
+    <td id="{{object.proposal_code}}" style="width:20%;"></td>
   </tr>
 {% endfor %}
 </table>

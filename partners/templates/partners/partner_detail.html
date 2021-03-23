@@ -5,7 +5,7 @@
 
 {% block mainfull %}
 
-<h3>Proposal: {{object.proposal}}</h3>
+<h3>Proposal: {{object.proposal_code}}</h3>
 
 <p>{{object.summary}}</p>
 
@@ -62,7 +62,7 @@
 
  {% block script-content %}
  <script>
-   var proposal = '{{object.proposal}}';
+   var proposal = '{{object.proposal_code}}';
    var datestamp = '{{datestamp}}';
    $( document ).ready(function() {
      time_allocation(proposal).then(content =>{

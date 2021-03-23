@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'globalsky',
     'partners',
+    'reports'
 ]
 
 MIDDLEWARE = [
@@ -124,6 +126,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+
+API_URL = 'https://observe.lco.global/api/'
+TOKEN = os.environ.get("PORTAL_TOKEN","")
 
 if not BASE_DIR.name.startswith('/app'):
     try:
