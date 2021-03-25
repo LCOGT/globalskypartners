@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Proposals{% endblock %}
+{% block title_head %}Proposals{% endblock %}
+
+
+ {% block main %}
+
+<table class="table is-fullwidth">
+<tr>
+  <th>Title</th>
+  <th>Year</th>
+  <th>Status</th>
+</tr>
+
+{% for object in object_list %}
+  <tr>
+    <td><a href="{% url 'proposal' object.id %}">{{object.partner.name}}</a></td>
+    <td>{{object.cohort.year}}</td>
+    <td>{{object.get_status_display}}</td>
+  </tr>
+{% endfor %}
+</table>
+
+ {% endblock %}

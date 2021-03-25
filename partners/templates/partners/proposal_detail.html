@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title_head %}Partner Application{% endblock %}
+{% block title %}Submitted Proposal{% endblock %}
+
+{% block mainfull %}
+
+
+<div class="content">
+  <h3><span class="tag {% if object.status == 3 %}is-danger{% elif object.status == 2%}is-success{% endif %} is-medium">{{object.get_status_display}}</span>
+  {{object.partner.name}}</h3>
+
+
+    <h3>Summary</h3>
+    <p>{{ object.partner.summary}}</p>
+
+  <div class="box">
+  <h2>Details</h2>
+  {% for field in proposal %}
+  <label class="label">{{field.label}}</label>
+  {% if field.name == 'size' %}
+  <p>{{object.get_size_display}}</p>
+  {% else %}
+  <p>{{field.value}}</p>
+  {% endif %}
+  {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

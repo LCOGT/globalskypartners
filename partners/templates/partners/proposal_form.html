@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
 {% block title_head %}Partner Application{% endblock %}
 {% block title %}Apply{% endblock %}
 
 {% block mainfull %}
+
 
 <form action="" method="post">
   {% csrf_token %}
@@ -14,9 +13,21 @@
       {{ hidden }}
   {% endfor %}
 
+{% if form.errors %}
+  <div class="has-text-danger">{{ form.errors.as_ul }}</div>
+{% endif %}
+
 <div class="field">
   <label class="label">{{form.title.label|capfirst}}</label>
   {{form.title}}
+</div>
+<div class="field">
+  <label class="label">{{form.summary.label|capfirst}}</label>
+  {{ form.summary}}
+</div>
+
+<div class="block">
+  Or select an existing project to extend
 </div>
 
 <div class="field">

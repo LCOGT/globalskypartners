@@ -28,6 +28,13 @@ AUDIENCE_SIZE = (
     (3, 'Very large (> 1000)')
 )
 
+STATUS = (
+    (0, 'Draft'),
+    (1, 'Submitted'),
+    (2, 'Accepted'),
+    (3, 'Rejected')
+)
+
 class Region(models.Model):
     name = models.CharField(max_length=40)
 
@@ -42,9 +49,12 @@ class ProgramType(models.Model):
 
 class Cohort(models.Model):
     year = models.CharField(max_length=4)
+    active_call = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.year
+        if self.active_call:
+            return f"{self.year} active"
+        return f"{self.year}"
 
     class Meta:
         ordering = ('year',)
@@ -65,20 +75,17 @@ class Partner(models.Model):
     name = models.CharField(max_length=200)
     proposal_code = models.CharField(max_length=50, blank=True)
     submitter = models.ForeignKey(User, on_delete=models.CASCADE)
-    pi = models.CharField(max_length=100)
-    pi_email = models.EmailField()
-    summary = models.TextField()
-    cohorts = models.ManyToManyField(Cohort)
+    pi = models.CharField(max_length=100, blank=True)
+    pi_email = models.EmailField(blank=True)
+    summary = models.TextField(blank=True)
+    cohorts = models.ManyToManyField(Cohort, blank=True)
     active = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
     region = models.ManyToManyField(Region,blank=True)
     program = models.ManyToManyField(ProgramType, blank=True)
 
     def __str__(self):
         if self.active:
             state = f"({self.proposal_code})"
-        elif self.rejected:
-            state = "[REJECTED]"
         else:
             state = "[INACTIVE]"
         return f"{self.name} {state}"
@@ -95,12 +102,12 @@ class Proposal(models.Model):
     size = models.PositiveSmallIntegerField(choices=AUDIENCE_SIZE)
     support = models.TextField('how will you support your users?')
     help = models.TextField('what help do you need from LCO in setting up your project?')
-    extension = models.TextField('is this an extension of an existing or previous project?')
     time = models.IntegerField('hours requested')
     time_reason = models.TextField('justification of time requested')
     comments = models.TextField('any comments', blank=True)
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
+    status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
 
     def __str__(self):
         return f"{self.partner} {self.cohort}"

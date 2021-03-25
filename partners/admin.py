@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Partner, Region, ProgramType, Semester, Cohort
+from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal
 
 class PartnerAdmin(admin.ModelAdmin):
     list_filter = ['active',]
@@ -18,3 +18,4 @@ admin.site.register(Partner, PartnerAdmin)
 admin.site.register(Region)
 admin.site.register(ProgramType)
 admin.site.register(Cohort, CohortAdmin)
+admin.site.register(Proposal)

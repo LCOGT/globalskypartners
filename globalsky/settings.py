@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'crispy_forms',
     'globalsky',
     'partners',
     'reports'
@@ -108,6 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CRISPY_CLASS_CONVERTERS = {'textinput': "input"}
 
 
 LOGIN_REDIRECT_URL = '/'
