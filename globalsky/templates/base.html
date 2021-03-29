@@ -65,6 +65,26 @@
         </a>
 
       </div>
+      <div class="navbar-end">
+        {% if request.user.is_authenticated%}
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            {{request.user}}
+          </a>
+
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'auth_logout'%}">
+              Logout
+            </a>
+          </div>
+        </div>
+        {% else %}
+          <a class="navbar-item" href={% url 'auth_login'%}>
+            Log in
+          </a>
+          {% endif %}
+      </div>
+      </div>
     </div>
   </nav>
 
@@ -140,6 +160,10 @@
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 		<script>
+    var token = "{{ request.session.token }}";
+    if (localStorage.getItem('token') == null) {
+      localStorage.setItem('token', token);
+    }
     function togglehideshow(elid) {
           var div = document.getElementById(elid);
           if (div.style.display !== 'none') {

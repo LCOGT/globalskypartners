@@ -24,7 +24,7 @@ function success_rate(proposal, date, state) {
 function time_allocation(proposal) {
   return new Promise((resolve, reject) => {
   $.ajax({
-    url: `https://observe.lco.global/api/proposals/${proposal}`,
+    url: `https://observe.lco.global/api/proposals/${proposal}/`,
     headers: {'Authorization': 'Token '+localStorage.getItem('token')},
     type:'get',
     dataType:'json',
