@@ -5,11 +5,11 @@ WORKDIR /app
 
 # Install runtime dependencies, build dependencies, Python dependencies, and
 # then remove build dependencies to keep the image as small as possible
-COPY requirements.txt .
+COPY requirements.txt /app/requirements.txt
 RUN apk --no-cache add postgresql-libs \
         && apk --no-cache add --virtual .build-deps gcc musl-dev postgresql-dev \
         && pip --no-cache-dir install -r requirements.txt \
         && apk --no-cache del .build-deps
 
 # Install application
-COPY . .
+COPY . /app

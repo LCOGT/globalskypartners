@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
     'globalsky',
     'partners',
     'reports'
@@ -81,10 +80,10 @@ WSGI_APPLICATION = 'globalsky.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
-        'HOST': os.environ.get('DB_HOST',''),
-        'NAME': os.environ.get('DB_NAME',''),
-        'USER': os.environ.get('DB_USER',''),
-        'PASSWORD': os.environ.get('DB_PASSWORD',''),
+        'HOST': os.environ.get('DB_HOST','postgres'),
+        'NAME': os.environ.get('DB_NAME','db'),
+        'USER': os.environ.get('DB_USER','postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD','postgres'),
         'OPTIONS': {
         },
     }
@@ -142,9 +141,10 @@ STATIC_URL = '/static/'
 API_URL = 'https://observe.lco.global/api/'
 TOKEN = os.environ.get("PORTAL_TOKEN","")
 
-if not BASE_DIR.name.startswith('/app'):
-    try:
-        from .local_settings import *
-    except ImportError as e:
-        if "local_settings" not in str(e):
-            raise e
+# if not BASE_DIR.name.startswith('/app'):
+#     try:
+#         from .local_settings import *
+#         print("Using local settings")
+#     except ImportError as e:
+#         if "local_settings" not in str(e):
+#             raise e

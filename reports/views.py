@@ -4,8 +4,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.db import transaction
 
-import plotly.express as px
-import pandas as pd
+# import plotly.express as px
+# import pandas as pd
 
 COUNTRIES_2020 = ['Botswana',
  'Algeria',
