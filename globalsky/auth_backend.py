@@ -71,7 +71,8 @@ class PortalBackend(object):
 def lco_authenticate(request, username, password):
     token = api_auth(settings.PORTAL_TOKEN_URL, username, password)
     if not token:
-        raise ValidationError(mark_safe("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account"))
+        messages.error(request, mark_safe("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account"))
+        return None
     profile, msg = get_profile(token)
     if token and profile:
         username = profile[0]

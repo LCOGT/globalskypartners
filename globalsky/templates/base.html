@@ -121,8 +121,8 @@
       <div class="columns">
         <div class="column is-full messages ">
         {% for message in messages %}
-        <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <div class="notification is-{{ message.tags }}" data-alert="alert">
+            <button type="button" class="delete" data-dismiss="alert"></button>
             {{ message }}
         </div>
         {% endfor %}
@@ -180,6 +180,16 @@
 
 		  ga('create', 'UA-2087713-1', 'auto');
 		  ga('send', 'pageview');
+
+      document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+          const $notification = $delete.parentNode;
+
+          $delete.addEventListener('click', () => {
+            $notification.parentNode.removeChild($notification);
+          });
+        });
+      });
 
 		</script>
     <script src='{% static "js/utils.js" %}'></script>

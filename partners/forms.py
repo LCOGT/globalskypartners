@@ -34,15 +34,30 @@ class ProposalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
+        if kwargs.get('partner', None):
+            self.partner = kwargs.pop('partner')
+            print(self.partner)
+        else:
+            self.partner = None
 
         super().__init__(*args, **kwargs)
 
         self.fields['title'].widget.attrs.update({'class': 'input'})
         self.fields['summary'].widget.attrs.update({'class': 'textarea'})
+        self.fields['people'].widget.attrs.update({'class': 'textarea'})
+        self.fields['description'].widget.attrs.update({'class': 'textarea'})
+        self.fields['use'].widget.attrs.update({'class': 'textarea'})
+        self.fields['experience'].widget.attrs.update({'class': 'textarea'})
+        self.fields['support'].widget.attrs.update({'class': 'textarea'})
+        self.fields['help'].widget.attrs.update({'class': 'textarea'})
+        self.fields['time_reason'].widget.attrs.update({'class': 'textarea'})
+        self.fields['comments'].widget.attrs.update({'class': 'textarea'})
         projects = Partner.objects.filter(submitter=self.user)
         if projects:
             choices = [(u'', u'-- Select Project --'),]
             choices.extend([ (p.id, p.name) for p in projects])
             self.fields['title_options'].choices = choices
+            if self.partner:
+                self.initial['title_options'] = self.partner.id
         else:
             self.fields['title_options'].disabled = True

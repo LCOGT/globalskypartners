@@ -14,15 +14,17 @@
   {% endfor %}
 
 {% if form.errors %}
-  <div class="has-text-danger">{{ form.errors.as_ul }}</div>
+  <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
 {% endif %}
 
 <div class="field">
   <label class="label">{{form.title.label|capfirst}}</label>
+  <span class="has-text-danger">{{ form.title.errors.as_ul }}</span>
   {{form.title}}
 </div>
 <div class="field">
   <label class="label">{{form.summary.label|capfirst}}</label>
+  <span class="has-text-danger">{{ form.summary.errors.as_ul }}</span>
   {{ form.summary}}
 </div>
 
@@ -38,6 +40,7 @@
 </div>
 
   {% for field in form %}
+  {% if field.name != 'title' and field.name != 'title_options' and field.name != 'summary'%}
   <div class="field">
     <label class="label">{{field.label|capfirst}}</label>
     <span class="has-text-danger">{{ field.errors.as_ul }}</span>
@@ -65,17 +68,18 @@
       </div>
        {% endif %}
       {% else %}
-      <textarea class="textarea" name="{{ field.name }}">{{field.value}}</textarea>
+      {{ field }}
       {% endif %}
     </div>
   </div>
+  {% endif %}
   {% endfor %}
   <div class="field is-grouped">
     <div class="control">
-      <input type="submit" class="button is-link" value="Submit" />
+      <input type="submit" class="button is-link" value="Save" />
     </div>
     <div class="control">
-      <button class="button is-link is-light">Cancel</button>
+      <a class="button is-link is-light" href="{% url 'partners' %}">Exit</a>
     </div>
   </div>
 </form>

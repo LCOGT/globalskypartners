@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 
 from .models import Partner, Semester, Cohort, Proposal
@@ -29,6 +30,7 @@ class PartnerList(ListView):
         now = datetime.now()
         semester = Semester.objects.get(start__lte=now, end__gte=now)
         context['semester'] = semester.code
+        context['title'] = "Current Partners"
         return context
 
 class PartnerDetail(DetailView):
@@ -50,6 +52,12 @@ class ProposalList(LoginRequiredMixin, ListView):
         user = self.request.user
         return Proposal.objects.filter(partner__submitter=user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if Cohort.objects.filter(active_call=True):
+            context['activecall'] = True
+        return context
+
 class ProposalDetail(LoginRequiredMixin, DetailView):
     model = Proposal
 
@@ -64,7 +72,7 @@ class ProposalDetail(LoginRequiredMixin, DetailView):
 class ProposalCreate(LoginRequiredMixin, CreateView):
     form_class = ProposalForm
     template_name = 'partners/proposal_form.html'
-    success_url = reverse_lazy('partners')
+    success_url = reverse_lazy('proposals')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -80,5 +88,32 @@ class ProposalCreate(LoginRequiredMixin, CreateView):
         form.instance.submitter = self.request.user
         form.instance.cohort = Cohort.objects.get(active_call=True)
         form.instance.partner = form.cleaned_data['partner']
-        form.instance.status = 1
+        form.instance.status = 0 # Draft
         return super().form_valid(form)
+
+class ProposalEdit(LoginRequiredMixin, UpdateView):
+    model = Proposal
+    form_class = ProposalForm
+    template_name = 'partners/proposal_form.html'
+    success_url = reverse_lazy('proposals')
+
+    def get_form_kwargs(self):
+        kwargs = super(ProposalEdit, self).get_form_kwargs()
+        obj = self.get_object()
+        kwargs.update({'user': self.request.user,'partner': obj.partner})
+        return kwargs
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['exclusions'] = ['title','title_options','summary','institution','time','size']
+        return context
+
+class ProposalSubmit(LoginRequiredMixin, UpdateView):
+    model = Proposal
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.status = 1 #Submitted
+        obj.save()
+        messages.success(request, 'Proposal "{}" submitted'.format(obj.partner.name))
+        return redirect(reverse_lazy('partners'))

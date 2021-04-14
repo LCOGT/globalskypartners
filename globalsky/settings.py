@@ -110,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'globalsky.auth_backend.PortalBackend',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 PORTAL_API_URL     = 'https://observe.lco.global/api/'
@@ -145,10 +146,10 @@ STATICFILES_DIRS = [
 API_URL = 'https://observe.lco.global/api/'
 TOKEN = os.environ.get("PORTAL_TOKEN","")
 
-# if not BASE_DIR.name.startswith('/app'):
-#     try:
-#         from .local_settings import *
-#         print("Using local settings")
-#     except ImportError as e:
-#         if "local_settings" not in str(e):
-#             raise e
+if not BASE_DIR.name.startswith('/app'):
+    try:
+        from .local_settings import *
+        print("Using local settings")
+    except ImportError as e:
+        if "local_settings" not in str(e):
+            raise e

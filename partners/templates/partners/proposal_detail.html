@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title_head %}Partner Application{% endblock %}
-{% block title %}Submitted Proposal{% endblock %}
+{% block title %}{{object.get_status_display}} Proposal{% endblock %}
 
 {% block mainfull %}
 
@@ -10,11 +10,19 @@
   <h3><span class="tag {% if object.status == 3 %}is-danger{% elif object.status == 2%}is-success{% endif %} is-medium">{{object.get_status_display}}</span>
   {{object.partner.name}}</h3>
 
+  {% if object.status == 0 %}
+  <div class="block">
+    <div class="buttons has-addons">
+      <a class="button is-medium gold-bg" href="{% url 'proposal-edit' object.id %}">Edit</a>
+       <a class="button is-medium blue-bg" href="{% url 'proposal-submit' object.id %}">Submit</a>
+     </div>
+  </div>
+  {% endif %}
+
 
     <h3>Summary</h3>
     <p>{{ object.partner.summary}}</p>
 
-  <div class="box">
   <h2>Details</h2>
   {% for field in proposal %}
   <label class="label">{{field.label}}</label>
@@ -24,7 +32,7 @@
   <p>{{field.value}}</p>
   {% endif %}
   {% endfor %}
-  </div>
 </div>
+
 
 {% endblock %}
