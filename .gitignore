@@ -2,7 +2,6 @@ local_settings.py
 
 *.pyc
 *.sqlite3
-*.json
 *.pyo
 
 .env-local
