@@ -149,7 +149,6 @@ TOKEN = os.environ.get("PORTAL_TOKEN","")
 if not BASE_DIR.name.startswith('/app'):
     try:
         from .local_settings import *
-        print("Using local settings")
     except ImportError as e:
         if "local_settings" not in str(e):
             raise e
