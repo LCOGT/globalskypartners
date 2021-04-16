@@ -116,10 +116,8 @@ AUTHENTICATION_BACKENDS = (
 PORTAL_API_URL     = 'https://observe.lco.global/api/'
 PORTAL_REQUEST_API = PORTAL_API_URL + 'requestgroups/'
 PORTAL_TOKEN_URL   = PORTAL_API_URL + 'api-token-auth/'
-PORTAL_PROFILE_URL = PORTAL_API_URL + 'profile/'
-
-CRISPY_CLASS_CONVERTERS = {'textinput': "input"}
-
+PROFILE_URL = PORTAL_API_URL + 'profile/'
+PROPOSALS_URL = PORTAL_API_URL + 'proposals/?active=True&public=true&limit=50'
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -142,9 +140,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "globalsky", "static"),
 ]
 
-
-API_URL = 'https://observe.lco.global/api/'
-TOKEN = os.environ.get("PORTAL_TOKEN","")
 
 if not BASE_DIR.name.startswith('/app'):
     try:

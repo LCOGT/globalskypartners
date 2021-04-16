@@ -1,43 +1,44 @@
 {% extends 'base.html' %}
 
-{% block title_head %}Dashboard{% endblock %}
-{% block title %}Dashboard{% endblock %}
+{% block title_head %}Global Sky Partners{% endblock %}
+{% block title %}Global Sky Partners{% endblock %}
 
- {% block main %}
- <div class="tile is-ancestor">
-   <div class="tile is-vertical">
-     <div class="tile">
-       <div class="tile is-parent is-vertical">
-         <article class="tile is-child notification is-primary">
-           <p id="num-partners" class="title">{{proposals|length}}</p>
-           <p class="subtitle">Partners</p>
-         </article>
+ {% block mainfull %}
+<div class="columns">
+    <div class="column is-one-third">
+       <h4>Time Used</h4>
+       <div class="partnerlist">
+       {% for object in partners %}
+        <div class="content">
+           <a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a>
+           <span id="{{object.proposal_code}}" style="width:20%;"></span>
+        </div>
+       {% endfor %}
        </div>
-       <div class="tile is-parent">
-         <article class="tile is-child notification is-info">
-           <p id="total-hours" class="title"></p>
-           <p class="subtitle">Time Allocated</p>
-         </article>
-       </div>
-       <div class="tile is-parent">
-         <article class="tile is-child notification is-danger">
-           <p id="used-hours" class="title"></p>
-           <p class="subtitle">Time Used</p>
-         </article>
-       </div>
-     </div>
    </div>
+   <div class="column is-one-third">
+     <div class="block">
+       {% if activecall %}
+       <div class="buttons is-centered">
+          <a class="button is-large gold-bg" href="{% url 'apply' %}">Apply to become a partner</a>
+        </div>
+        {% else%}
+        <p>We are not currently accepting applications for partners. Please view the <a href="https://lco.global/education/partners/">Global Sky Partners web pages</a> for more details.</p>
+    {% endif %}
+    </div>
+   </div>
+
  </div>
  {% endblock %}
 
  {% block script-content %}
 <script>
-  var proposals = {{proposals|safe}};
-  var semesters = {{semesters|safe}};
+  var semester = "{{semester|safe}}";
   $( document ).ready(function() {
-    total_time(proposals, semesters).then(totals =>{
-      $('#total-hours').html(Number.parseFloat(totals.total).toFixed(1));
-      $('#used-hours').html(Number.parseFloat(totals.used).toFixed(1));
+    time_allocation_all(semester).then(content =>{
+      for (const prop in content){
+      $('#'+prop).html(content[prop]);
+      }
     });
 
 });

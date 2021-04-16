@@ -15,10 +15,13 @@ from .forms import ProposalForm
 @login_required
 def home(request):
     now = datetime.now()
-    cohort = Semester.objects.get(start__lte=now, end__gte=now).cohort
-    proposals = list(Partner.objects.filter(active=True).values_list('proposal_code', flat=True))
-    semesters = list(cohort.semester_set.all().values_list('code', flat=True))
-    return render(request, 'home.html',{'proposals':proposals,'semesters':semesters})
+    partners = Partner.objects.filter(active=True, pi=request.user)
+    semester = Semester.objects.get(start__lte=now, end__gte=now)
+    if Cohort.objects.filter(active_call=True):
+        activecall = True
+    else:
+        activecall = False
+    return render(request, 'home.html',{'partners':partners,'semester':semester,'activecall':activecall})
 
 
 class PartnerList(ListView):
@@ -29,8 +32,11 @@ class PartnerList(ListView):
         context = super().get_context_data(**kwargs)
         now = datetime.now()
         semester = Semester.objects.get(start__lte=now, end__gte=now)
+        cohort = Semester.objects.get(start__lte=now, end__gte=now).cohort
         context['semester'] = semester.code
+        context['semesters'] = list(cohort.semester_set.all().values_list('code', flat=True))
         context['title'] = "Current Partners"
+        context['proposals'] = list(Partner.objects.filter(active=True).values_list('proposal_code', flat=True))
         return context
 
 class PartnerDetail(DetailView):
@@ -50,7 +56,7 @@ class ProposalList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Proposal.objects.filter(partner__submitter=user)
+        return Proposal.objects.filter(submitter=user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,6 +82,8 @@ class ProposalCreate(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if Cohort.objects.get(active_call=True):
+            context['activecall'] = True
         context['exclusions'] = ['title','title_options','summary','institution','time','size']
         return context
 
@@ -102,10 +110,12 @@ class ProposalEdit(LoginRequiredMixin, UpdateView):
         obj = self.get_object()
         kwargs.update({'user': self.request.user,'partner': obj.partner})
         return kwargs
-        
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['exclusions'] = ['title','title_options','summary','institution','time','size']
+        if Cohort.objects.get(active_call=True):
+            context['activecall'] = True
         return context
 
 class ProposalSubmit(LoginRequiredMixin, UpdateView):

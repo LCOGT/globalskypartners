@@ -25,11 +25,12 @@ class ProposalForm(forms.ModelForm):
                 if not summary:
                     raise ValidationError("Provide a summary of the project")
                 else:
-                    partner = Partner(name=title, submitter=self.user, summary=summary)
+                    partner = Partner(name=title, summary=summary)
                     partner.save()
             else:
                 partner = Partner.objects.get(id=title_options)
             data['partner'] = partner
+            data['submitter'] = self.user
         return data
 
     def __init__(self, *args, **kwargs):
@@ -52,7 +53,7 @@ class ProposalForm(forms.ModelForm):
         self.fields['help'].widget.attrs.update({'class': 'textarea'})
         self.fields['time_reason'].widget.attrs.update({'class': 'textarea'})
         self.fields['comments'].widget.attrs.update({'class': 'textarea'})
-        projects = Partner.objects.filter(submitter=self.user)
+        projects = Partner.objects.filter(pi=self.user)
         if projects:
             choices = [(u'', u'-- Select Project --'),]
             choices.extend([ (p.id, p.name) for p in projects])
@@ -60,4 +61,5 @@ class ProposalForm(forms.ModelForm):
             if self.partner:
                 self.initial['title_options'] = self.partner.id
         else:
+            self.fields['title_options'].choices = [(u'', u'No projects available'),]
             self.fields['title_options'].disabled = True

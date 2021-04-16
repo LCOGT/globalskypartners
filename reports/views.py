@@ -1,58 +1,15 @@
 from .models import *
 from .forms import *
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from django.db import transaction
 
 # import plotly.express as px
 # import pandas as pd
 
-COUNTRIES_2020 = ['Botswana',
- 'Algeria',
- 'Egypt',
- 'Ethiopia',
- 'Kenya',
- 'Libya',
- 'Morocco',
- 'Nigeria',
- 'South Africa',
- 'Zambia',
- 'Zimbabwe',
- 'China',
- 'Cyprus',
- 'India',
- 'Iran',
- 'Israel',
- 'Sri Lanka',
- 'Nepal',
- 'Pakistan',
- 'Qatar',
- 'Turkey',
- 'Taiwan',
- 'Bolivia',
- 'Brazil',
- 'Colombia',
- 'Ecuador',
- 'Paraguay',
- 'Venezuela',
- 'Canada',
- 'Haiti',
- 'Nicaragua',
- 'United States',
- 'Belgium',
- 'Switzerland',
- 'Czech Rep.',
- 'Germany',
- 'Spain',
- 'France',
- 'United Kingdom',
- 'Poland',
- 'Portugal',
- 'Romania',
- 'Russia',
- 'Serbia',
- 'Australia',
- 'New Zealand']
+class ReportList(ListView):
+    model = Report
 
 class ReportCreate(CreateView):
     model = Report

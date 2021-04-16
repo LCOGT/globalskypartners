@@ -6,6 +6,31 @@
 
  {% block main %}
 
+ <div class="tile is-ancestor">
+   <div class="tile is-vertical">
+     <div class="tile">
+       <div class="tile is-parent is-vertical">
+         <article class="tile is-child notification is-primary">
+           <p id="num-partners" class="title">{{proposals|length}}</p>
+           <p class="subtitle">Partners</p>
+         </article>
+       </div>
+       <div class="tile is-parent">
+         <article class="tile is-child notification is-info">
+           <p id="total-hours" class="title"></p>
+           <p class="subtitle">Time Allocated</p>
+         </article>
+       </div>
+       <div class="tile is-parent">
+         <article class="tile is-child notification is-danger">
+           <p id="used-hours" class="title"></p>
+           <p class="subtitle">Time Used</p>
+         </article>
+       </div>
+     </div>
+   </div>
+ </div>
+
 <table class="table">
 <tr>
   <th>Partner</th>
@@ -16,7 +41,7 @@
 {% for object in object_list %}
   <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
     <td><a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a></td>
-    <td>{{object.pi}}</td>
+    <td>{% for pi in object.pi.all %}{{pi.first_name}} {{pi.last_name}}{% endfor %}</td>
     <td id="{{object.proposal_code}}" style="width:20%;"></td>
   </tr>
 {% endfor %}
@@ -27,14 +52,21 @@
  {% block script-content %}
  <script>
    var semester = '{{semester}}';
-   var datestamp = '{{datestamp}}';
+   var proposals = {{proposals|safe}};
+   var semesters = {{semesters|safe}};
+
    $( document ).ready(function() {
      time_allocation_all(semester).then(content =>{
        for (const prop in content){
        $('#'+prop).html(content[prop]);
        }
      });
+     total_time(proposals, semesters).then(totals =>{
+       $('#total-hours').html(Number.parseFloat(totals.total).toFixed(1));
+       $('#used-hours').html(Number.parseFloat(totals.used).toFixed(1));
+     });
 });
 
  </script>
+
  {% endblock %}

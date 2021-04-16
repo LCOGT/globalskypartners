@@ -53,7 +53,7 @@ function time_allocation(proposal) {
 function time_allocation_all(semester) {
   return new Promise((resolve, reject) => {
   $.ajax({
-    url: `https://observe.lco.global/api/proposals/?limit=100`,
+    url: `https://observe.lco.global/api/proposals/?limit=100&active=True&public=true`,
     headers: {'Authorization': 'Token '+localStorage.getItem('token')},
     type:'get',
     dataType:'json',
@@ -81,6 +81,7 @@ function time_allocation_all(semester) {
     })
   })
 }
+
 
 function user_requests(proposal) {
   var d = new Date();

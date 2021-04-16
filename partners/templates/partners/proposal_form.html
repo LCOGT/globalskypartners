@@ -5,7 +5,7 @@
 
 {% block mainfull %}
 
-
+{% if activecall %}
 <form action="" method="post">
   {% csrf_token %}
 
@@ -83,4 +83,9 @@
     </div>
   </div>
 </form>
+
+{% else %}
+<p>There are currently no open calls for new Global Sky Partner proposals.</p>
+<p>You may want to consider applying to our <a href="https://lco.global/education/partners/becoming-global-sky-partner/"Pilot Partner program</a>.</p>
+{% endif %}
 {% endblock %}

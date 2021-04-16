@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal
+from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal, Membership
 
 class PartnerAdmin(admin.ModelAdmin):
     list_filter = ['active',]
-    list_display = ['name','proposal_code','pi','active']
+    list_display = ['name','proposal_code','active']
     order_by = 'name'
 
 class SemesterInline(admin.TabularInline):
@@ -19,3 +19,4 @@ admin.site.register(Region)
 admin.site.register(ProgramType)
 admin.site.register(Cohort, CohortAdmin)
 admin.site.register(Proposal)
+admin.site.register(Membership)

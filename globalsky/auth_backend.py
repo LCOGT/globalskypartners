@@ -8,51 +8,16 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 import requests
 import logging
+import itertools
 
 from django.contrib.auth.models import User
 
-from partners.models import Partner
+from partners.models import Partner, Membership
 
 UserModel = get_user_model()
 
 logger = logging.getLogger(__name__)
 
-
-# class AddTokenBackend:
-#
-#     def authenticate(self, request, username=None, password=None, **kwargs):
-#         if username is None:
-#             username = kwargs.get(UserModel.USERNAME_FIELD)
-#         if username is None or password is None:
-#             return
-#         try:
-#             user = UserModel._default_manager.get_by_natural_key(username)
-#         except UserModel.DoesNotExist:
-#             # Run the default password hasher once to reduce the timing
-#             # difference between an existing and a nonexistent user (#20760).
-#             UserModel().set_password(password)
-#         else:
-#             if user.check_password(password) and self.user_can_authenticate(user):
-#                 # request.session['token'] = settings.PORTAL_TOKEN
-#                 # request.session['archive_token'] = settings.ARCHIVE_TOKEN
-#                 user.token = settings.PORTAL_TOKEN
-#                 user.archive_token = settings.ARCHIVE_TOKEN
-#                 user.save()
-#                 return user
-#
-#     def user_can_authenticate(self, user):
-#         """
-#         Reject users with is_active=False. Custom user models that don't have
-#         that attribute are allowed.
-#         """
-#         is_active = getattr(user, 'is_active', None)
-#         return is_active or is_active is None
-#
-#     def get_user(self, user_id):
-#         try:
-#             return User.objects.get(pk=user_id)
-#         except User.DoesNotExist:
-#             return None
 
 class PortalBackend(object):
     """
@@ -74,17 +39,21 @@ def lco_authenticate(request, username, password):
         messages.error(request, mark_safe("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account"))
         return None
     profile, msg = get_profile(token)
-    if token and profile:
-        username = profile[0]
+    proposals, msg = get_proposals(token, username)
+    if token and proposals:
+        username = profile['username']
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             # Create a new user. There's no need to set a password
             # because Valhalla auth will always be used.
             user = User(username=username)
-        user.email = profile[3]
+        user.email = profile['email']
+        user.first_name = profile['first_name']
+        user.last_name = profile['last_name']
         user.save()
-
+        for partner in proposals:
+            new, obj = Membership.objects.get_or_create(user=user, partner=partner)
         # Finally add these tokens as session variables
         request.session['token'] = token
 
@@ -118,8 +87,7 @@ def api_auth(url, username, password):
         logger.error("Could not login {}: {}".format(username, r.json()['non_field_errors']))
         return False
 
-def get_profile(token):
-    url = settings.PORTAL_PROFILE_URL
+def parse_api_response(url, token):
     token = {'Authorization': 'Token {}'.format(token)}
     try:
         r = requests.get(url, headers=token, timeout=20.0);
@@ -129,17 +97,29 @@ def get_profile(token):
         return False, _("We are currently having problems. Please bear with us")
 
     if r.status_code in [200,201]:
-        logger.debug('Profile successful')
-        proposals = check_proposal_membership(r.json()['proposals'])
-        return (r.json()['username'], r.json()['tokens']['archive'], proposals, r.json()['email']), False
+        logger.debug('Proposal lookup successful')
+        return r.json(), False
     else:
         logger.error("Could not get profile {}".format(r.content))
         return False, _("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account")
 
-def check_proposal_membership(proposals):
+
+def get_proposals(token, email):
+    url = settings.PROPOSALS_URL
+    results, msg = parse_api_response(url, token)
+    proposals = check_proposal_membership(results['results'], email)
+    return proposals, msg
+
+def get_profile(token):
+    url = settings.PROFILE_URL
+    results, msg = parse_api_response(url, token)
+    return results, msg
+
+def check_proposal_membership(proposals, email):
     # Check user has a proposal we authorize
-    proposals = [p['id'] for p in proposals if p['current'] == True]
-    my_proposals = Partner.objects.filter(proposal_code__in=proposals)
+    pis = [[proposal['id'] for pi in proposal['pis'] if pi['email'] == email] for proposal in proposals ]
+    my_pis = list(itertools.chain(*pis))
+    my_proposals = Partner.objects.filter(proposal_code__in=my_pis)
     if my_proposals:
         return my_proposals
     else:

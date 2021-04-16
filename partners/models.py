@@ -74,15 +74,12 @@ class Semester(models.Model):
 class Partner(models.Model):
     name = models.CharField(max_length=200)
     proposal_code = models.CharField(max_length=50, blank=True)
-    submitter = models.ForeignKey(User, on_delete=models.CASCADE)
-    pi = models.CharField(max_length=100, blank=True)
-    pi_email = models.EmailField(blank=True)
     summary = models.TextField(blank=True)
     cohorts = models.ManyToManyField(Cohort, blank=True)
     active = models.BooleanField(default=False)
     region = models.ManyToManyField(Region,blank=True)
     program = models.ManyToManyField(ProgramType, blank=True)
-
+    pi = models.ManyToManyField(User, blank=True, through='Membership')
     def __str__(self):
         if self.active:
             state = f"({self.proposal_code})"
@@ -93,7 +90,15 @@ class Partner(models.Model):
     class Meta:
         ordering = ('name',)
 
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.user} leads {self.partner}"
+
+
 class Proposal(models.Model):
+    submitter = models.ForeignKey(User, on_delete=models.CASCADE)
     people = models.TextField('people involved in coordinating the project')
     institution = models.CharField('supporting institution or organization',max_length=120)
     description = models.TextField('project description')
