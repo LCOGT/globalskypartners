@@ -17,11 +17,11 @@ def home(request):
     now = datetime.now()
     partners = Partner.objects.filter(active=True, pi=request.user)
     semester = Semester.objects.get(start__lte=now, end__gte=now)
-    if Cohort.objects.filter(active_call=True):
-        activecall = True
-    else:
-        activecall = False
-    return render(request, 'home.html',{'partners':partners,'semester':semester,'activecall':activecall})
+    return render(request, 'home.html',{'partners':partners,
+                                        'semester':semester,
+                                        'activecall':Cohort.objects.filter(active_call=True),
+                                        'active_partners': Partner.objects.filter(active=True).count()
+                                        })
 
 
 class PartnerList(ListView):

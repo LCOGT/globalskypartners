@@ -1,6 +1,7 @@
-from django.db import models
+from django.db import models, transaction
 
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 REGION_CHOICES = (
     (0, 'Online Only'),
@@ -50,6 +51,8 @@ class ProgramType(models.Model):
 class Cohort(models.Model):
     year = models.CharField(max_length=4)
     active_call = models.BooleanField(default=False)
+    deadline = models.DateTimeField(default=timezone.now)
+    call = models.URLField(blank=True)
 
     def __str__(self):
         if self.active_call:
@@ -58,6 +61,14 @@ class Cohort(models.Model):
 
     class Meta:
         ordering = ('year',)
+
+    def save(self, *args, **kwargs):
+        if not self.active_call:
+            return super(Cohort, self).save(*args, **kwargs)
+        with transaction.atomic():
+            Cohort.objects.filter(active_call=True).update(active_call=False)
+            return super(Cohort, self).save(*args, **kwargs)
+
 
 class Semester(models.Model):
     start = models.DateTimeField()
