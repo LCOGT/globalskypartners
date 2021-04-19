@@ -95,7 +95,9 @@
     "pk": 1,
     "fields": {
         "year": "2020",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15.915Z",
+        "call": ""
     }
 },
 {
@@ -103,7 +105,9 @@
     "pk": 2,
     "fields": {
         "year": "2019",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15.915Z",
+        "call": ""
     }
 },
 {
@@ -111,7 +115,9 @@
     "pk": 3,
     "fields": {
         "year": "2018",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15.915Z",
+        "call": ""
     }
 },
 {
@@ -119,7 +125,9 @@
     "pk": 4,
     "fields": {
         "year": "2021",
-        "active_call": true
+        "active_call": true,
+        "deadline": "2021-06-13T00:00:00Z",
+        "call": "https://lco.global/news/lco-scientists-use-supernovae-to-make-a-new-measurement-of-the-hubble-constant/"
     }
 },
 {
@@ -127,7 +135,9 @@
     "pk": 5,
     "fields": {
         "year": "2022",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15Z",
+        "call": ""
     }
 },
 {
@@ -135,7 +145,9 @@
     "pk": 6,
     "fields": {
         "year": "2023",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15.915Z",
+        "call": ""
     }
 },
 {
@@ -143,7 +155,9 @@
     "pk": 7,
     "fields": {
         "year": "2024",
-        "active_call": false
+        "active_call": false,
+        "deadline": "2021-04-19T10:44:15.915Z",
+        "call": ""
     }
 },
 {
@@ -242,9 +256,6 @@
     "fields": {
         "name": "ASTRONOMY & ASTROPHYSICS AWARENESS PROJECT IN NIGERIA",
         "proposal_code": "LCOEPO2020B-001",
-        "submitter": 1,
-        "pi": "Olayinka Fagbemiro",
-        "pi_email": "yinkaojay@gmail.com",
         "summary": "Astrolab is a tutorial, based on telescopic observations, to learn how to do science and discover that science can be challenging, interesting and manageable. This tutorial has been developed primarily for undergraduate science students in order to emphasize the nature of science with the interdisciplinary nature of astronomy, and its natural links with technology and instrumentation. In doing Astrolab, students in sciences plan and perform real-time observations with a LCO 40cm telescope, and transform those observations into a scientific result. It is a learning-by-doing tutorial to acquire research competences and to understand the complexity of practical work.",
         "active": true,
         "cohorts": [
@@ -264,9 +275,6 @@
     "fields": {
         "name": "Búsqueda y seguimiento de estrellas variables",
         "proposal_code": "LCOEPO2020B-007",
-        "submitter": 1,
-        "pi": "Humberto Alfonso García Montano",
-        "pi_email": "hagmnic@yahoo.com",
         "summary": "This partner is supporting undergraduate astronomy projects in Nicaragua.",
         "active": true,
         "cohorts": [
@@ -286,9 +294,6 @@
     "fields": {
         "name": "Cosmic Adventures",
         "proposal_code": "LCOEPO2020B-008",
-        "submitter": 1,
-        "pi": "Reza AmirArjormand",
-        "pi_email": "reza@ocastronomers.org",
         "summary": "Cosmic Adventures is an inreach program of the Orange County Astronomers, providing members with opportunities to do real astronomical research and activities of scientific value. By being an inreach this program ensures seriousness of its participants.",
         "active": true,
         "cohorts": [
@@ -310,9 +315,6 @@
     "fields": {
         "name": "Exoplanet Watch",
         "proposal_code": "LCOEPO2020B-009",
-        "submitter": 1,
-        "pi": "Robert Zellem",
-        "pi_email": "robert.t.zellem@jpl.nasa.gov",
         "summary": "Exoplanet Watch is a citizen science project to observe transiting exoplanets — planets outside our solar system — with small telescopes. A transiting exoplanet is one that periodically passes in front of its host star, causing the star to slightly dim (by about 1%). Observing exoplanet transits is important, as they allow us to directly measure a planet's radius and composition. Ground based follow up allows us to better constrain the planet’s period which allows for better mass measurements. Exoplanet Watch will help increase the efficiency of exoplanet studies by large telescopes to characterize exoplanet atmospheres by reducing uncertainty about the predicted timing of transit events.",
         "active": true,
         "cohorts": [
@@ -334,9 +336,6 @@
     "fields": {
         "name": "GCC Exoplanet and Variable Star Search",
         "proposal_code": "LCOEPO2019A-006",
-        "submitter": 1,
-        "pi": "Brian Gleim",
-        "pi_email": "brian.gleim@gccaz.edu",
         "summary": "For five years, the Glendale Community College Astronomy Club (named ASTRO) has been using the campus’s 8-inch telescopes for public engagement and educational research and the members are getting to the point where their ambitions are exceeding the capabilities of the equipment. At the same time, the GCC Honors Program has many students eager to engage in an honors-level science experience. The goal for this project is to merge the honors students and club members into one research cohort and engage them in the authentic practice of experimental design and execution.",
         "active": true,
         "cohorts": [
@@ -357,9 +356,6 @@
     "fields": {
         "name": "Hiparcpia",
         "proposal_code": "LCOEPO2020B-002",
-        "submitter": 1,
-        "pi": "Jorge Maidana-Montiel; Waldemar Villamayor-Venialbo",
-        "pi_email": "jmaidana18@gmail.com",
         "summary": "A training program for teachers in Paraguay, to astrometric and photometric follow-up of Main Belt Asteroids and NEOs.",
         "active": true,
         "cohorts": [
@@ -379,9 +375,6 @@
     "fields": {
         "name": "Hunting Outbursting Young Stars (HOYS)",
         "proposal_code": "LCOEPO2020B-006",
-        "submitter": 1,
-        "pi": "Dirk Froebrich",
-        "pi_email": "df@star.kent.ac.uk",
         "summary": "HOYS is a citizen science project working together with amateur astronomers. They provide the observational data for our research in star and planet formation. HOYS as an LCO Global Sky partner will allow amateur astronomers without access to telescopes equipped with a camera to obtain data for one of our target regions and thus participate in the project. The group of participants, as a community, will hence build up their own set of light curves of young stars during the project. HOYS will provide guidance to participants to conduct their own small research projects with the data obtained by them as well as using the wealth of other publicly available HOYS data",
         "active": true,
         "cohorts": [
@@ -401,9 +394,6 @@
     "fields": {
         "name": "Inclusive Astronomy",
         "proposal_code": "LCOEPO2020B-003",
-        "submitter": 1,
-        "pi": "Juan Carlos Arias Cañón",
-        "pi_email": "jcariascanon@colegiosminutodedios.edu.co",
         "summary": "The inclusive astronomy project that takes place at the El Minuto de Dios Ciudad Verde school (Colombia), implements new technologies (STEAM), methodologies and workshops for students from vulnerable populations or with some type of special need (differentiated education), girls and boys in equality gender, using aspects of divergent and sensitive education to introduce the world of science and technology to these classes in times of virtuality through the study of astronomy and space science.",
         "active": true,
         "cohorts": [
@@ -423,9 +413,6 @@
     "fields": {
         "name": "QNL Astronomy Club",
         "proposal_code": "LCOEPO2020B-004",
-        "submitter": 1,
-        "pi": "Ahmed Saad",
-        "pi_email": "ahsmohamed@qnl.qa",
         "summary": "The program aims to inspire Qatar National Library visitors to look to the sky and ask questions. This program is aligned with Qatar Foundation’s overarching mission of unlocking human potential. Specifically the program aims to: To empower the next generation of scientists, researchers and philosophers; To use the excitement that astronomy engenders to increase public understanding of science and scientific methods and to make clear that science is a pathway to discovery, not just a collection of facts; To capitalize on the close involvement of astronomy with technology and instrumentation to contribute to training the technical work force; To increase science awareness in communities to stimulate the scientific curiosity of learners from a young age to encourage learners to study science at a tertiary level.",
         "active": true,
         "cohorts": [
@@ -445,9 +432,6 @@
     "fields": {
         "name": "100 Hours for 100 Schools",
         "proposal_code": "LCOEPO2019A-005",
-        "submitter": 1,
-        "pi": "The 150 Hours for 100 Schools Collaboration",
-        "pi_email": "pennypacker@lbl.gov",
         "summary": "100 hours for 100 schools (100/100) is a collaboration between several organizations involved in providing high quality and well supported astronomy education programs. The 100 schools come from the 1,300 schools that already actively participate in International Astronomical Search Collaboration. The teachers are invited to pick and develop a project with their students. A number of projects will be suggested, from the basic to the advanced, with training offered through Galileo Teacher Training Programme and Global Hands on Universe.",
         "active": true,
         "cohorts": [
@@ -476,9 +460,6 @@
     "fields": {
         "name": "Aninoquisi To'sdigo'ti'a (We see the stars)",
         "proposal_code": "LCOEPO2020A-003",
-        "submitter": 1,
-        "pi": "Enrique Gómez",
-        "pi_email": "egomez@email.wcu.edu",
         "summary": "Aninoquisi To'sdigo'ti'a (We see the stars) engages with middle grade and high school students in the Eastern Band of the Cherokee Indians in a science project to observe exoplanet transits in nearby stars. This is also part of a project to support Cherokee language revitalization by connecting language arts and science. We propose a project for middle grade students to capture at least one transit event and work with professional astronomers to report on the timing of the captured transit. The host star is an G0 subgiant star with an apparent magnitude in the V band of 8.17 V, and is visible from the northern hemisphere LCO sites. There are other possible transiting exoworlds that we could use, but for the time being, we want to see if we can get middle grade students to capture the transit as a proof of concept.",
         "active": true,
         "cohorts": [
@@ -498,9 +479,6 @@
     "fields": {
         "name": "Astrolab (Starlight in the university lab)",
         "proposal_code": "LCOEPO2018A-001",
-        "submitter": 1,
-        "pi": "Michele Gerbaldi",
-        "pi_email": "gerbaldi@iap.fr",
         "summary": "Astrolab is a tutorial, based on telescopic observations, to learn how to do science and discover that science can be challenging, interesting and manageable. This tutorial has been developed primarily for undergraduate science students in order to emphasize the nature of science with the interdisciplinary nature of astronomy, and its natural links with technology and instrumentation. In doing Astrolab, students in sciences plan and perform real-time observations with a LCO 40cm telescope, and transform those observations into a scientific result. It is a learning-by-doing tutorial to acquire research competences and to understand the complexity of practical work.",
         "active": true,
         "cohorts": [
@@ -523,9 +501,6 @@
     "fields": {
         "name": "Astrometry Research Group of Sri Lanka",
         "proposal_code": "LCOEPO2020A-004",
-        "submitter": 1,
-        "pi": "Thilina Heenatigala",
-        "pi_email": "thilinah@astroepo.org",
         "summary": "Sri Lanka currently has no astronomy track at university level. This project aims to start undergraduate students with research projects in astronomy, to training them in astronomical data analysis techniques.",
         "active": true,
         "cohorts": [
@@ -546,9 +521,6 @@
     "fields": {
         "name": "Astronomy Research Seminars for High School and Undergraduate Instructors and Students",
         "proposal_code": "LCOEPO2018A-006",
-        "submitter": 1,
-        "pi": "Rachel Freed",
-        "pi_email": "r.freed2010@gmail.com",
         "summary": "InStAR’s mission is to develop, conduct, and promote the adoption of the Astronomy Research Seminar, which is an immersive, student team-based astronomical research experience for high school, 2-year community college, and 4-year university students. InStAR also serves as a central coordination site and resource, primarily through its web site, for student research teams in the U.S. to obtain resources, talk with other research groups, and to be a part of a growing community of practice.",
         "active": true,
         "cohorts": [
@@ -572,9 +544,6 @@
     "fields": {
         "name": "Astwonomi Lakay",
         "proposal_code": "LCOEPO2020A-009",
-        "submitter": 1,
-        "pi": "Rulx Narcisse",
-        "pi_email": "rulx.rulxnarcisse.narcisse@gmail.com",
         "summary": "This partner aims to establish an astronomy course in State University of Haiti via the National School of Geology and Science Faculty. A special astronomy curriculum will be developed using images from LCO's robotic telescopes, where students will prepare and present their research. Additionally there will be workshops for primary school and community groups, hosted around Haiti.",
         "active": true,
         "cohorts": [
@@ -594,9 +563,6 @@
     "fields": {
         "name": "Authentic Ground-based Research for Informal Learners",
         "proposal_code": "LCOEPO2019A-008",
-        "submitter": 1,
-        "pi": "Laura Peticolas",
-        "pi_email": "laurap@universe.sonoma.edu",
         "summary": "This program will bring astronomy research opportunities to youth groups (high school age) in out-of-school and after-school settings. They will be given instruction on the research process and then work in groups to conduct a project, selecting from several types, including double star astrometry, RR Lyrae photometry, exoplanet and asteroid light curves, variable star light curves and gamma ray burst follow-up optical observations. This program will be based in part on the Astronomy Research Seminar, taught for the past 10 years out Cuesta Community college in which student groups propose and then carry out a study of a double star system or several systems, collecting and analyzing data and writing up their analysis in a paper for publication in the Journal of Double Star Observations, all within the time frame of a single semester. Students then present their project in either an online or in-person meeting. This program is unique in its requirement for publication by students, and has been successful due to the large Community-of-Practice involved in the program. This proposal would expand the seminar to other groups of students, outside of Cuesta. The longer-term goal is to expand the program nationally, incorporating a larger community being established through the Global Telescope Network (GTN). Working with advanced amateurs, such as AAVSO members, as well as NASA and other subject matter experts, we hope to include research projects on eclipsing binaries, asteroids and exoplanet transits. This is a pilot program aimed at scaling the research seminar nationally and internationally.",
         "active": true,
         "cohorts": [
@@ -617,9 +583,6 @@
     "fields": {
         "name": "Where's the Flux?",
         "proposal_code": "LCOEPO2019A-009",
-        "submitter": 1,
-        "pi": "Tabetha Boyajian",
-        "pi_email": "tabbyb@gmail.com",
         "summary": "Community observations of secular dimming in the enigmatic dipper, KIC8462852. This is an open collaboration with interested users connected through the sub-Reddit, /r/KIC8462852.",
         "active": true,
         "cohorts": [
@@ -640,9 +603,6 @@
     "fields": {
         "name": "MicroObservatory/LCO Exoplanet Exploration Partnership",
         "proposal_code": "LCOEPO2018A-007",
-        "submitter": 1,
-        "pi": "Mary Dussault",
-        "pi_email": "mdussault@cfa.harvard.edu",
         "summary": "Through a pilot partnership with LCO, MicroObservatory aims to enhance our users’ learning experience. Specifically, we will offer our audiences periodic opportunities to request “Target of Opportunity” exoplanet datasets from the LCO network, which they would then analyze using the same skills and tools that they have employed with MicroObservatory data.",
         "active": true,
         "cohorts": [
@@ -664,9 +624,6 @@
     "fields": {
         "name": "Our Solar Siblings",
         "proposal_code": "LCOEPO2014B-007",
-        "submitter": 1,
-        "pi": "Michael Fitzgerald",
-        "pi_email": "psyfitz@gmail.com",
         "summary": "Our Solar Siblings does three things. It freely provides a fully provisioned, off the shelf, curriculum for secondary teachers teaching astronomy, it freely provides guidance and support for larger student (and teacher) research projects and it produces tools and provides mentoring, curriculum materials and support for other existing and potential robotic telescope education projects where it can.",
         "active": true,
         "cohorts": [
@@ -690,9 +647,6 @@
     "fields": {
         "name": "PETeR (Educational Project with Robotic Telescopes)",
         "proposal_code": "LCOEPO2018A-005",
-        "submitter": 1,
-        "pi": "Nayra Rodríguez Eugenio",
-        "pi_email": "nre@iac.es",
         "summary": "Proyecto Educativo con Telescopios Robóticos (PETeR) - An Educational Project with Robotic Telescopes. PETeR is an enquiry-based online lab which aims to familiarize the Spanish educational community with the scientific method and practice, while contributing to the diffusion of Astronomy and Astrophysics. This is achieved dedicating some observation time with robotic telescopes to educational activities and e-science projects aimed at students and amateur astronomy associations.",
         "active": true,
         "cohorts": [
@@ -715,9 +669,6 @@
     "fields": {
         "name": "ORBYTS - Refining Exoplanet Ephemerides",
         "proposal_code": "LCOEPO2020A-002",
-        "submitter": 1,
-        "pi": "Billy Edwards",
-        "pi_email": "billy.edwards.16@ucl.ac.uk",
         "summary": "ORBYTS (Original Research by Young Twinkle Students) is an educational programme in which secondary school pupils (16-17 y/o) work on scientific research linked to the Twinkle Space Mission under the tuition of PhD students and other young scientists. The scheme partners dynamic, passionate science researchers with secondary schools, where, through fortnightly school visits over an academic year, the researcher teaches the students undergraduate-level physics. The goal of every partnership is that school students will have the opportunity to use this new knowledge to contribute towards publishable research. Pupils get hands on experience of what is involved in scientific research and work closely with young scientists. By partnering schools with relatable researchers, the programme aims to not only improve student aspirations and scientific literacy, but also help to address diversity challenges by dispelling harmful stereotypes, challenging any preconceptions about who can become a scientist. The organisers and tutors strongly believe that all school students should have the opportunity to become involved in active scientific research and to be culturally connected to space missions. Previous projects have included calculating molecular transitions with the ExoMol group as these line lists are key for atmospheric retrievals.",
         "active": true,
         "cohorts": [
@@ -738,9 +689,6 @@
     "fields": {
         "name": "Stanford Online High School",
         "proposal_code": "LCOEPO2018B-001",
-        "submitter": 1,
-        "pi": "Kalee Tock",
-        "pi_email": "kaleeg@stanford.edu",
         "summary": "Stanford Online High School (SOHS) is an accredited, independent school for intellectually passionate students in grades 7 - 12. The SOHS Astronomy Research Club involves students across the world in astronomy research education and projects.",
         "active": true,
         "cohorts": [
@@ -764,9 +712,6 @@
     "fields": {
         "name": "Study of Transient Phenomena in Solar Stars",
         "proposal_code": "LCOEPO2020A-007",
-        "submitter": 1,
-        "pi": "HELIOS-GTTP/USBMED",
-        "pi_email": "gttpiberoamerica@gmail.com",
         "summary": "HELIOS GTTP is a Colombian heliophysics work and study group focused on outreach activities and teacher training on the sun and star variability. This group is made up of Galileo Teacher Training Program and Hands On Universe members, Medellín's Planetarium staff , teachers and astronomy enthusiasts.",
         "active": true,
         "cohorts": [
@@ -787,9 +732,6 @@
     "fields": {
         "name": "OSS research project",
         "proposal_code": "LCOEPO2020A-001",
-        "submitter": 1,
-        "pi": "Michael Fitzgerald",
-        "pi_email": "psyfitz@gmail.com",
         "summary": "A guided research project which follows the 12-week self-guided online course from Our Solar Siblings",
         "active": true,
         "cohorts": [
@@ -809,9 +751,6 @@
     "fields": {
         "name": "One Home, One Sky",
         "proposal_code": "LCOEPO2020B-005",
-        "submitter": 1,
-        "pi": "El-Abbas Endaisha",
-        "pi_email": "abbas.endaisha@gmail.com",
         "summary": "This initiative aims to help the children, particularly girls and those with disabilities, and their families to do scientific activities to reduce the stress and insecure caused by the war in Libya. This initiative named \"one sky one home\" one of the aspects is to unite the people of the country, by moving between several areas in Libya doing this workshops in primary schools.",
         "active": true,
         "cohorts": [
@@ -831,9 +770,6 @@
     "fields": {
         "name": "STAR – SD   [STEM Through Astronomy Research - San Diego]",
         "proposal_code": "LCOEPO2018A-009",
-        "submitter": 1,
-        "pi": "Pat Boyce, Executive Director, Boyce Research Initiatives and Education Foundation (BRIEF)",
-        "pi_email": "info@boyce-astro.org",
         "summary": "The Boyce Research Initiatives and Education Foundation (BRIEF) provides research opportunities to students to enhance their educational experience and introduce them to the scientific and technical communities. BRIEF is providing, as its primary education mission, hands-on astronomy research experiences for students of all ages that result in their publishing peer-reviewed papers.",
         "active": true,
         "cohorts": [
@@ -855,9 +791,6 @@
     "fields": {
         "name": "Observing With Einstein Schools",
         "proposal_code": "LCOEPO2020A-006",
-        "submitter": 1,
-        "pi": "Robert Sparks",
-        "pi_email": "rsparks@noao.edu",
         "summary": "Participants in this programme have the opportunity to communicate and work with other participating schools around the world. Together, they discuss gravity’s effect in astronomy and discuss creative project ideas. These discussions about the nature of gravity, black holes and other compact objects, the detection of gravity waves, and whether light can be affected by gravity are an important part of the programme. From these discussions, they form a research plan which they use LCO telescopes to explore further.",
         "active": true,
         "cohorts": [
@@ -877,9 +810,6 @@
     "fields": {
         "name": "Scintillating Citizens",
         "proposal_code": "LCOEPO2020A-005",
-        "submitter": 1,
-        "pi": "Jesse Rogerson",
-        "pi_email": "jesse.rogerson@gmail.com",
         "summary": "The goal of this project will be to put the act of collecting and analyzing photometric data in the hands of the visitors to the Canada Aviation and Space Museum website. One (or more) variable stars will be pre-selected by the project lead, Jesse Rogerson. A prominent call-to-action will pull visitors to the website by asking if they want to participate in an active astrophysical project. Visitors will be taught what a variable star is, why we study them, and then be asked to help monitor a variable star. The goal will be to build up photometric measurements of a long-term variable star (2 to 6 months period). Once a full light-curve has been collected, analysis will begin by both Jesse Rogerson and undergraduate astrophysics students at Carleton University. We aim to get real people performing real observations, and then be given real control of the data they collect.",
         "active": true,
         "cohorts": [
@@ -899,9 +829,6 @@
     "fields": {
         "name": "Variable Stars",
         "proposal_code": "LCOEPO2020A-008",
-        "submitter": 1,
-        "pi": "David Pundak",
-        "pi_email": "dpundak@gmail.com",
         "summary": "This is an outreach program for gifted children (9th grad), collecting data on double stars and analysis the data to characterize the stars. Also a group of astronomy leaders learning how to guide groups of young students and how to analyse the spectra of stars.",
         "active": true,
         "cohorts": [
@@ -921,9 +848,6 @@
     "fields": {
         "name": "YATL Astronomy Research Project for High School",
         "proposal_code": "LCOEPO2019A-007",
-        "submitter": 1,
-        "pi": "Boyang Liu",
-        "pi_email": "pkulby@foxmail.com",
         "summary": "The Youth Astronomy Teachers' Link(YATL) provides high-quality astronomy and planetary science education resources to young people in China. The YATL Astronomy Research Project for High School started in 2016, more than 15 schools compete for the research opportunities we provide each year, making observations with LCO.",
         "active": true,
         "cohorts": [
@@ -944,9 +868,6 @@
     "fields": {
         "name": "Investigating the Sky",
         "proposal_code": "LCOEPO2019A-004",
-        "submitter": 1,
-        "pi": "Jesse Rogerson",
-        "pi_email": "jrogerson@ingeniumCanada.org",
         "summary": "The Canada Aviation and Space Museum is partnering with the Conseil des écoles publiques de l'Est de l'Ontario to give high school students the opportunity to create and carry out their own investigations of the night sky. Guided by a professional astronomer, student participants will be taught how to research the background of a topic, choose a target and create an observing plan, and then analyze the data from the telescope. They will lead their own research project, asking and answering their own questions.",
         "active": false,
         "cohorts": [
@@ -966,9 +887,6 @@
     "fields": {
         "name": "Tactile Observatory: VI accessible observations with the Tactile Universe",
         "proposal_code": "LCOEPO2019A-002",
-        "submitter": 1,
-        "pi": "Nicolas Bonne",
-        "pi_email": "nicolas.bonne@port.ac.uk",
         "summary": "The Tactile Observatory is a pilot extension of the Tactile Universe (TU) project, which will allow blind and vision impaired students learning about galaxies research through the TU project, to make observations using LCO. Using the TU's tactile image processing pipeline, students will then be able to 3D print their observations as tactile images. The involved students will also act as a test group to give feedback on the best ways to maximise the accessibility of the LCO observing interface. The audience is blind and vision impaired students from KS2 (upper primary) and KS3 (lower secondary) in UK.",
         "active": false,
         "cohorts": [
@@ -988,9 +906,6 @@
     "fields": {
         "name": "The Appalachian Star Song Project",
         "proposal_code": "LCOEPO2019A-003",
-        "submitter": 1,
-        "pi": "Enrique Gómez",
-        "pi_email": "egomez@email.wcu.edu",
         "summary": "Appalachian Starsong Project is a joint project of Western Carolina University and the Fontana Regional Library system to create a STEAM (science, technology, engineering, art, math). Small teams of students with science professionals will investigate a type of variable star (RR-Lyrae) present in globular star clusters in the Milky Way galaxy with relatively short periods of brightness variation. Students will be trained on sending observation requests to study how the brightness of these stars changes with time. To get them to think about how scientific data is represented in a way that is meaningful and shared to a broad audience, students will be asked to incorporate the time-varying data in an art piece.",
         "active": false,
         "cohorts": [
@@ -1010,9 +925,6 @@
     "fields": {
         "name": "West African International Summer School for Young Astronomers (WAISSYA)",
         "proposal_code": "LCOEPO2019A-001",
-        "submitter": 1,
-        "pi": "Maria Drout",
-        "pi_email": "maria.drout@dunlap.utoronto.ca",
         "summary": "The West African International Summer School for Young Astronomers (WAISSYA) is an innovative short course in astronomy for West African university students and school teachers who teach STEM. The school is designed and taught by a team of professional astronomers from West Africa and the rest of the world using educational research principles. Our mission is to build a critical mass of Astronomers and develop a community of scientific leaders in related fields in the West African Region and Africa as a whole. Through WAISSYA, two networks are being established: a mentor network and a network of astronomers who exchange educational ideas and further their own professional development.",
         "active": false,
         "cohorts": [
@@ -1032,9 +944,6 @@
     "fields": {
         "name": "Followup of Gravitational Wave sources with LCO",
         "proposal_code": "LCOEPO2018A-004",
-        "submitter": 1,
-        "pi": "Chris North",
-        "pi_email": "northce@cardiff.ac.uk",
         "summary": "With the advent of the latest generation gravitational wave detectors (Advanced LIGO and Advanced Virgo), dawn is breaking on multi-messenger astronomy. The detection of gravitational wave sources when accompanied by a companion source seen in \"traditional\" electromagnetic telescopes would bring breakthroughs in a huge range of astrophysics as well as fundamental physics. This project will bring this process into schools around the world using LCO's unique network of telescopes.",
         "active": false,
         "cohorts": [
@@ -1055,9 +964,6 @@
     "fields": {
         "name": "Constellations under investigation & Scientists' Apprentice",
         "proposal_code": "LCOEPO2018A-008",
-        "submitter": 1,
-        "pi": "Maria Luisa",
-        "pi_email": "geral@nuclio.pt",
         "summary": "NUCLIO promotes workshops of hands-on, inquiry oriented science activities for classes of different schools and grades. We will work with a teacher from middle school and a teacher from high school to develop a project with one or two classes from each teacher. For the middle school, we propose that each class chooses objects to observe and in the end of the school year, they build together a Universe Poster (or Calendar or Notebook), following the idea of the IYA2009 project “Universe Notebook”. For the high-school classes we propose that they acquire data for an exoplanet transit. They will analyse the images and build the light curve to extract the scientific information.",
         "active": false,
         "cohorts": [
@@ -1078,9 +984,6 @@
     "fields": {
         "name": "Fascination Astronomy",
         "proposal_code": "LCOEPO2018A-003",
-        "submitter": 1,
-        "pi": "Martin Dominik",
-        "pi_email": "md35@st-andrews.ac.uk",
         "summary": "Supporting the Qatar National Olympiad and Fascination astronomy workshops with 200 schools throughout Qatar.",
         "active": false,
         "cohorts": [
@@ -1101,9 +1004,6 @@
     "fields": {
         "name": "Modelling Astronomy",
         "proposal_code": "LCOEPO2018A-002",
-        "submitter": 1,
-        "pi": "Carl Pennypacker",
-        "pi_email": "pennypacker@lbl.gov",
         "summary": "Modeling Instruction is largely regarded as one of the most effective pedagogies known, and making LCO telescopes a part of MI Astronomy will enable gradual and steady growth into eventually many classrooms in the United States. In particular, a very important feature of Modeling Instruction is that the MI Workshops are in high demand by US teachers, are usually filled, and also self-supporting. Teachers/schools will pay for such workshops, because MI supports state and National Standards, kids learn more, they score better on tests, attain higher grades, and are more interested in careers in science and technology. Moving into a system that is sustained by word-of-mouth marketing and not dependent on peculiarities of national and state grants is a great position for long term growth and sustainability.",
         "active": false,
         "cohorts": [
@@ -1124,9 +1024,6 @@
     "fields": {
         "name": "50 Hours for 50 Nations",
         "proposal_code": "LCOEPO2018A-012",
-        "submitter": 1,
-        "pi": "Bonnie Thurber",
-        "pi_email": "bbt521@gmail.com",
         "summary": "50 hours project",
         "active": false,
         "cohorts": [
@@ -1148,9 +1045,6 @@
     "fields": {
         "name": "McDonald Observatory K-12 Teacher Training",
         "proposal_code": "LCOEPO2018A-011",
-        "submitter": 1,
-        "pi": "Keely Finkelstein",
-        "pi_email": "keelyf@astro.as.utexas.edu",
         "summary": "Teacher workshops",
         "active": false,
         "cohorts": [
@@ -1170,9 +1064,6 @@
     "fields": {
         "name": "Long-Period Asteroid Photometry and Student Research",
         "proposal_code": "LCOEPO2018A-010",
-        "submitter": 1,
-        "pi": "Paul S. Hardersen",
-        "pi_email": "research@in4star.org",
         "summary": "Asteroid studies with InStar",
         "active": false,
         "cohorts": [
@@ -1192,9 +1083,6 @@
     "fields": {
         "name": "This is my lovely project",
         "proposal_code": "",
-        "submitter": 1,
-        "pi": "",
-        "pi_email": "",
         "summary": "None",
         "active": false,
         "cohorts": [],
@@ -1208,9 +1096,6 @@
     "fields": {
         "name": "This is my lovely proposal",
         "proposal_code": "",
-        "submitter": 2,
-        "pi": "",
-        "pi_email": "",
         "summary": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam finibus, odio at tincidunt tristique, magna leo condimentum dui, id viverra ipsum lectus et eros. Vestibulum et nulla velit. Aliquam tincidunt nibh quis sem consectetur, sed lobortis eros sollicitudin. Cras commodo massa urna, in iaculis l",
         "active": false,
         "cohorts": [],
@@ -1219,9 +1104,242 @@
     }
 },
 {
+    "model": "partners.membership",
+    "pk": 21,
+    "fields": {
+        "user": 6,
+        "partner": 11
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 22,
+    "fields": {
+        "user": 6,
+        "partner": 1
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 23,
+    "fields": {
+        "user": 6,
+        "partner": 12
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 24,
+    "fields": {
+        "user": 6,
+        "partner": 13
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 25,
+    "fields": {
+        "user": 6,
+        "partner": 14
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 26,
+    "fields": {
+        "user": 6,
+        "partner": 15
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 27,
+    "fields": {
+        "user": 6,
+        "partner": 16
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 28,
+    "fields": {
+        "user": 6,
+        "partner": 17
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 29,
+    "fields": {
+        "user": 6,
+        "partner": 2
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 30,
+    "fields": {
+        "user": 6,
+        "partner": 3
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 31,
+    "fields": {
+        "user": 6,
+        "partner": 4
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 32,
+    "fields": {
+        "user": 6,
+        "partner": 5
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 33,
+    "fields": {
+        "user": 6,
+        "partner": 6
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 34,
+    "fields": {
+        "user": 6,
+        "partner": 7
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 35,
+    "fields": {
+        "user": 6,
+        "partner": 8
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 36,
+    "fields": {
+        "user": 6,
+        "partner": 19
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 37,
+    "fields": {
+        "user": 6,
+        "partner": 22
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 38,
+    "fields": {
+        "user": 6,
+        "partner": 26
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 39,
+    "fields": {
+        "user": 6,
+        "partner": 29
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 40,
+    "fields": {
+        "user": 6,
+        "partner": 27
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 41,
+    "fields": {
+        "user": 6,
+        "partner": 20
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 42,
+    "fields": {
+        "user": 6,
+        "partner": 21
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 43,
+    "fields": {
+        "user": 6,
+        "partner": 10
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 44,
+    "fields": {
+        "user": 6,
+        "partner": 28
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 45,
+    "fields": {
+        "user": 6,
+        "partner": 30
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 46,
+    "fields": {
+        "user": 6,
+        "partner": 23
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 47,
+    "fields": {
+        "user": 6,
+        "partner": 25
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 48,
+    "fields": {
+        "user": 6,
+        "partner": 31
+    }
+},
+{
+    "model": "partners.membership",
+    "pk": 49,
+    "fields": {
+        "user": 6,
+        "partner": 18
+    }
+},
+{
     "model": "partners.proposal",
     "pk": 1,
     "fields": {
+        "submitter": 1,
         "people": "None",
         "institution": "None",
         "description": "None",
@@ -1242,6 +1360,7 @@
     "model": "partners.proposal",
     "pk": 3,
     "fields": {
+        "submitter": 1,
         "people": "Some other people",
         "institution": "LCO",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam finibus, odio at tincidunt tristique, magna leo condimentum dui, id viverra ipsum lectus et eros. Vestibulum et nulla velit. Aliquam tincidunt nibh quis sem consectetur, sed lobortis eros sollicitudin. Cras commodo massa urna, in iaculis ligula tincidunt id. Aenean id accumsan lacus, et interdum lectus. Sed non ultricies urna, id tempor nunc. Vestibulum ac enim et erat tempus posuere. Nam ex massa, consequat vitae vulputate ac, tincidunt a risus. Maecenas vel ex tristique, sagittis orci nec, iaculis risus. Maecenas ultrices sit amet diam eu mollis. Praesent justo ante, ullamcorper sit amet interdum eu, rhoncus tempus tortor. Integer fringilla diam in ornare egestas. Integer rutrum tempor dolor, eu gravida tortor vulputate eu. Phasellus dictum blandit arcu egestas lobortis. Duis eget convallis nisl, nec pulvinar ex. Aliquam ac metus semper, gravida nisl ut, interdum est.\r\n\r\nInteger commodo tortor sed urna mattis aliquet. Suspendisse non facilisis justo, sed vulputate massa. Vestibulum gravida dolor erat, at sodales risus iaculis non. Mauris consequat vel metus eu semper. Sed porttitor cursus nibh mollis viverra. Curabitur leo purus, euismod ac dolor vitae, ullamcorper consectetur eros. Fusce ac lacus leo. Suspendisse eleifend molestie lacus ac elementum. Etiam semper ullamcorper consectetur. Nam convallis lorem nec malesuada porttitor. Mauris mollis vitae ipsum ac aliquam. Ut dictum magna nisi. Phasellus tincidunt lacus placerat dolor sagittis vehicula. Suspendisse ac lacus mollis, volutpat metus vel, cursus mauris. Suspendisse sit amet dui nec libero laoreet vestibulum.\r\n\r\nUt ut porta risus. Donec vehicula lacinia turpis ac malesuada. Cras sit amet interdum erat. Quisque sagittis rutrum rutrum. Suspendisse consectetur lobortis nunc, at porttitor justo vestibulum id. Curabitur vehicula magna tortor, vitae congue sem condimentum at. In eu est ut neque facilisis porta id id mi. Morbi tristique odio a consectetur facilisis. Fusce est libero, aliquet ut lorem ut, ornare pellentesque arcu. Praesent sed nibh tincidunt, feugiat dolor et, sagittis justo. Integer quis dui efficitur, placerat ex vel, feugiat sem. Curabitur non neque massa. Quisque pellentesque euismod felis ultricies suscipit. Mauris sed elit eu neque tempus mollis id ut sem. Fusce ullamcorper orci in metus interdum malesuada. Curabitur neque risus, tempor ut diam a, feugiat fermentum justo.\r\n\r\nCurabitur vel cursus nunc, sit amet molestie neque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean dignissim tortor id pellentesque tincidunt. In placerat justo quis lobortis fermentum. Integer ullamcorper, nunc eu luctus tempus, est sapien mollis massa, vitae cursus tortor nunc sed nisl. Cras sed magna leo. Nunc interdum diam et tortor accumsan pretium. Donec pretium neque vitae porttitor bibendum. Nullam ac luctus odio, in aliquam mi. Suspendisse in consequat tortor.\r\n\r\nPraesent auctor gravida nunc at venenatis. Vivamus at iaculis nisi. Morbi viverra sapien vel scelerisque bibendum. Etiam iaculis non metus a semper. Donec sit amet est erat. Aliquam vulputate quam et est dapibus sollicitudin. Curabitur ac felis scelerisque elit imperdiet dictum. Nullam luctus, augue in pellentesque commodo, metus nibh posuere ligula, id sollicitudin est ipsum vel augue. Fusce eleifend, purus sed placerat convallis, est quam malesuada ante, lobortis egestas justo ante non risus.",
@@ -1263,7 +1382,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$216000$LrNdbPiVluzl$Czx0jag+ZLEDwW6NI0ZDBT/QXFZARV6g+EjzwSvwYuk=",
-        "last_login": "2021-04-14T10:31:05.437Z",
+        "last_login": "2021-04-16T12:40:35.562Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -1272,24 +1391,6 @@
         "is_staff": true,
         "is_active": true,
         "date_joined": "2021-01-21T10:27:13.953Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 2,
-    "fields": {
-        "password": "",
-        "last_login": "2021-04-13T16:18:39.887Z",
-        "is_superuser": false,
-        "username": "egomez",
-        "first_name": "",
-        "last_name": "",
-        "email": "egomez@lco.global",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2021-03-29T10:21:49.249Z",
         "groups": [],
         "user_permissions": []
     }
@@ -1308,6 +1409,24 @@
         "is_staff": false,
         "is_active": true,
         "date_joined": "2021-03-29T10:36:12.072Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+        "password": "",
+        "last_login": "2021-04-19T10:45:56.807Z",
+        "is_superuser": false,
+        "username": "egomez",
+        "first_name": "Edward",
+        "last_name": "Gomez",
+        "email": "egomez@lco.global",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2021-04-16T13:10:56.719Z",
         "groups": [],
         "user_permissions": []
     }
