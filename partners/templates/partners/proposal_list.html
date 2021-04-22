@@ -11,6 +11,9 @@
    <div class="buttons is-centered">
       <a class="button is-large gold-bg" href="{% url 'apply' %}">Apply to become a partner</a>
     </div>
+    <p>Deadline for applications is <strong>{{activecall.deadline|date:"d M Y H:i T"}}</strong><br/>
+      For more information about apply, <a href="{{activecall.call}}">please see our Call for Proposals</a>.
+    </p>
     {% else%}
     <p>We are not currently accepting applications for partners. Please view the <a href="https://lco.global/education/partners/">Global Sky Partners web pages</a> for more details.</p>
 {% endif %}

@@ -91,6 +91,13 @@ class Partner(models.Model):
     region = models.ManyToManyField(Region,blank=True)
     program = models.ManyToManyField(ProgramType, blank=True)
     pi = models.ManyToManyField(User, blank=True, through='Membership')
+
+    def is_pending(self):
+        if self.proposal_code:
+            return False
+        else:
+            return True
+
     def __str__(self):
         if self.active:
             state = f"({self.proposal_code})"

@@ -1,11 +1,53 @@
 {% extends 'base.html' %}
 
 {% block title_head %}Partner Application{% endblock %}
-{% block title %}Apply{% endblock %}
+{% block title %}Apply to {{activecall.year}}{% endblock %}
+
+{% block script-content %}
+<script>
+  $( document ).ready(function() {
+    if ($("input[name='new_or_old']:checked").length > 0){
+      $('.proposalform').show();
+      if ($("input[name='new_or_old']:checked").val() == 'extend') {
+        console.log('extend')
+        $('#partner_list').show()
+        $('#newpartner').hide()
+      } else {
+        console.log('new')
+        $('#partner_list').hide()
+        $('#newpartner').show()
+      }
+    } else {
+      $('.proposalform').hide();
+    }
+    $("input[name='new_or_old']").change(function(){
+        if ($(this).is(":checked")){
+            $('.proposalform').show()
+          }
+        if ($(this).val() == 'extend') {
+          console.log('extend')
+          $('#partner_list').show()
+          $('#newpartner').hide()
+        } else {
+          console.log('new')
+          $('#partner_list').hide()
+          $('#newpartner').show()
+        }
+    });
+  });
+</script>
+{% endblock %}
 
 {% block mainfull %}
 
 {% if activecall %}
+
+{% if editing %}
+<div class="notification">
+  Editing proposal
+</div>
+{% endif%}
+
 <form action="" method="post">
   {% csrf_token %}
 
@@ -17,30 +59,53 @@
   <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
 {% endif %}
 
-<div class="field">
-  <label class="label">{{form.title.label|capfirst}}</label>
-  <span class="has-text-danger">{{ form.title.errors.as_ul }}</span>
-  {{form.title}}
-</div>
-<div class="field">
-  <label class="label">{{form.summary.label|capfirst}}</label>
-  <span class="has-text-danger">{{ form.summary.errors.as_ul }}</span>
-  {{ form.summary}}
-</div>
 
-<div class="block">
-  Or select an existing project to extend
+{% if form.title_options.disabled %}
+
+  <input type="hidden" name="{{form.title_options.name}}" />
+
+{% else %}
+
+
+<div class="content">
+  <div class="title">Select existing or create a new project</div>
 </div>
 
 <div class="field">
-  <label class="label">{{form.title_options.label|capfirst}}</label>
-  <div class="select">
-      {{form.title_options}}
+  <div class="control is-size-5">
+    {{form.new_or_old}}
+  </div>
+</div>
+
+<div class="proposalform">
+  <div class="field" id="partner_list">
+    <label class="label">{{form.title_options.label|capfirst}}</label>
+    <div class="select">
+        {{form.title_options}}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="proposalform">
+
+<div id="newpartner">
+  <div class="field">
+    <label class="label">{{form.title.label|capfirst}}</label>
+    <span class="has-text-danger">{{ form.title.errors.as_ul }}</span>
+    {{form.title}}
+  </div>
+  <div class="field">
+    <label class="label">{{form.summary.label|capfirst}}</label>
+    <span class="has-text-danger">{{ form.summary.errors.as_ul }}</span>
+    <div class="control">
+    {{ form.summary}}
+    </div>
   </div>
 </div>
 
   {% for field in form %}
-  {% if field.name != 'title' and field.name != 'title_options' and field.name != 'summary'%}
+  {% if field.name != 'title' and field.name != 'title_options' and field.name != 'summary' and field.name != 'new_or_old'%}
   <div class="field">
     <label class="label">{{field.label|capfirst}}</label>
     <span class="has-text-danger">{{ field.errors.as_ul }}</span>
@@ -81,6 +146,7 @@
     <div class="control">
       <a class="button is-link is-light" href="{% url 'partners' %}">Exit</a>
     </div>
+  </div>
   </div>
 </form>
 

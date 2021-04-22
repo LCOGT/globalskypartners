@@ -60,8 +60,8 @@ class ProposalList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if Cohort.objects.filter(active_call=True):
-            context['activecall'] = True
+        if cohort := Cohort.objects.filter(active_call=True):
+            context['activecall'] = cohort[0]
         return context
 
 class ProposalDetail(LoginRequiredMixin, DetailView):
@@ -72,19 +72,23 @@ class ProposalDetail(LoginRequiredMixin, DetailView):
         form = ProposalForm(instance=context['object'], user=self.request.user)
         form.fields.pop('title')
         form.fields.pop('summary')
+        form.fields.pop('new_or_old')
+        form.fields.pop('title_options')
         context['proposal'] = form
         return context
 
 class ProposalCreate(LoginRequiredMixin, CreateView):
     form_class = ProposalForm
     template_name = 'partners/proposal_form.html'
-    success_url = reverse_lazy('proposals')
+
+    def get_success_url(self):
+        return reverse_lazy('proposal', kwargs={'pk':self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if Cohort.objects.get(active_call=True):
-            context['activecall'] = True
-        context['exclusions'] = ['title','title_options','summary','institution','time','size']
+        if cohort := Cohort.objects.get(active_call=True):
+            context['activecall'] = cohort
+        context['exclusions'] = ['title','title_options','summary','institution','time','size','new_or_old']
         return context
 
     def get_form_kwargs(self):
@@ -103,7 +107,9 @@ class ProposalEdit(LoginRequiredMixin, UpdateView):
     model = Proposal
     form_class = ProposalForm
     template_name = 'partners/proposal_form.html'
-    success_url = reverse_lazy('proposals')
+
+    def get_success_url(self):
+        return reverse_lazy('proposal', kwargs={'pk':self.object.pk})
 
     def get_form_kwargs(self):
         kwargs = super(ProposalEdit, self).get_form_kwargs()
@@ -113,10 +119,15 @@ class ProposalEdit(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['exclusions'] = ['title','title_options','summary','institution','time','size']
-        if Cohort.objects.get(active_call=True):
-            context['activecall'] = True
+        context['exclusions'] = ['title','title_options','summary','institution','time','size','new_or_old']
+        if cohort := Cohort.objects.get(active_call=True):
+            context['activecall'] = cohort
+        context['editing'] = True
         return context
+
+    def form_valid(self, form):
+        form.instance.partner = form.cleaned_data['partner']
+        return super().form_valid(form)
 
 class ProposalSubmit(LoginRequiredMixin, UpdateView):
     model = Proposal
