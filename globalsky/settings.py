@@ -83,7 +83,7 @@ DATABASES = {
         'HOST': os.environ.get('DB_HOST','postgres'),
         'NAME': os.environ.get('DB_NAME','db'),
         'USER': os.environ.get('DB_USER','postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD','postgres'),
+        'PASSWORD': os.environ.get('DB_PASS','postgres'),
         'OPTIONS': {
         },
     }
