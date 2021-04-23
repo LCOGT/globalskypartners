@@ -14,7 +14,12 @@
    <div class="column">
     <h1 class="red">500</h1>
     <p>Oops, we have a problem</p>
-    <a href="/" alt="home page" class="btn btn-primary">Return home <i class="far fa-home"></i></a>
+    <a href="{% url 'home' %}" alt="home page" class="button gold-bg">
+      <span class="icon">
+        <i class="far fa-home"></i>
+       </span>
+       <span>Site Home</span>
+     </a>
   </div>
 </div>
 {% endblock %}
