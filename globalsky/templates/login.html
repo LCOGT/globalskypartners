@@ -14,23 +14,11 @@
     <script src="{% static "js/auth.js" %}"  type="text/javascript" ></script>
     <script>
 
-    // $(document).ready(function(){
-    // 	$('#login-btn').on('click',function(){
-    // 	  login($('#username').val(), $('#password').val(), function(result){
-    // 	    if(result){
-    // 	      console.log('logged in')
-    // 	    }else{
-    // 	      console.log('Failed login')
-    // 	    }
-    //       $('#login-form').submit();
-    // 	  });
-    // 	});
-    // });
 </script>
 
   </head>
   <body>
-    <div class="columns is-vcentered">
+    <div class="columns is-vcentered loginbg">
       <div class="login column is-4 ">
         <section class="section">
           <div class="has-text-centered">
@@ -67,9 +55,37 @@
             <input class="button is-vcentered is-primary is-outlined" type="submit" value="Login" id="login-btn"/>
           </div>
         </form>
+        <p class="has-text-light">You may use your LCO Observation Portal credentials to log in. If you do not already have an account <a href="https://observe.lco.global/accounts/register">please register for one</a>.</p>
         </section>
       </div>
       <div class="interactive-bg column is-8">
+        <section class="hero is-fullheight">
+           <div class="hero-body">
+             <div class="container">
+               <div class="columns is-vcentered">
+                    <div class="column is-5 is-offset-1 landing-caption">
+                        <h1 class="title is-1 is-bold is-spaced">
+                            Global Sky Partners
+                        </h1>
+                        <h2 class="subtitle is-5 is-muted">
+                            Proposal submission, reporting and user administration.
+                        </h2>
+                        {% for call in activecall %}
+                        <p>We are currently taking applications for new Global Sky Partners.</p>
+                         <p><strong>Deadline: {{call.deadline|date:"d M Y H:i T"}}</strong>
+                        </p>
+                         {% endfor %}
+                    </div>
+                    <div class="column is-5">
+                        <figure class="image is-1by1">
+                          <img src="{% static 'img/gsp-logo.png' %}" />
+                        </figure>
+                    </div>
+
+                </div>
+           </div>
+         </div>
+       </section>
       </div>
     </div>
 

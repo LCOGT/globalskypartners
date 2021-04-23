@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title_head %}Server Error{% endblock %}
+{% block title %}Server Error{% endblock %}
+
+
+{% block mainfull %}
+<div class="columns">
+  <div class="column  is-one-third">
+    <figure class="image">
+      <img src="https://cdn.lco.global/mainstyle/img/500_character.jpg" alt="server error" class="img-fluid"/>
+    </figure>
+  </div>
+   <div class="column">
+    <h1 class="red">500</h1>
+    <p>Oops, we have a problem</p>
+    <a href="/" alt="home page" class="btn btn-primary">Return home <i class="far fa-home"></i></a>
+  </div>
+</div>
+{% endblock %}

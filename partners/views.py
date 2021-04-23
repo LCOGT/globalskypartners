@@ -2,12 +2,13 @@ from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
+from django.contrib.auth.views import LoginView
 
 from .models import Partner, Semester, Cohort, Proposal
 from .forms import ProposalForm
@@ -23,6 +24,11 @@ def home(request):
                                         'active_partners': Partner.objects.filter(active=True).count()
                                         })
 
+class LoginViewCustom(LoginView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['activecall'] = Cohort.objects.filter(active_call=True)
+        return context
 
 class PartnerList(ListView):
     model = Partner
@@ -64,8 +70,11 @@ class ProposalList(LoginRequiredMixin, ListView):
             context['activecall'] = cohort[0]
         return context
 
-class ProposalDetail(LoginRequiredMixin, DetailView):
+class ProposalDetail(LoginRequiredMixin, UserPassesTestMixin,  DetailView):
     model = Proposal
+    
+    def test_func(self):
+        return self.get_object().submitter == self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -103,10 +112,13 @@ class ProposalCreate(LoginRequiredMixin, CreateView):
         form.instance.status = 0 # Draft
         return super().form_valid(form)
 
-class ProposalEdit(LoginRequiredMixin, UpdateView):
+class ProposalEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Proposal
     form_class = ProposalForm
     template_name = 'partners/proposal_form.html'
+
+    def test_func(self):
+        return self.get_object().submitter == self.request.user
 
     def get_success_url(self):
         return reverse_lazy('proposal', kwargs={'pk':self.object.pk})
@@ -129,8 +141,11 @@ class ProposalEdit(LoginRequiredMixin, UpdateView):
         form.instance.partner = form.cleaned_data['partner']
         return super().form_valid(form)
 
-class ProposalSubmit(LoginRequiredMixin, UpdateView):
+class ProposalSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Proposal
+
+    def test_func(self):
+        return self.get_object().submitter == self.request.user
 
     def get(self, request, *args, **kwargs):
         obj = self.get_object()

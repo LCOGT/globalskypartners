@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title_head %}Page not found{% endblock %}
+{% block title %}Page not found{% endblock %}
+
+
+{% block mainfull %}
+<div class="columns">
+
+  <div class="column is-one-third">
+    <figure class="image">
+    <img src="https://cdn.lco.global/mainstyle/img/404_character.jpg" alt="Page not found" class="img-fluid"/>
+    </figure>
+  </div>
+  <div class="column">
+   <h1 class="red">404</h1>
+   <p>Sorry, this page was not found</p>
+   <a href="/" alt="home page" class="btn btn-primary">Return home <i class="far fa-home"></i></a>
+ </div>
+</div>
+{% endblock %}
