@@ -18,31 +18,35 @@
        <div class="tile is-parent">
          <article class="tile is-child notification is-info">
            <p id="total-hours" class="title"></p>
-           <p class="subtitle">Time Allocated</p>
+           <p class="subtitle">Time Allocated to your projects</p>
          </article>
        </div>
        <div class="tile is-parent">
          <article class="tile is-child notification is-danger">
            <p id="used-hours" class="title"></p>
-           <p class="subtitle">Time Used</p>
+           <p class="subtitle">Time Used by your projects</p>
          </article>
        </div>
      </div>
    </div>
  </div>
 
-<table class="table">
+<table class="table is-fullwidth">
 <tr>
   <th>Partner</th>
   <th>PI</th>
-  <th>Time</th>
+  <th></th>
 </tr>
 
 {% for object in object_list %}
   <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
     <td><a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a></td>
-    <td>{% for pi in object.pi.all %}{{pi.first_name}} {{pi.last_name}}{% endfor %}</td>
+    <td {% if request.user not in object.pi.all %} colspan=2{%endif%}>
+      {% for pi in object.pi.all %}{{pi.first_name}} {{pi.last_name}}{% endfor %}
+    </td>
+    {% if request.user in object.pi.all %}
     <td id="{{object.proposal_code}}" style="width:20%;"></td>
+    {% endif %}
   </tr>
 {% endfor %}
 </table>

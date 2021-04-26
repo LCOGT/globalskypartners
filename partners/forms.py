@@ -48,10 +48,8 @@ class ProposalForm(forms.ModelForm):
         if self.partner:
             if self.partner.is_pending():
                 self.initial['new_or_old'] = 'create'
-                print('create')
             else:
                 self.initial['new_or_old'] = 'extend'
-                print('extend')
         self.fields['title'].widget.attrs.update({'class': 'input'})
         self.fields['summary'].widget.attrs.update({'class': 'textarea'})
         self.fields['people'].widget.attrs.update({'class': 'textarea'})
@@ -63,14 +61,15 @@ class ProposalForm(forms.ModelForm):
         self.fields['time_reason'].widget.attrs.update({'class': 'textarea'})
         self.fields['comments'].widget.attrs.update({'class': 'textarea'})
 
+        if self.partner:
+            self.initial['title_options'] = self.partner.id
+            self.initial['title'] = self.partner.name
+            self.initial['summary'] = self.partner.summary
+
         if projects := Partner.objects.filter(pi=self.user):
             choices = [(u'', u'-- Select Project --'),]
             choices.extend([ (p.id, p.name) for p in projects])
             self.fields['title_options'].choices = choices
-            if self.partner:
-                self.initial['title_options'] = self.partner.id
-                self.initial['title'] = self.partner.name
-                self.initial['summary'] = self.partner.summary
         else:
             self.fields['title_options'].choices = [(u'', u'No projects available'),]
             self.fields['title_options'].disabled = True

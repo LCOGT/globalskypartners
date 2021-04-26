@@ -9,6 +9,8 @@
 
 <p>{{object.summary}}</p>
 
+{% if request.user in object.pi.all %}
+
 <div class="columns">
 
   <div class="column">
@@ -58,6 +60,7 @@
     </div>
   </div>
 </div>
+{% endif %}
  {% endblock %}
 
  {% block script-content %}
