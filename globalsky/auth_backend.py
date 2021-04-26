@@ -39,27 +39,25 @@ def lco_authenticate(request, username, password):
         messages.error(request, mark_safe("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account"))
         return None
     profile, msg = get_profile(token)
-    proposals, msg = get_proposals(token, username)
-    if token and proposals:
-        username = profile['username']
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            # Create a new user. There's no need to set a password
-            # because Valhalla auth will always be used.
-            user = User(username=username)
-        user.email = profile['email']
-        user.first_name = profile['first_name']
-        user.last_name = profile['last_name']
-        user.save()
+    username = profile['username']
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        # Create a new user. There's no need to set a password
+        # because Valhalla auth will always be used.
+        user = User(username=username)
+    user.email = profile['email']
+    user.first_name = profile['first_name']
+    user.last_name = profile['last_name']
+    user.save()
+
+    if proposals := get_proposals(token, username):
         for partner in proposals:
             new, obj = Membership.objects.get_or_create(user=user, partner=partner)
         # Finally add these tokens as session variables
-        request.session['token'] = token
+    request.session['token'] = token
 
-        return user
-
-    return None
+    return user
 
 
 def api_auth(url, username, password):
@@ -108,7 +106,7 @@ def get_proposals(token, email):
     url = settings.PROPOSALS_URL
     results, msg = parse_api_response(url, token)
     proposals = check_proposal_membership(results['results'], email)
-    return proposals, msg
+    return proposals
 
 def get_profile(token):
     url = settings.PROFILE_URL

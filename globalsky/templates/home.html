@@ -36,6 +36,8 @@
                <a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a>
                <span id="{{object.proposal_code}}" style="width:20%;"></span>
             </div>
+           {% empty %}
+           <div class="notification is-warning">You are not PI of any current Global Sky Partners</div>
            {% endfor %}
            </div>
        </div>
