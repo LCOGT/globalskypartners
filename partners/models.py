@@ -134,3 +134,7 @@ class Proposal(models.Model):
 
     def __str__(self):
         return f"{self.partner} {self.cohort}"
+
+    @property
+    def title(self):
+        return self.partner.name

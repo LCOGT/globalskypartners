@@ -5,6 +5,7 @@
 
 {% block script-content %}
 <script>
+{% if not form.title_options.is_hidden %}
   $( document ).ready(function() {
     if ($("input[name='new_or_old']:checked").length > 0){
       $('.proposalform').show();
@@ -35,11 +36,11 @@
         }
     });
   });
+  {% endif %}
 </script>
 {% endblock %}
 
 {% block mainfull %}
-
 {% if activecall %}
 
 <div class="content">
@@ -47,7 +48,7 @@
 </div>
 
 {% if editing %}
-<div class="notification">
+<div class="notification gold-bg">
   Editing proposal
 </div>
 {% endif%}
@@ -59,17 +60,19 @@
       {{ hidden }}
   {% endfor %}
 
+{{form.errors}}
+
 {% if form.errors %}
   <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
 {% endif %}
 
 
-{% if form.title_options.disabled %}
+{% if form.title_options.is_hidden %}
 
   <input type="hidden" name="{{form.title_options.name}}" />
+  <input type="hidden" name="{{form.new_or_old.name}}" value="{{form.new_or_old.value}}"/>
 
 {% else %}
-
 
 <div class="content">
   <div class="title">Is this for an existing or a new project?</div>

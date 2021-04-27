@@ -72,7 +72,7 @@ class ProposalList(LoginRequiredMixin, ListView):
 
 class ProposalDetail(LoginRequiredMixin, UserPassesTestMixin,  DetailView):
     model = Proposal
-    
+
     def test_func(self):
         return self.get_object().submitter == self.request.user
 

@@ -13,14 +13,12 @@ class ProposalForm(forms.ModelForm):
         model = Proposal
         fields = ['people','institution','description','use','experience','size','support','help','time','time_reason','comments']
 
-
     def clean(self):
-        data = super().clean()
-        title = data.get("title")
-        title_options = data.get("title_options")
-        summary = data.get("summary")
-        editing = data.get('new_or_old')
-
+        cleaned_data = super().clean()
+        title = cleaned_data.get("title")
+        title_options = cleaned_data.get("title_options")
+        summary = cleaned_data.get("summary")
+        editing = cleaned_data.get('new_or_old')
         if not title and not title_options:
             raise ValidationError("Either select existing project or enter a title")
         else:
@@ -32,10 +30,10 @@ class ProposalForm(forms.ModelForm):
                 else:
                     partner = Partner(name=title, summary=summary)
                     partner.save()
-
-            data['partner'] = partner
-            data['submitter'] = self.user
-        return data
+            cleaned_data['partner'] = partner
+            cleaned_data['submitter'] = self.user
+        cleaned_data['title_options'] = ''
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -71,5 +69,6 @@ class ProposalForm(forms.ModelForm):
             choices.extend([ (p.id, p.name) for p in projects])
             self.fields['title_options'].choices = choices
         else:
-            self.fields['title_options'].choices = [(u'', u'No projects available'),]
-            self.fields['title_options'].disabled = True
+            self.fields['title_options'].label = 'No projects available'
+            self.fields['title_options'].widget = forms.HiddenInput()
+            self.fields['new_or_old'].widget = forms.HiddenInput()
