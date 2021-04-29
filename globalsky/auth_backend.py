@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 import requests
 import logging
 import itertools
+import sys
 
 from django.contrib.auth.models import User
 
@@ -44,7 +45,7 @@ def lco_authenticate(request, username, password):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         # Create a new user. There's no need to set a password
-        # because Valhalla auth will always be used.
+        # because Observation Portal auth will always be used.
         user = User(username=username)
     user.email = profile['email']
     user.first_name = profile['first_name']
@@ -54,11 +55,11 @@ def lco_authenticate(request, username, password):
     if proposals := get_proposals(token, username):
         for partner in proposals:
             new, obj = Membership.objects.get_or_create(user=user, partner=partner)
-        # Finally add these tokens as session variables
-    request.session['token'] = token
+    if 'test' not in sys.argv:
+        # Finally add these tokens as session variables except if test
+        request.session['token'] = token
 
     return user
-
 
 def api_auth(url, username, password):
     '''

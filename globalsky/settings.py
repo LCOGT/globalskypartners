@@ -163,6 +163,8 @@ LOGGING = {
     },
 }
 
+USE_FIREFOXDRIVER = False
+
 if not BASE_DIR.name.startswith('/app'):
     try:
         from .local_settings import *

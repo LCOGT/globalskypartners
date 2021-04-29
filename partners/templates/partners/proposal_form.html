@@ -60,8 +60,6 @@
       {{ hidden }}
   {% endfor %}
 
-{{form.errors}}
-
 {% if form.errors %}
   <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
 {% endif %}

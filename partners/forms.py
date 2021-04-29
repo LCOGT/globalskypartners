@@ -43,11 +43,9 @@ class ProposalForm(forms.ModelForm):
             self.partner = None
 
         super().__init__(*args, **kwargs)
-        if self.partner:
-            if self.partner.is_pending():
-                self.initial['new_or_old'] = 'create'
-            else:
-                self.initial['new_or_old'] = 'extend'
+        self.initial['new_or_old'] = 'create'
+        if self.partner and not self.partner.is_pending():
+            self.initial['new_or_old'] = 'extend'
         self.fields['title'].widget.attrs.update({'class': 'input'})
         self.fields['summary'].widget.attrs.update({'class': 'textarea'})
         self.fields['people'].widget.attrs.update({'class': 'textarea'})
