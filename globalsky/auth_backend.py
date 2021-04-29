@@ -103,10 +103,10 @@ def parse_api_response(url, token):
         return False, _("Please check your login details or <a href='https://observe.lco.global/accounts/register/'>register</a> for LCO Observation Portal account")
 
 
-def get_proposals(token, email):
+def get_proposals(token, username):
     url = settings.PROPOSALS_URL
     results, msg = parse_api_response(url, token)
-    proposals = check_proposal_membership(results['results'], email)
+    proposals = check_proposal_membership(results['results'], username)
     return proposals
 
 def get_profile(token):
@@ -114,9 +114,9 @@ def get_profile(token):
     results, msg = parse_api_response(url, token)
     return results, msg
 
-def check_proposal_membership(proposals, email):
+def check_proposal_membership(proposals, username):
     # Check user has a proposal we authorize
-    pis = [[proposal['id'] for pi in proposal['pis'] if pi['email'] == email] for proposal in proposals ]
+    pis = [[proposal['id'] for pi in proposal['pis'] if pi['username'] == username] for proposal in proposals ]
     my_pis = list(itertools.chain(*pis))
     my_proposals = Partner.objects.filter(proposal_code__in=my_pis)
     if my_proposals:
