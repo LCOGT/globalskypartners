@@ -1,7 +1,15 @@
-from django.db import models, transaction
+import io
 
+from django.db import models, transaction
 from django.contrib.auth.models import User
+from django.contrib.staticfiles import finders
+from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.conf import settings
+from weasyprint import HTML, CSS
+import markdown
+
 
 REGION_CHOICES = (
     (0, 'Online Only'),
@@ -138,3 +146,55 @@ class Proposal(models.Model):
     @property
     def title(self):
         return self.partner.name
+
+    def get_all_fields(self):
+        """Returns a list of all field names on the instance."""
+        fields = []
+        for f in self._meta.get_fields():
+
+            fname = f.name
+            # resolve picklists/choices, with get_xyz_display() function
+            get_choice = 'get_'+fname+'_display'
+            if hasattr(self, get_choice):
+                value = getattr(self, get_choice)()
+            else:
+                try:
+                    value = getattr(self, fname)
+                except AttributeError:
+                    value = None
+
+            # only display fields with values and skip some fields entirely
+            if f.editable and value and f.name not in ('id', 'status', 'partner', 'cohort','submitter') :
+                if f.name in ('time','size'):
+                    val = value
+                else:
+                    val = markdown.markdown(value)
+                fields.append(
+                  {
+                   'label':f.verbose_name,
+                   'name':f.name,
+                   'value':val,
+                  }
+                )
+        return fields
+
+    def generate_pdf(self, no_trans=False, path=''):
+        context = {
+            'id' : f"EPO-{self.cohort.year}-{self.id}",
+            'object': self,
+            'pdf': True,
+            'no_trans' : no_trans,
+            'media_root' : settings.MEDIA_ROOT,
+            'proposal' : self.get_all_fields()
+        }
+        with open(finders.find('css/print.css')) as f:
+            css = CSS(string=f.read())
+        html_string = render_to_string('partners/proposal_print.html', context)
+        html = HTML(string=html_string, base_url="https://partners.lco.global")
+        # filepath = Path(path) / filename
+        fileobj = io.BytesIO()
+        html.write_pdf(fileobj, stylesheets=[css])
+        # return filepath
+        pdf = fileobj.getvalue()
+        fileobj.close()
+        return pdf

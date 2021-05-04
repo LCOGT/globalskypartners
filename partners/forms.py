@@ -3,6 +3,19 @@ from django.core.exceptions import ValidationError
 
 from .models import Proposal, Partner
 
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name','summary']
+        help_texts = {
+            'summary': 'Max 600 chars',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'input'})
+        self.fields['summary'].widget.attrs.update({'class': 'textarea','maxlength':'600'})
+
 class ProposalForm(forms.ModelForm):
     CHOICES = (('extend', 'Extend existing project'),('create','Create a new proposal'))
     title = forms.CharField(label="project title", required=False)

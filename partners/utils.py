@@ -11,7 +11,7 @@ from partners.models import Proposal
 class MyModelView(DetailView):
     # vanilla Django DetailView
     model = Proposal
-    template_name = 'proposal_print.html'
+    template_name = 'partners/proposal_print.html'
 
 class CustomWeasyTemplateResponse(WeasyTemplateResponse):
     # customized response class to change the default URL fetcher

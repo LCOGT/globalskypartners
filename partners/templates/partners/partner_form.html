@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title_head %}Edit Partner Details{% endblock %}
+{% block title %}Edit Partner Details{% endblock %}
+
+
+{% block mainfull %}
+
+<form action="" method="post">
+  {% csrf_token %}
+
+  {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+  {% endfor %}
+
+{% if form.errors %}
+  <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
+{% endif %}
+
+<div class="proposalform">
+
+<div id="partner">
+    {% for field in form %}
+    <div class="field">
+      <label class="label">{{field.label|capfirst}}</label>
+      <span class="has-text-danger">{{ field.errors.as_ul }}</span>
+      <div class="control">
+      {{field}}
+    </div>
+    {% if field.help_text %}
+    <p class="help has-text-grey">{{field.help_text}}</p>
+    {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <input type="submit" class="button is-link" value="Save" />
+    </div>
+    <div class="control">
+      <a class="button is-link is-light" href="{% url 'proposals' %}">Exit</a>
+    </div>
+  </div>
+  </div>
+</form>
+
+{% endblock %}

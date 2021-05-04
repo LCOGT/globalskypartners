@@ -3,15 +3,16 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.views import LoginView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.list import ListView
 
 from .models import Partner, Semester, Cohort, Proposal
-from .forms import ProposalForm
+from .forms import ProposalForm, PartnerForm
 
 @login_required
 def home(request):
@@ -55,6 +56,8 @@ class PartnerDetail(DetailView):
         now = datetime.now()
         semester = Semester.objects.get(start__lte=now, end__gte=now)
         context['datestamp'] = semester.start.isoformat(' ')[:19]
+        if self.request.user in self.object.pi.all():
+            context['owner'] = True
         return context
 
 class ProposalList(LoginRequiredMixin, ListView):
@@ -153,3 +156,45 @@ class ProposalSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         obj.save()
         messages.success(request, 'Proposal "{}" submitted'.format(obj.partner.name))
         return redirect(reverse_lazy('partners'))
+
+class PartnerEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Partner
+    form_class = PartnerForm
+    template_name = 'partners/partner_form.html'
+    slug_field = 'proposal_code'
+    slug_url_kwarg = 'proposal_code'
+
+    def test_func(self):
+        return self.request.user in self.get_object().pi.all()
+
+    def get_success_url(self):
+        return reverse_lazy('partner', kwargs={'proposal_code':self.object.proposal_code})
+
+class ProposalPDFView(LoginRequiredMixin, UserPassesTestMixin,  DetailView):
+    model = Proposal
+
+    def test_func(self):
+        return self.get_object().submitter == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = ProposalForm(instance=context['object'], user=self.request.user)
+        form.fields.pop('title')
+        form.fields.pop('summary')
+        form.fields.pop('new_or_old')
+        form.fields.pop('title_options')
+        context['proposal'] = form
+        return context
+
+    def render_to_response(self, context, **kwargs):
+        context['pdf'] = True
+        pdf_response = HttpResponse(content_type='application/pdf')
+        # response = super().render_to_response(context, **kwargs)
+        # print(response)
+        # response.render()
+        pdf = self.object.generate_pdf()
+
+        pdf_response.write(pdf)
+        filename = f"proposal-{self.object.id}.pdf"
+        pdf_response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return pdf_response

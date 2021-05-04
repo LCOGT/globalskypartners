@@ -10,11 +10,9 @@
     if ($("input[name='new_or_old']:checked").length > 0){
       $('.proposalform').show();
       if ($("input[name='new_or_old']:checked").val() == 'extend') {
-        console.log('extend')
         $('#partner_list').show()
         $('#newpartner').hide()
       } else {
-        console.log('new')
         $('#partner_list').hide()
         $('#newpartner').show()
       }
@@ -26,11 +24,9 @@
             $('.proposalform').show()
           }
         if ($(this).val() == 'extend') {
-          console.log('extend')
           $('#partner_list').show()
           $('#newpartner').hide()
         } else {
-          console.log('new')
           $('#partner_list').hide()
           $('#newpartner').show()
         }
@@ -141,6 +137,9 @@
       {{ field }}
       {% endif %}
     </div>
+    {% if field.help_text %}
+    <p class="help has-text-grey">{{field.help_text}}</p>
+    {% endif %}
   </div>
   {% endif %}
   {% endfor %}

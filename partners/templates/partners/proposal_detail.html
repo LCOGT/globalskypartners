@@ -29,7 +29,7 @@
   {% if field.name == 'size' %}
   <p>{{object.get_size_display}}</p>
   {% else %}
-  <p>{{field.value}}</p>
+  <p>{{field.value|linebreaksbr}}</p>
   {% endif %}
   {% endfor %}
 </div>

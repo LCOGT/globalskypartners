@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>{{object.get_status_display}} Proposal</title>
+
+        <link href="{% static 'css/print.css' %}" rel="stylesheet"/>
+
+        <!-- fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@700&family=Libre+Franklin:ital,wght@0,400;0,700;1,500&display=swap" rel="stylesheet">
+
+    </head>
+    <body>
+      <section class="section">
+
+          <div class="title">
+            <p class="small">Global Sky Partner Application - {{id}}</p>
+            <h2>{{object.partner.name}}</h2>
+            <p>{{object.partner.summary}}</p>
+          </div>
+          <div class="content">
+
+            {% for field in proposal %}
+            <p>
+            <strong>{{field.label|title}}</strong>{% if field.name == 'size' or field.name == 'time'%}&nbsp;{% else %}<br/>{% endif %}
+            {{field.value|safe}} {% if field.name == 'time' %} hours {%endif %}
+          </p>
+            {% endfor %}
+          </div>
+      </section>
+
+
+</body>
+</html>

@@ -28,8 +28,9 @@ Your proposals
 <table class="table is-fullwidth is-striped">
 <tr>
   <th class="has-text-left">Title</th>
-  <th>Year</th>
-  <th>Status</th>
+  <th class="has-text-centered">Year</th>
+  <th class="has-text-centered">Status</th>
+  <th>Actions</th>
 </tr>
 
 {% for object in object_list %}
@@ -40,6 +41,15 @@ Your proposals
       <span class="{% if object.status == 0 %}gold-bg{% elif object.status == 1 %}blue-bg white{%endif%} py-2 px-2" >
       {{object.get_status_display}}
       </span>
+    </td>
+    <td>
+      {% if object.status == 1 %}
+      <a href="{% url 'proposal-pdf' object.id %}" class="button" title="Download PDF of proposal">
+      <span class="icon">
+        <i class="far fa-file-pdf"></i>
+      </span>
+      </a>
+      {% endif %}
     </td>
   </tr>
 {% endfor %}

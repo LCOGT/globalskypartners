@@ -1,0 +1,41 @@
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0; }
+
+body {
+  background-color: #fff;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 14px;
+  color: #000;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Heebo', sans-serif;
+  line-height: 1.25em;
+  color:#090a0f;
+}
+
+.title {
+  text-align: center;
+  border:1px solid #555;
+}
+
+.title h2, .title h3, .title p {
+  margin-bottom:0.2em;
+  margin-top:0.2;
+}
+
+.title p {
+  font-size: 95%;
+}
+
+p.small {
+  font-size:85%;
+  color:#555;
+}

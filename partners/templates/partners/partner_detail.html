@@ -9,6 +9,10 @@
 
 <p>{{object.summary}}</p>
 
+{% if owner %}
+<p><a href="{% url 'partner-edit' object.proposal_code %}">Edit details</a></p>
+{% endif %}
+
 {% if request.user in object.pi.all %}
 
 <div class="columns">
