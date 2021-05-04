@@ -1,0 +1,18 @@
+Hello {{first_name}},
+
+Thanks for submitting your proposal:
+
+{{title}},
+
+to the Global Sky Partner application call for {{year}}. You can view your proposal here:
+
+https://partners.lco.global{% url 'proposal' id %}
+
+Our independent review committee will be evaluating all proposals between {{startdate|date:"M j, Y"}} and {{date|date:"M j, Y"}}. You will notified soon after this with their decision.
+
+Warm regards,
+
+Edward Gomez
+--
+Education Director and director of Global Sky Partners
+Las Cumbres Observatory

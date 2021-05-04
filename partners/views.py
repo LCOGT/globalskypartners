@@ -155,6 +155,7 @@ class ProposalSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         obj.status = 1 #Submitted
         obj.save()
         messages.success(request, 'Proposal "{}" submitted'.format(obj.partner.name))
+        obj.email_conf()
         return redirect(reverse_lazy('partners'))
 
 class PartnerEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

@@ -1,5 +1,7 @@
 import io
+from datetime import timedelta
 
+from django.core.mail import send_mail
 from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.contrib.staticfiles import finders
@@ -198,3 +200,21 @@ class Proposal(models.Model):
         pdf = fileobj.getvalue()
         fileobj.close()
         return pdf
+
+    def email_conf(self):
+        review_end = self.cohort.deadline + timedelta(weeks=3)
+        params = {
+                'title' : self.partner.name,
+                'first_name' : self.submitter.first_name,
+                'year' : self.cohort.year,
+                'date' : review_end,
+                'startdate' : self.cohort.deadline,
+                'id'   : self.id
+                }
+        msg = render_to_string('partners/email_submission.txt', params)
+        send_mail(
+                f'Global Sky Partners submission {self.cohort.year}',
+                msg,
+                'portal@lco.global',
+                [self.submitter.email],
+            )
