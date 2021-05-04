@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 
 RUN apk --no-cache add libffi libpng postgresql-client postgresql-libs zlib \
-        && apk --no-cache add --virtual .build-deps gcc libffi-dev make musl-dev postgresql-dev g++ \
+        && apk --no-cache add --virtual .build-deps gcc libffi-dev make musl-dev postgresql-dev libjpeg-turbo-dev libpng-dev zlib-dev g++ \
         && pip --no-cache-dir install -r requirements.txt \
         && apk --no-cache del .build-deps
 
