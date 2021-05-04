@@ -8,3 +8,5 @@ psycopg2==2.8.6
 requests==2.25.1
 gevent==20.12.1
 gunicorn[gevent]==20.0.4
+WeasyPrint==52.5
+django-weasyprint=1.1.0
