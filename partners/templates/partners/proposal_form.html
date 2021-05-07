@@ -102,6 +102,9 @@
     <div class="control">
     {{ form.summary}}
     </div>
+    {% if form.summary.help_text %}
+    <p class="help has-text-grey">{{form.summary.help_text}}</p>
+    {% endif %}
   </div>
 </div>
 

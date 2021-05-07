@@ -58,9 +58,9 @@ class TestAccess(FunctionalTest):
     @patch('globalsky.auth_backend.lco_authenticate')
     def test_create_proposal(self, mock_login):
         self.user_login()
-        link = self.browser.find_element_by_partial_link_text('apply')
+        link = self.browser.find_element_by_partial_link_text('Apply')
         with self.wait_for_page_load(timeout=20):
             link.click()
         actual_url = self.browser.current_url
-        target_url = "{0}{1}".format(self.live_server_url, '/partners/proposals/')
+        target_url = "{0}{1}".format(self.live_server_url, '/partners/apply/')
         self.assertEqual(actual_url, target_url)

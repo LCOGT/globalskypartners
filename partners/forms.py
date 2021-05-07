@@ -19,7 +19,7 @@ class PartnerForm(forms.ModelForm):
 class ProposalForm(forms.ModelForm):
     CHOICES = (('extend', 'Extend existing project'),('create','Create a new proposal'))
     title = forms.CharField(label="project title", required=False)
-    summary = forms.CharField(max_length=600, label="summary", required=False, widget=forms.Textarea)
+    summary = forms.CharField(max_length=600, label="summary", required=False, widget=forms.Textarea, help_text='Max 600 chars')
     title_options = forms.ChoiceField(label="extend existing project", required=False)
     new_or_old = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
     class Meta:
