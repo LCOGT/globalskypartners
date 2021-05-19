@@ -1,4 +1,5 @@
 import io
+from pathlib import Path
 from datetime import timedelta
 
 from django.core.mail import send_mail
@@ -63,6 +64,7 @@ class Cohort(models.Model):
     active_call = models.BooleanField(default=False)
     deadline = models.DateTimeField(default=timezone.now)
     call = models.URLField(blank=True)
+    proposalfile = models.FileField(upload_to='proposals', blank=True)
 
     def __str__(self):
         if self.active_call:
@@ -180,7 +182,7 @@ class Proposal(models.Model):
                 )
         return fields
 
-    def generate_pdf(self, no_trans=False, path=''):
+    def generate_pdf(self, no_trans=False):
         context = {
             'id' : f"EPO-{self.cohort.year}-{self.id}",
             'object': self,
@@ -201,6 +203,13 @@ class Proposal(models.Model):
         fileobj.close()
         return pdf
 
+    def save_pdf(self, path=''):
+        name = f"EPO-{self.cohort.year}-{self.id}.pdf"
+        filepath = Path(path) / name
+        fileobj = self.generate_pdf()
+        with open(filepath, 'w') as fp:
+            fp.write(fileobj)
+
     def email_conf(self):
         review_end = self.cohort.deadline + timedelta(weeks=3)
         params = {
@@ -217,4 +226,43 @@ class Proposal(models.Model):
                 msg,
                 'portal@lco.global',
                 [self.submitter.email],
+            )
+
+class Review(models.Model):
+    REJECTED = 0
+    ACCEPTED = 1
+    QUESTIONS = 2
+    VERDICT = (
+        (REJECTED, 'Rejected'),
+        (ACCEPTED, 'Accepted'),
+        (QUESTIONS, 'Further Questions'),
+    )
+    proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
+    verdict = models.PositiveSmallIntegerField(choices=VERDICT, default=0)
+    hours = models.FloatField(help_text='hours awarded', default=0.0)
+    emailed = models.DateTimeField(blank=True, null=True)
+    comments = models.TextField(blank=True)
+
+    def __str__(self):
+        if self.verdict in [0,1]:
+            verb = 'was'
+        else:
+            verb = 'has'
+        return f'{self.proposal.partner.name} in {self.proposal.cohort.year} {verb} {self.verdict}'
+
+    def email_verdict(self):
+        params = {
+                'title' : self.proposal.partner.name,
+                'first_name' : self.proposal.submitter.first_name,
+                'year' : self.proposal.cohort.year,
+                'hours'   : self.hours,
+                'comments' : self.comments,
+                'verdict' : self.verdict
+                }
+        msg = render_to_string('partners/email_verdict.txt', params)
+        send_mail(
+                f'Global Sky Partners panel verdict {self.proposal.partner.name}',
+                msg,
+                'portal@lco.global',
+                [self.proposal.submitter.email],
             )

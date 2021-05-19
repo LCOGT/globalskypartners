@@ -86,7 +86,7 @@ function time_allocation_all(semester) {
 function user_requests(proposal) {
   var d = new Date();
   d.setDate(d.getDate() - 7);
-  var datestamp = d.toISOString().substr(0,19).replace('T',' ');
+  var datestamp = d.toISOString().substr(0,19).replace('T','+');
 
   return new Promise((resolve, reject) => {
   $.ajax({

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import ast
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(4@e9r2izrr-(2c9-c#9)@z*hmv+5_m(baz#dusj!h_*up&r_k'
+SECRET_KEY = os.getenv('SECRET_KEY','')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -74,6 +75,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'globalsky.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -141,10 +143,25 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "globalsky", "static"),
 ]
 
+# Use AWS S3 for Media Files
+if ast.literal_eval(os.environ.get('USE_S3', 'False')):
+    # aws settings
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.getenv('AWS_DEFAULT_REGION', 'us-west-2')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://s3-{AWS_S3_REGION_NAME}.amazonaws.com/{AWS_STORAGE_BUCKET_NAME}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = '.storage_backends.PublicMediaStorage'
+
 EMAIL_USE_TLS       = True
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          =  587
-EMAIL_FROM  = 'Serol <portal@lco.global>'
+EMAIL_FROM  = 'Las Cumbres Observatory <portal@lco.global>'
 EMAIL_HOST_USER = os.environ.get('EMAIL_USERNAME', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 

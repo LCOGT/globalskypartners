@@ -1,7 +1,7 @@
 asgiref==3.3.1
 beautifulsoup4
-Django==3.1.5
-django-countries==7.0
+Django>3.2,<4
+django-countries==7.2.1
 #plotly==4.14.3
 #pandas==1.2.2
 psycopg2==2.8.6

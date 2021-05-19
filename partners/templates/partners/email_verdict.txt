@@ -1,0 +1,20 @@
+Dear {{first_name}},
+
+The independent Time Allocation Committee (TAC) has completed its review of all  {{year}} Global Sky Partners proposals.
+
+{% if verdict %}I am delighted to inform you {% else %}Unfortunately {%endif%}your proposal, {{title|safe}}, was {% if not verdict %}not {% endif%}selected as a {{year}} Global Sky Partner.
+
+{% if verdict %}You have been awarded {{hours}} hours of 0.4-meter, queue scheduled time.
+{% elif verdict == 2 %}Before making a decision the TAC have requested more information.{% endif %}
+
+{% if comments %}
+Comments from the TAC:
+{{comments}}
+{% endif %}
+
+Warm regards,
+
+Edward Gomez
+--
+Education Director and director of Global Sky Partners
+Las Cumbres Observatory
