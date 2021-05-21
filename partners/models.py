@@ -2,14 +2,14 @@ import io
 from pathlib import Path
 from datetime import timedelta
 
-from django.core.mail import send_mail
-from django.db import models, transaction
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.staticfiles import finders
+from django.core.mail import send_mail
+from django.db import models, transaction
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.conf import settings
 from weasyprint import HTML, CSS
 import markdown
 
@@ -207,8 +207,9 @@ class Proposal(models.Model):
         name = f"EPO-{self.cohort.year}-{self.id}.pdf"
         filepath = Path(path) / name
         fileobj = self.generate_pdf()
-        with open(filepath, 'w') as fp:
+        with open(filepath, 'wb') as fp:
             fp.write(fileobj)
+        return filepath
 
     def email_conf(self):
         review_end = self.cohort.deadline + timedelta(weeks=3)

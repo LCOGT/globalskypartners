@@ -1,13 +1,22 @@
 from datetime import datetime
 
 from django.contrib import admin, messages
+from django.utils.html import format_html
 
 from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal, Membership, Review
 
 
 class ProposalAdmin(admin.ModelAdmin):
+    @admin.display(description='Decision')
+    def colour_status(self,obj):
+        colours = {3:'C93419',2:'34C919',1:'FFC300',0:'AAAAAA'}
+        return format_html(
+            '<span style="color: #{}">{}</span>',
+            colours.get(obj.status,'000000'),
+            obj.get_status_display()
+        )
     list_filter = ['status','cohort']
-    list_display = ['title','submitter','status','cohort']
+    list_display = ['title','submitter','colour_status','cohort']
     order_by = ['title','cohort']
 
 class PartnerAdmin(admin.ModelAdmin):
@@ -46,7 +55,21 @@ class ReviewAdmin(admin.ModelAdmin):
     def partner_name(self, obj):
         return obj.proposal.partner.name
 
-    list_display = ['partner_name','verdict','emailed']
+    @admin.display()
+    def cohort(self, obj):
+        return obj.proposal.cohort
+
+    @admin.display(description='Decision')
+    def colour_verdict(self,obj):
+        colours = {0:'C93419',1:'34C919',2:'FFC300'}
+        return format_html(
+            '<span style="color: #{}">{}</span>',
+            colours.get(obj.verdict,'000000'),
+            obj.get_verdict_display()
+        )
+
+    list_display = ['partner_name','cohort','emailed','colour_verdict']
+    list_filter = ['proposal__cohort', 'verdict']
     actions = [email_verdict]
 
 admin.site.register(Semester)
