@@ -57,16 +57,12 @@
   {% endfor %}
 
 {% if form.errors %}
+<h1>{{form.errors}}</h1>
   <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
 {% endif %}
 
 
-{% if form.title_options.is_hidden %}
-
-  <input type="hidden" name="{{form.title_options.name}}" />
-  <input type="hidden" name="{{form.new_or_old.name}}" value="{{form.new_or_old.value}}"/>
-
-{% else %}
+{% if not form.new_or_old.is_hidden %}
 
 <div class="content">
   <div class="title">Is this for an existing or a new project?</div>
@@ -108,7 +104,7 @@
   </div>
 </div>
 
-  {% for field in form %}
+  {% for field in form.visible_fields %}
   {% if field.name != 'title' and field.name != 'title_options' and field.name != 'summary' and field.name != 'new_or_old'%}
   <div class="field">
     <label class="label">{{field.label|capfirst}}</label>

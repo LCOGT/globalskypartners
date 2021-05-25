@@ -21,22 +21,26 @@ class ProposalForm(forms.ModelForm):
     title = forms.CharField(label="project title", required=False)
     summary = forms.CharField(max_length=600, label="summary", required=False, widget=forms.Textarea, help_text='Max 600 chars')
     title_options = forms.ChoiceField(label="extend existing project", required=False)
+    new_partner_id = forms.CharField(required=False)
     new_or_old = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
     class Meta:
         model = Proposal
         fields = ['people','institution','description','use','experience','size','support','help','time','time_reason','comments']
 
+
     def clean(self):
         cleaned_data = super().clean()
         title = cleaned_data.get("title")
         title_options = cleaned_data.get("title_options")
+        new_partner_id = cleaned_data.get('new_partner_id')
         summary = cleaned_data.get("summary")
         editing = cleaned_data.get('new_or_old')
         if not title and not title_options:
             raise ValidationError("Either select existing project or enter a title")
         else:
-            if title_options and editing == 'extend':
-                partner = Partner.objects.get(id=title_options)
+            if title_options or new_partner_id:
+                partner_id = title_options if not new_partner_id else new_partner_id
+                partner = Partner.objects.get(id=partner_id)
             else:
                 if not summary:
                     raise ValidationError("Provide a summary of the project")
@@ -56,6 +60,10 @@ class ProposalForm(forms.ModelForm):
             self.partner = None
 
         super().__init__(*args, **kwargs)
+        # This is required for create mode when there are no existing.
+        self.fields['new_partner_id'].widget = forms.HiddenInput()
+        self.fields['new_partner_id'].label = ''
+
         self.initial['new_or_old'] = 'create'
         if self.partner and not self.partner.is_pending():
             self.initial['new_or_old'] = 'extend'
@@ -70,16 +78,20 @@ class ProposalForm(forms.ModelForm):
         self.fields['time_reason'].widget.attrs.update({'class': 'textarea'})
         self.fields['comments'].widget.attrs.update({'class': 'textarea'})
 
-        if self.partner:
-            self.initial['title_options'] = self.partner.id
-            self.initial['title'] = self.partner.name
-            self.initial['summary'] = self.partner.summary
-
         if projects := Partner.objects.filter(pi=self.user):
             choices = [(u'', u'-- Select Project --'),]
             choices.extend([ (p.id, p.name) for p in projects])
             self.fields['title_options'].choices = choices
         else:
-            self.fields['title_options'].label = 'No projects available'
+            # self.fields['title_options'].label = 'No projects available'
             self.fields['title_options'].widget = forms.HiddenInput()
             self.fields['new_or_old'].widget = forms.HiddenInput()
+
+        if self.partner:
+            self.initial['title_options'] = self.partner.id
+            self.initial['title'] = self.partner.name
+            self.initial['summary'] = self.partner.summary
+
+        if self.partner and self.partner.is_pending():
+            self.initial['title_options'] = ''
+            self.initial['new_partner_id'] = self.partner.id

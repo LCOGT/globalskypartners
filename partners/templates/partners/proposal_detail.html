@@ -24,7 +24,7 @@
     <p>{{ object.partner.summary}}</p>
 
   <h2>Details</h2>
-  {% for field in proposal %}
+  {% for field in proposal.visible_fields %}
   <label class="label">{{field.label}}</label>
   {% if field.name == 'size' %}
   <p>{{object.get_size_display}}</p>
