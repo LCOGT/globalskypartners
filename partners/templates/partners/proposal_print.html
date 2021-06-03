@@ -24,7 +24,9 @@
             <p>{{object.partner.summary}}</p>
           </div>
           <div class="content">
-
+            <p>
+            <strong>Submitted by:</strong> {{object.submitter.first_name}} {{object.submitter.last_name}}
+          </p>
             {% for field in proposal %}
             <p>
             <strong>{{field.label|title}}</strong>{% if field.name == 'size' or field.name == 'time'%}&nbsp;{% else %}<br/>{% endif %}

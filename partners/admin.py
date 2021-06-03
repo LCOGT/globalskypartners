@@ -1,12 +1,55 @@
 from datetime import datetime
+import tempfile
+import zipfile
+import io
+import csv
 
 from django.contrib import admin, messages
+from django.http import FileResponse, HttpResponse
 from django.utils.html import format_html
 
 from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal, Membership, Review
 
 
 class ProposalAdmin(admin.ModelAdmin):
+    @admin.action(description='Download CSV')
+    def proposal_csv(self, request, queryset):
+        fieldnames = ['id','partner__name','time']
+        
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="proposals.csv"'},
+        )
+
+        writer = csv.DictWriter(response, fieldnames=fieldnames)
+        writer.writeheader()
+        for proposal in queryset.values(*fieldnames).order_by('id'):
+            writer.writerow(proposal)
+        return response
+
+    @admin.action(description='Generate PDF')
+    def generate_pdfs(modeladmin, request, queryset):
+        for obj in queryset:
+            return HttpResponse(
+                obj.generate_pdf(),
+                content_type='application/pdf',
+                headers = {'Content-Disposition' : f'attachment; filename="proposal-{obj.id}.pdf"'}
+            )
+
+    @admin.action(description='Generate Proposal Zip')
+    def zip_pdfs(self, request, queryset):
+        tmp = io.BytesIO()
+        with zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as archive:
+            for item in queryset:
+                fileNameInZip = f'proposal-{item.id}.pdf'
+                archive.writestr(fileNameInZip, item.generate_pdf())
+        tmp.seek(0)
+        return FileResponse(
+                tmp,
+                content_type="application/x-zip-compressed",
+                headers={'Content-Disposition': 'attachment; filename="proposals.zip"', 'Content-Length' : tmp.tell()},
+            )
+
     @admin.display(description='Decision')
     def colour_status(self,obj):
         colours = {3:'C93419',2:'34C919',1:'FFC300',0:'AAAAAA'}
@@ -16,8 +59,9 @@ class ProposalAdmin(admin.ModelAdmin):
             obj.get_status_display()
         )
     list_filter = ['status','cohort']
-    list_display = ['title','submitter','colour_status','cohort']
+    list_display = ['title','submitter','time','colour_status','cohort']
     order_by = ['title','cohort']
+    actions = ['generate_pdfs','zip_pdfs','proposal_csv']
 
 class PartnerAdmin(admin.ModelAdmin):
     list_filter = ['active',]
