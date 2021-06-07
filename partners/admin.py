@@ -15,7 +15,7 @@ class ProposalAdmin(admin.ModelAdmin):
     @admin.action(description='Download CSV')
     def proposal_csv(self, request, queryset):
         fieldnames = ['id','partner__name','time']
-        
+
         response = HttpResponse(
             content_type='text/csv',
             headers={'Content-Disposition': 'attachment; filename="proposals.csv"'},
@@ -84,14 +84,19 @@ def trans_status(state):
         return 0
 
 class ReviewAdmin(admin.ModelAdmin):
-    @admin.action(description='Email verdict')
-    def email_verdict(modeladmin, request, queryset):
+    @admin.action(description='Sync verdict')
+    def sync_verdict(self, request, queryset):
+        for obj in queryset:
+            obj.proposal.status = trans_status(obj.verdict)
+            obj.proposal.save()
+        messages.info(request, f'Synced verdict for {queryset.count()} proposal(s)')
 
+
+    @admin.action(description='Email verdict')
+    def email_verdict(self, request, queryset):
         for obj in queryset:
             obj.email_verdict()
             obj.emailed = datetime.utcnow()
-            obj.proposal.status = trans_status(obj.verdict)
-            obj.proposal.save()
             obj.save()
         messages.info(request, f'Emailed verdict for {queryset.count()} proposal(s)')
 
@@ -114,7 +119,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
     list_display = ['partner_name','cohort','emailed','colour_verdict']
     list_filter = ['proposal__cohort', 'verdict']
-    actions = [email_verdict]
+    actions = ['email_verdict', 'sync_verdict']
 
 admin.site.register(Semester)
 admin.site.register(Partner, PartnerAdmin)
