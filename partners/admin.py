@@ -121,6 +121,8 @@ class ReviewAdmin(admin.ModelAdmin):
     list_filter = ['proposal__cohort', 'verdict']
     actions = ['email_verdict', 'sync_verdict']
 
+admin.site.site_header = 'Global Sky Partner admin'
+
 admin.site.register(Semester)
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(Region)
