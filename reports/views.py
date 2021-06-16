@@ -11,6 +11,10 @@ from django.db import transaction
 class ReportList(ListView):
     model = Report
 
+class ImpactCreate(CreateView):
+    form_class = ImpactForm
+    template_name = 'reports/imprint_create.html'
+
 class ReportCreate(CreateView):
     model = Report
     fields = ['partner','countries','summary','comment']
