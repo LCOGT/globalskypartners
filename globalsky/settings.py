@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,10 +69,20 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
-        },
+            ]
+        }
     },
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = (
+    "bootstrap",
+    "uni_form",
+    "bootstrap3",
+    "bootstrap4",
+    "bulma"
+)
+
+CRISPY_TEMPLATE_PACK = "bulma"
 
 WSGI_APPLICATION = 'globalsky.wsgi.application'
 

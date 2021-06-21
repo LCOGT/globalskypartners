@@ -2,6 +2,7 @@ from .models import *
 from .forms import *
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.db import transaction
 
@@ -11,9 +12,27 @@ from django.db import transaction
 class ReportList(ListView):
     model = Report
 
+    # def get_context_data(self, **kwargs):
+    #     context > impacts
+
+
 class ImpactCreate(CreateView):
     form_class = ImpactForm
     template_name = 'reports/imprint_create.html'
+    success_url = reverse_lazy('report-list')
+
+    def get_form_kwargs(self):
+        kwargs = super(ImpactCreate, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        partner = Partner.objects.get(id=form.cleaned_data.get("partner"))
+        now = timezone.now()
+        cohorts = [c for c in Cohort.objects.all() if c.start <= now and c.end >= now ]
+        report, created = Report.objects.get_or_create(partner=partner, period=cohorts[0])
+        form.instance.report = report
+        return super().form_valid(form)
 
 class ReportCreate(CreateView):
     model = Report

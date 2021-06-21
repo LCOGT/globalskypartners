@@ -53,7 +53,7 @@ class Imprint(models.Model):
     audience = models.PositiveSmallIntegerField(choices=AUDIENCE_CHOICES)
     activity = models.PositiveSmallIntegerField('type of activity',choices=ACTIVITY_CHOICES)
     demographic = models.PositiveSmallIntegerField('audience demographic',choices=DEMOGRAPH_CHOICES)
-    demo_other = models.TextField('other demographic', blank=True)
+    demo_other = models.TextField('other demographic', blank=True, null=True)
     impact = models.TextField('description', blank=True)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 

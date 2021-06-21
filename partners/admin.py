@@ -9,6 +9,7 @@ from django.http import FileResponse, HttpResponse
 from django.utils.html import format_html
 
 from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal, Membership, Review
+from reports.models import Report
 
 
 class ProposalAdmin(admin.ModelAdmin):
@@ -131,3 +132,4 @@ admin.site.register(Cohort, CohortAdmin)
 admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Membership)
 admin.site.register(Review, ReviewAdmin)
+admin.site.register(Report)

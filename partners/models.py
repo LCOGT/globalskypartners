@@ -71,6 +71,20 @@ class Cohort(models.Model):
             return f"{self.year} active"
         return f"{self.year}"
 
+    @property
+    def start(self):
+        try:
+            return min(self.semester_set.all().values_list('start', flat=True))
+        except ValueError:
+            return timezone.now()
+
+    @property
+    def end(self):
+        try:
+            return max(self.semester_set.all().values_list('end', flat=True))
+        except ValueError:
+            return timezone.now()
+
     class Meta:
         ordering = ('year',)
 
