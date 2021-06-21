@@ -37,7 +37,7 @@ function time_allocation(proposal) {
         content += `<td><progress class='progress is-success mb-0' value='${d['std_time_used']}' max='${d['std_allocation']}'>`;
         content += Number.parseFloat(d['std_time_used']).toFixed(1) + " / " +d['std_allocation'] + "</progress>";
         content += "<span class='is-size-7'>"+Number.parseFloat(d['std_time_used']).toFixed(1) + " / " +d['std_allocation'] + "</span></td>";
-        content += "<td>" + aperture_name(d['instrument_type']) + "</td>";
+        content += "<td>" + aperture_names(d['instrument_types']) + "</td>";
         content += "</tr>";
       }
       resolve(content)
@@ -64,7 +64,7 @@ function time_allocation_all(semester) {
         var html ='';
         for (var i=0;i<results['timeallocation_set'].length;i++){
           var d = results['timeallocation_set'][i];
-            if (d['semester'] == semester && d['instrument_type'] == "0M4-SCICAM-SBIG"){
+            if (d['semester'] == semester && d['instrument_types'].includes("0M4-SCICAM-SBIG")){
               html += `<progress class='progress is-success mb-0' value='${d['std_time_used']}' max='${d['std_allocation']}'>`;
               html += Number.parseFloat(d['std_time_used']).toFixed(1) + " / " +d['std_allocation'] + "</progress>";
               html += "<span class='is-size-7'>"+Number.parseFloat(d['std_time_used']).toFixed(1) + " / " +d['std_allocation'] + "</span>";
@@ -130,7 +130,7 @@ function total_time(proposals, semesters) {
         if (proposals.includes(data['results'][i]['id'])){
           for (var j=0;j<data['results'][i]['timeallocation_set'].length;j++){
             var d = data['results'][i]['timeallocation_set'][j];
-            if (semesters.includes(d['semester']) && d['instrument_type'] == '0M4-SCICAM-SBIG'){
+            if (semesters.includes(d['semester']) && d['instrument_types'].includes('0M4-SCICAM-SBIG')){
               totals.total += d['std_allocation'];
               totals.used += d['std_time_used'];
             }
@@ -155,18 +155,22 @@ function calculate_time_used(observations){
   return Number.parseFloat(total/3600).toFixed(2)
 }
 
-function aperture_name(name){
+function aperture_names(instrument_types){
+  let names = [];
   var telclass = {
       '0M4-SCICAM-SBIG':'0.4 meter',
       '1M0-SCICAM-SINISTRO':'1 meter',
       '2M0-SCICAM-SPECTRAL' : '2 meter' };
-
-  var tel = telclass[name];
-  if (tel == undefined){
-    return name
-  } else {
-    return tel
+  for (let instrument_type in instrument_types){
+    let tel = telclass[instrument_type];
+    if (tel == undefined){
+      names.push(instrument_type);
+    }
+    else{
+      names.push(tel);
+    }
   }
+  return names.join(', ');
 }
 
 function status_icon(state){
