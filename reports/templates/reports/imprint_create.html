@@ -13,9 +13,27 @@
     <p>Examples of impact are: teacher training session, exhibition, demonstration, public talk, student presentation.</p>
 
     {% crispy form %}
-
+    
   </div>
 
 </section>
 
+{% endblock %}
+
+{% block script-content %}
+<script>
+$(document).ready(function(){
+  $("#div_id_demo_other").hide()
+
+  $("select[name='demographic']").change(function(){
+    var selection = $("select[name='demographic'] option:selected" ).val();
+    if (selection == '99'){
+      $("#div_id_demo_other").show()
+    } else {
+      $("#div_id_demo_other").hide()
+    }
+
+  });
+});
+</script>
 {% endblock %}

@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, Div
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 from .models import *
@@ -22,21 +22,25 @@ class ImpactForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                'first arg is the legend of the fieldset',
+            Div(
                 'partner',
                 'audience',
-                'activity',
-                Field('size', css_class="input"),
                 'demographic',
                 Field('demo_other', css_class="input"),
-                'impact'
+                css_class="column is-half"
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button primary')
-            )
+            Div(
+                'activity',
+                Field('size', css_class="input"),
+                'impact',
+                ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button primary')
+                ),
+            css_class="column is-half"
+        ),
         )
         self.helper.form_method = 'post'
+        self.helper.form_class = 'columns'
         self.helper.form_action = ''
 
         if projects := Partner.objects.filter(pi=self.user):

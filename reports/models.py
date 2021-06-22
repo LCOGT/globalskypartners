@@ -32,12 +32,18 @@ ACTIVITY_CHOICES = (
     (8, 'Artistic project')
 )
 
+STATUS = (
+    (0, 'Draft'),
+    (1, 'Submitted'),
+)
+
 class Report(models.Model):
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
     period = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     countries = CountryField(multiple=True)
     summary = models.TextField('summary of activity')
     comment = models.TextField('comments')
+    status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
     created_by = models.ForeignKey(User,
         blank=True, null=True,
         on_delete=models.SET_NULL)
@@ -56,6 +62,9 @@ class Imprint(models.Model):
     demo_other = models.TextField('other demographic', blank=True, null=True)
     impact = models.TextField('description', blank=True)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Impact for {self.report}"
 
 class Product(models.Model):
     description = models.TextField('description of product')

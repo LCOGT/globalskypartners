@@ -12,8 +12,10 @@ from django.db import transaction
 class ReportList(ListView):
     model = Report
 
-    # def get_context_data(self, **kwargs):
-    #     context > impacts
+    def get_context_data(self, **kwargs):
+        context = super(ReportList, self).get_context_data(**kwargs)
+        context['impacts'] = Imprint.objects.filter(report__created_by=self.request.user)
+        return context
 
 
 class ImpactCreate(CreateView):
@@ -30,7 +32,7 @@ class ImpactCreate(CreateView):
         partner = Partner.objects.get(id=form.cleaned_data.get("partner"))
         now = timezone.now()
         cohorts = [c for c in Cohort.objects.all() if c.start <= now and c.end >= now ]
-        report, created = Report.objects.get_or_create(partner=partner, period=cohorts[0])
+        report, created = Report.objects.get_or_create(partner=partner, period=cohorts[0], created_by = self.request.user)
         form.instance.report = report
         return super().form_valid(form)
 
@@ -61,6 +63,10 @@ class ReportCreate(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('reports:report_detail', kwargs={'pk': self.object.pk})
+
+class ReportEdit(UpdateView):
+    model = Report
+    template_name = 'reports/report_create.html'
 
 def audience_map(countries):
     world_path = Path(DATA_PATH) / 'custom.geo.json'
