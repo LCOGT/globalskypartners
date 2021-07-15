@@ -63,6 +63,13 @@ class Imprint(models.Model):
     impact = models.TextField('description', blank=True)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
+    @property
+    def demographic_display(self):
+        if self.demo_other:
+            return self.demo_other
+        else:
+            return self.get_demographic_display()
+
     def __str__(self):
         return f"Impact for {self.report}"
 

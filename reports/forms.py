@@ -2,8 +2,9 @@ from django import forms
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, Div
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, Div, HTML
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
+from .custom_layout import *
 
 from .models import *
 from partners.models import Cohort, Partner
@@ -17,11 +18,18 @@ class ImpactForm(forms.ModelForm):
         fields = ('partner','audience','activity','size','demographic','demo_other','impact')
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
+        self.user = kwargs.pop("user")
+        try:
+            self.report = kwargs.pop('report')
+            self.partner = self.report.partner
+        except:
+            self.partner = None
+            self.report = None
 
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.layout = Layout(
+        print(self)
+        layout = Layout(
             Div(
                 'partner',
                 'audience',
@@ -34,10 +42,74 @@ class ImpactForm(forms.ModelForm):
                 Field('size', css_class="input"),
                 'impact',
                 ButtonHolder(
-                    Submit('submit', 'Submit', css_class='button primary')
+                    Submit('addimpact', 'Add Impact', css_class='button blue-bg white', css_id='submit_impact'),
+                    css_class='buttons'
                 ),
             css_class="column is-half"
         ),
+        )
+
+        self.helper.layout = layout
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'columns'
+        self.helper.form_id = 'impact_form'
+        self.helper.form_action = ''
+
+        if projects := Partner.objects.filter(pi=self.user):
+            choices = [(u'', u'-- Select Project --'),]
+            choices.extend([ (p.id, p.name) for p in projects])
+            self.fields['partner'].choices = choices
+        if self.partner:
+            self.fields['partner'].initial = self.partner.id
+            self.fields['partner'].widget = forms.HiddenInput()
+
+class ImpactFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_method = 'post'
+        self.form_class = 'columns'
+        self.template = 'reports/report_formset.html'
+        self.layout = Layout(
+            Div(
+                'partner',
+                Field('countries', css_class="is-multiple"),
+                css_class="column is-half"
+            ),
+            Div(
+                'summary',
+                'comment',
+                ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button is-success')
+                ),
+            css_class="column is-half"
+            ),
+        )
+
+ImpactFormSet = inlineformset_factory(Report, Imprint, form=ImpactForm, extra=0, can_delete=False)
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['partner','countries','summary','comment']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                'partner',
+                Field('countries', css_class="is-multiple"),
+                css_class="column is-half"
+            ),
+            Div(
+                'summary',
+                'comment',
+                ButtonHolder(
+                    Submit('submit', 'Save &amp; Continue', css_class='button is-success')
+                ),
+                css_class="column is-half"),
         )
         self.helper.form_method = 'post'
         self.helper.form_class = 'columns'
@@ -48,5 +120,40 @@ class ImpactForm(forms.ModelForm):
             choices.extend([ (p.id, p.name) for p in projects])
             self.fields['partner'].choices = choices
 
+class ReportEditForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['partner','countries','summary','comment']
 
-ImpactFormSet = inlineformset_factory(Report, Imprint, form=ImpactForm, extra=1, can_delete=True)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+        Div(
+            Div(
+                'partner',
+                Field('countries', css_class="is-multiple"),
+                css_class="column is-half"
+            ),
+            Div(
+                'summary',
+                'comment',
+            css_class="column is-half"),
+        css_class="columns"),
+        Div(
+            Fieldset('Add Impact',
+                    Formset('impacts')),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button is-success')
+            ),
+        css_class="container"),
+        )
+        self.helper.form_method = 'post'
+        self.helper.form_action = ''
+
+        if projects := Partner.objects.filter(pi=self.user):
+            choices = [(u'', u'-- Select Project --'),]
+            choices.extend([ (p.id, p.name) for p in projects])
+            self.fields['partner'].choices = choices

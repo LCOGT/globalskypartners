@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static crispy_forms_tags  %}
+
+{% block title_head %}Final Report{% endblock %}
+{% block title %}Final Report - {{report.period}} {% endblock %}
+
+{% block mainfull %}
+
+<h2>Part 2 - Impacts for {{report.partner.name}}</h2>
+
+<p>Add as many impacts as you like to match the events or audiences in your program.</p>
+
+<a class="button gold-bg is-large" href="{% url 'report-view' report.id %}">Preview Report</a>
+
+{% if impacts %}
+<p>Below are Impacts you have previously added. Use the form below to add more.</p>
+
+<table class="table is-fullwidth">
+  <tr>
+    <th>Activity</th>
+    <th>Audience</th>
+    <th>Community</th>
+    <th>Reach</th>
+  </tr>
+{% for impact in impacts %}
+<tr>
+  <td>{{impact.get_activity_display}}</td>
+  <td>{{impact.get_audience_display}}</td>
+  <td>{{impact.demographic_display}}</td>
+<td>{{impact.size}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<h3>Add an Impact</h3>
+
+{% crispy form %}
+
+{% endblock %}

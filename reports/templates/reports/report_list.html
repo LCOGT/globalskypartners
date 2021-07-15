@@ -8,7 +8,9 @@
 {% block mainfull %}
 <div class="buttons">
   <a class="button is-primary" href="{% url 'report-impact' %}">Log Impact</a>
+  {% if active_report %}
   <a class="button is-link" href="{% url 'report-create' %}">Write Final Report</a>
+  {% endif %}
 </div>
 {% if not impacts %}
 <p>Your submitted reports will appear here.</p>
@@ -25,8 +27,8 @@
 {% for report in object_list %}
 <tr>
   <td>{{report.partner}}</td>
-  <td>{{report.cohort}}</td>
-  <td>{% url 'report-edit' report.id %}</td>
+  <td>{{report.period.year}}</td>
+  <td><a href="{% url 'report-view' report.id %}">edit</a></td>
 {% endfor %}
 </table>
 </div>

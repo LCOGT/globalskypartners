@@ -65,6 +65,7 @@ class Cohort(models.Model):
     deadline = models.DateTimeField(default=timezone.now)
     call = models.URLField(blank=True)
     proposalfile = models.FileField(upload_to='proposals', blank=True)
+    active_report = models.BooleanField(default=False)
 
     def __str__(self):
         if self.active_call:
@@ -89,10 +90,14 @@ class Cohort(models.Model):
         ordering = ('year',)
 
     def save(self, *args, **kwargs):
-        if not self.active_call:
-            return super(Cohort, self).save(*args, **kwargs)
-        with transaction.atomic():
-            Cohort.objects.filter(active_call=True).update(active_call=False)
+        if self.active_call or self.active_report:
+            with transaction.atomic():
+                if self.active_call:
+                    Cohort.objects.filter(active_call=True).update(active_call=False)
+                if self.active_report:
+                    Cohort.objects.filter(active_report=True).update(active_report=False)
+                return super(Cohort, self).save(*args, **kwargs)
+        else:
             return super(Cohort, self).save(*args, **kwargs)
 
 

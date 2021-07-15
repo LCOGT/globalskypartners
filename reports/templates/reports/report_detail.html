@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static crispy_forms_tags  %}
+
+{% block title_head %}Final Report{% endblock %}
+{% block title %}Final Report - {{report.period}} {% endblock %}
+
+{% block mainfull %}
+
+{{object}}
+{{impacts}}
+
+{% endblock %}

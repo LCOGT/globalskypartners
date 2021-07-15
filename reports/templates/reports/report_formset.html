@@ -1,0 +1,77 @@
+{% load crispy_forms_tags %}
+{% load crispy_forms_utils %}
+{% load crispy_forms_field %}
+
+    <div>
+        {{ formset.management_form|crispy }}
+    </div>
+
+<section>
+{% for form in formset.forms %}
+  <h3>Project Impact</h3>
+  <div class="notification impactsform">
+    {# Include the hidden fields in the form #}
+    {% if forloop.first %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+    {% endif %}
+    <div class="columns">
+      <div class="column is-one-third">
+        <div class="field">
+          <label class="label">{{form.size.label|capfirst}}</label>
+          {{ form.size.errors.as_ul }}
+          <div class="control">
+            {{ form.size }}
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">{{form.activity.label|capfirst}}</label>
+          {{ form.activity.errors.as_ul }}
+          <div class="control">
+            <div class="select">
+            {{ form.activity }}
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">{{form.audience.label|capfirst}}</label>
+          {{ form.audience.errors.as_ul }}
+          <div class="control">
+            <div class="select">
+            {{ form.audience }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-one-third">
+        <div class="field">
+          <label class="label">{{form.demographic.label|capfirst}}</label>
+          {{ form.demographic.errors.as_ul }}
+          <div class="control">
+            <div class="select">
+            {{ form.demographic }}
+          </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">{{form.demo_other.label|capfirst}}</label>
+          {{ form.demo_other.errors.as_ul }}
+          <div class="control">
+            {{ form.demo_other }}
+          </div>
+        </div>
+      </div>
+      <div class="column  is-one-third">
+        <div class="field">
+          <label class="label">{{form.impact.label|capfirst}}</label>
+          {{ form.impact.errors.as_ul }}
+          <div class="control">
+            {{ form.impact }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endfor %}
