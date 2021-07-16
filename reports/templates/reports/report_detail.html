@@ -3,11 +3,48 @@
 {% load static crispy_forms_tags  %}
 
 {% block title_head %}Final Report{% endblock %}
-{% block title %}Final Report - {{report.period}} {% endblock %}
+{% block title %}Final Report Preview{% endblock %}
 
 {% block mainfull %}
 
-{{object}}
-{{impacts}}
+<h3>{{object.partner.name}} - {{object.period}}</h3>
+
+<h4>Summary</h4>
+{{object.summary}}
+
+<h4>Comments</h4>
+{{object.comment}}
+
+<h4>Countries</h4>
+{% for country in object.countries %}
+{{country.name}}{% if not forloop.last%},{% endif %}
+{% endfor %}
+
+{% if impacts %}
+<h4>Impacts</h4>
+
+<table class="table is-fullwidth">
+  <tr>
+    <th></th>
+    <th>Activity</th>
+    <th>Audience</th>
+    <th>Community</th>
+    <th>Reach</th>
+  </tr>
+{% for impact in impacts %}
+<tr>
+  <td>{{forloop.counter}}</td>
+  <td>{{impact.get_activity_display}}</td>
+  <td>{{impact.get_audience_display}}</td>
+  <td>{{impact.demographic_display}}</td>
+  <td>{{impact.size}}</td>
+</tr>
+<tr>
+  <td></td>
+  <td colspan="4">{{impact.impact}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
 
 {% endblock %}

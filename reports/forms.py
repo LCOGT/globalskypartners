@@ -28,7 +28,6 @@ class ImpactForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        print(self)
         layout = Layout(
             Div(
                 'partner',

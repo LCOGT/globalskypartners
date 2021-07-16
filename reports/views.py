@@ -72,33 +72,33 @@ class ReportCreate(PassUserMixin, CreateView):
         return super(ReportCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('report-edit', kwargs={'pk':self.object.id})
+        return reverse_lazy('report-add-impact', kwargs={'pk':self.object.id})
 
-class ReportEdit(PassUserMixin, CreateView):
+class ReportAddImpact(PassUserMixin, CreateView):
     form_class = ImpactForm
     model = Imprint
-    template_name = 'reports/report_edit.html'
+    template_name = 'reports/report_impact_create.html'
 
     def get_object(self):
         return Report.objects.get(id=self.kwargs['pk'])
 
     def get_form_kwargs(self):
-        kwargs = super(ReportEdit, self).get_form_kwargs()
+        kwargs = super(ReportAddImpact, self).get_form_kwargs()
         kwargs['report'] =self.get_object()
         return kwargs
 
     def get_context_data(self, *args, **kwargs):
-        data = super(ReportEdit, self).get_context_data(**kwargs)
+        data = super(ReportAddImpact, self).get_context_data(**kwargs)
         data['impacts'] = Imprint.objects.filter(report=self.get_object())
         data['report'] = self.get_object()
         return data
 
     def form_valid(self, form):
         form.instance.report = self.get_object()
-        return super(ReportEdit, self).form_valid(form)
+        return super(ReportAddImpact, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('report-edit', kwargs={'pk':self.get_object().id})
+        return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})
 
 class ReportDetail(DetailView):
     model = Report
@@ -108,6 +108,12 @@ class ReportDetail(DetailView):
         data['impacts'] = Imprint.objects.filter(report=self.get_object())
         return data
 
+class ReportEdit(PassUserMixin, UpdateView):
+    model = Report
+    form_class= ReportForm
+
+    def get_success_url(self):
+        return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})
 
 def audience_map(countries):
     world_path = Path(DATA_PATH) / 'custom.geo.json'
