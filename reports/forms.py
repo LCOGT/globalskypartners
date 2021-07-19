@@ -4,7 +4,6 @@ from django.forms.models import inlineformset_factory
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, Div, HTML
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
-from .custom_layout import *
 
 from .models import *
 from partners.models import Cohort, Partner

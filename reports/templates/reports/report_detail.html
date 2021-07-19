@@ -9,6 +9,15 @@
 
 <h3>{{object.partner.name}} - {{object.period}}</h3>
 
+{% if object.status == 0 %}
+<div class="block">
+  <div class="buttons has-addons">
+    <a class="button is-medium gold-bg" href="{% url 'report-edit' object.id %}">Edit</a>
+    <a class="button is-medium blue-bg" href="{% url 'report-submit' object.id %}">Submit</a>
+   </div>
+</div>
+{% endif %}
+
 <h4>Summary</h4>
 {{object.summary}}
 
@@ -30,6 +39,7 @@
     <th>Audience</th>
     <th>Community</th>
     <th>Reach</th>
+    <th></th>
   </tr>
 {% for impact in impacts %}
 <tr>
@@ -38,10 +48,11 @@
   <td>{{impact.get_audience_display}}</td>
   <td>{{impact.demographic_display}}</td>
   <td>{{impact.size}}</td>
+  <td><a href="{% url 'impact-delete' impact.pk %}">delete</a></td>
 </tr>
 <tr>
   <td></td>
-  <td colspan="4">{{impact.impact}}</td>
+  <td colspan="5">{{impact.impact}}</td>
 </tr>
 {% endfor %}
 </table>

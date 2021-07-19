@@ -1,14 +1,15 @@
 from django.urls import path, include
 
 from .views import ReportCreate, ReportList, ImpactCreate, ReportEdit, \
-    impact_create_api, ReportDetail, ReportAddImpact
+    ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit
 
 urlpatterns = [
     path('impact/', ImpactCreate.as_view(), name='report-impact'),
-    path('impact/api/', impact_create_api, name='report-impact-api'),
     path('create/', ReportCreate.as_view(), name='report-create'),
     path('<int:pk>/edit/', ReportEdit.as_view(), name='report-edit'),
+    path('<int:pk>/submit/', ReportSubmit.as_view(), name='report-submit'),
     path('<int:pk>/impact/', ReportAddImpact.as_view(), name='report-add-impact'),
+    path('<int:pk>/impact/delete/', DeleteImpact.as_view(), name='impact-delete'),
     path('<int:pk>/', ReportDetail.as_view(), name='report-view'),
     path('list/', ReportList.as_view(), name='report-list')
 ]

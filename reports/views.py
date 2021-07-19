@@ -1,15 +1,17 @@
 from .models import *
 from .forms import *
+
+from crispy_forms.utils import render_crispy_form
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
 from django.forms.models import model_to_dict
+from django.shortcuts import redirect
+from django.template.context_processors import csrf
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.template.context_processors import csrf
-from crispy_forms.utils import render_crispy_form
-from jsonview.decorators import json_view
 
 # import plotly.express as px
 # import pandas as pd
@@ -29,19 +31,6 @@ class ReportList(ListView):
         if Cohort.objects.filter(active_report=True):
             context['active_report'] = True
         return context
-
-@json_view
-def impact_create_api(request):
-    form = ImpactForm(request.POST or None)
-    if form.is_valid():
-        # You could actually save through AJAX and return a success code here
-        form.save()
-        return {'success': True}
-
-    ctx = {}
-    ctx.update(csrf(request))
-    form_html = render_crispy_form(form, context=ctx)
-    return {'success': False, 'form_html': form_html}
 
 class ImpactCreate(PassUserMixin, CreateView):
     form_class = ImpactForm
@@ -64,7 +53,7 @@ class ReportCreate(PassUserMixin, CreateView):
 
     def form_valid(self, form):
         context = self.get_context_data()
-        impacts = context['impacts']
+        # impacts = context['impacts']
 
         form.instance.created_by = self.request.user
         form.instance.period = Cohort.objects.get(active_report=True)
@@ -100,6 +89,12 @@ class ReportAddImpact(PassUserMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})
 
+class DeleteImpact(DeleteView):
+    model = Imprint
+
+    def get_success_url(self):
+        return reverse_lazy('report-view', kwargs={'pk':self.get_object().report.id})
+
 class ReportDetail(DetailView):
     model = Report
 
@@ -114,6 +109,19 @@ class ReportEdit(PassUserMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})
+
+class ReportSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Report
+
+    def test_func(self):
+        return self.request.user in self.get_object().partner.pi.all()
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.status = 1 #Submitted
+        obj.save()
+        messages.success(request, f'Report for "{obj.partner.name}" in {obj.period.year} submitted')
+        return redirect(reverse_lazy('report-list'))
 
 def audience_map(countries):
     world_path = Path(DATA_PATH) / 'custom.geo.json'

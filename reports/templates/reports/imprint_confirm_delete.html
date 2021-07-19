@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block title_head %}Delete Impact{% endblock %}
+{% block title %}Delete Impact{% endblock %}
+
+{% block mainfull %}
+<form method="post">
+  {% csrf_token %}
+
+<p>Are you sure you want to delete "{{ object }}"?</p>
+
+  <div class="control">
+    <input type="submit" value="Confirm" class="button is-primary">
+  </div>
+</form>
+{% endblock %}

@@ -9,4 +9,3 @@ gevent==20.12.1
 gunicorn[gevent]==20.0.4
 WeasyPrint==52.5
 django-markdownify==0.9.0
-django-jsonview==2.0.0
