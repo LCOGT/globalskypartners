@@ -9,8 +9,8 @@ COPY requirements.txt /app/requirements.txt
 
 RUN apk --no-cache add libffi libpng postgresql-client postgresql-libs zlib cairo-dev pango-dev gdk-pixbuf \
         && apk --no-cache add --virtual .build-deps gcc libffi-dev make musl-dev postgresql-dev libjpeg-turbo-dev libpng-dev zlib-dev g++ \
-        && pip --no-cache-dir install --upgrade pip \
-        && pip --no-cache-dir install -r requirements.txt \
+        && pip3 --no-cache-dir install --upgrade pip \
+        && pip3 --no-cache-dir install -r requirements.txt \
         && apk --no-cache del .build-deps
 
 # Install application
