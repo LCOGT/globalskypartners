@@ -12,8 +12,8 @@
 {% if object.status == 0 %}
 <div class="block">
   <div class="buttons has-addons">
-    <a class="button is-medium gold-bg" href="{% url 'report-edit' object.id %}">Edit</a>
-    <a class="button is-medium blue-bg" href="{% url 'report-submit' object.id %}">Submit</a>
+    <a class="button is-medium green-bg" href="{% url 'report-edit' object.id %}">Edit</a>
+    {% if object.period.active_report %}<a class="button is-medium blue-bg" href="{% url 'report-submit' object.id %}">Submit</a>{% endif%}
    </div>
 </div>
 {% endif %}
@@ -48,7 +48,7 @@
   <td>{{impact.get_audience_display}}</td>
   <td>{{impact.demographic_display}}</td>
   <td>{{impact.size}}</td>
-  <td><a href="{% url 'impact-delete' impact.pk %}">delete</a></td>
+  <td>{% if object.status == 0%}<a href="{% url 'impact-delete' impact.pk %}">delete</a>{%endif%}</td>
 </tr>
 <tr>
   <td></td>

@@ -27,7 +27,7 @@ class ReportList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ReportList, self).get_context_data(**kwargs)
-        context['impacts'] = Imprint.objects.filter(report__created_by=self.request.user)
+        context['impacts'] = Imprint.objects.filter(report__created_by=self.request.user, report__status=0)
         if Cohort.objects.filter(active_report=True):
             context['active_report'] = True
         return context

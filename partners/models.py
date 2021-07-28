@@ -86,6 +86,10 @@ class Cohort(models.Model):
         except ValueError:
             return timezone.now()
 
+    @property
+    def label(self):
+        return f'{self.start.year} - {self.end.year}'
+
     class Meta:
         ordering = ('year',)
 

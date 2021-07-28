@@ -9,6 +9,7 @@ from .models import *
 from partners.models import Cohort, Partner
 
 class ImpactForm(forms.ModelForm):
+    period = forms.ChoiceField(label='Reporting Period', required=False)
     partner = forms.ChoiceField()
     demo_other = forms.CharField(label='Other Demographic', required=False)
 
@@ -29,6 +30,7 @@ class ImpactForm(forms.ModelForm):
         self.helper = FormHelper()
         layout = Layout(
             Div(
+                'period',
                 'partner',
                 'audience',
                 'demographic',
@@ -53,6 +55,17 @@ class ImpactForm(forms.ModelForm):
         self.helper.form_id = 'impact_form'
         self.helper.form_action = ''
 
+        if self.report:
+            self.fields['period'].choices = [(self.report.period.id, self.report.period.year)]
+            self.fields['period'].initial = self.report.period.id
+            self.fields['period'].widget = forms.HiddenInput()
+        else:
+            dates = [(x.id, x.label) for x in Cohort.objects.all() if x.start < timezone.now() and x.end > timezone.now()]
+            dates_extra = Cohort.objects.filter(active_report=True)
+            dates.extend([ (p.id, p.label) for p in dates_extra])
+            self.fields['period'].choices = set(dates)
+
+
         if projects := Partner.objects.filter(pi=self.user):
             choices = [(u'', u'-- Select Project --'),]
             choices.extend([ (p.id, p.name) for p in projects])
@@ -69,6 +82,7 @@ class ImpactFormSetHelper(FormHelper):
         self.template = 'reports/report_formset.html'
         self.layout = Layout(
             Div(
+                'period',
                 'partner',
                 Field('countries', css_class="is-multiple"),
                 css_class="column is-half"

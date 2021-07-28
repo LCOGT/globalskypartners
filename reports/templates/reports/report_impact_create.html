@@ -11,7 +11,7 @@
 
 <p>Add as many impacts as you like to match the events or audiences in your program.</p>
 
-<a class="button gold-bg is-large" href="{% url 'report-view' report.id %}">Preview Report</a>
+<a class="button green-bg" href="{% url 'report-view' report.id %}">Save &amp; Preview Report</a>
 
 {% if impacts %}
 <p>Below are Impacts you have previously added. Use the form below to add more.</p>
@@ -38,4 +38,22 @@
 
 {% crispy form %}
 
+{% endblock %}
+
+{% block script-content %}
+<script>
+$(document).ready(function(){
+  $("#div_id_demo_other").hide()
+
+  $("select[name='demographic']").change(function(){
+    var selection = $("select[name='demographic'] option:selected" ).val();
+    if (selection == '99'){
+      $("#div_id_demo_other").show()
+    } else {
+      $("#div_id_demo_other").hide()
+    }
+
+  });
+});
+</script>
 {% endblock %}
