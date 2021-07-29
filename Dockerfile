@@ -1,16 +1,25 @@
-FROM python:3.8-alpine
+
+FROM python:3.8-slim-buster
 
 # Set working directory
 WORKDIR /app
 
-# Install runtime dependencies, build dependencies, Python dependencies, and
-# then remove build dependencies to keep the image as small as possible
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt .
 
-RUN apk --no-cache add libffi libpng postgresql-client postgresql-libs zlib cairo-dev pango-dev gdk-pixbuf \
-        && apk --no-cache add --virtual .build-deps gcc libffi-dev make musl-dev postgresql-dev libjpeg-turbo-dev libpng-dev zlib-dev g++ \
-        && pip3 --no-cache-dir install -r requirements.txt \
-        && apk --no-cache del .build-deps
+# install OS-level build dependencies
+RUN apt-get -y update \
+    && apt-get -y install \
+      gcc \
+      g++ \
+      gfortran \
+      libffi-dev \
+      libjpeg-dev \
+      libpng-dev \
+      postgresql-client postgresql libpq-dev \
+      libpango1.0-dev python3-cffi python3-cairocffi libglib2.0-dev \
+      make \
+    && pip3 --no-cache-dir install -r requirements.txt \
+    && apt-get -y clean
 
 # Install application
 COPY . /app
