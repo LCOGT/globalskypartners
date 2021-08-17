@@ -9,13 +9,17 @@
 
 <h3>{{object.partner.name}} - {{object.period}}</h3>
 
-{% if object.status == 0 %}
+{% if object.status == 0 and object.period.active_report %}
 <div class="block">
   <div class="buttons has-addons">
     <a class="button is-medium green-bg" href="{% url 'report-edit' object.id %}">Edit</a>
-    {% if object.period.active_report %}<a class="button is-medium blue-bg" href="{% url 'report-submit' object.id %}">Submit</a>{% endif%}
+    <a class="button is-medium blue-bg" href="{% url 'report-submit' object.id %}">Submit</a>
    </div>
 </div>
+{% endif %}
+
+{% if object.status == 0 and not object.period.active_report %}
+<span class="tag is-warning">Submission Deadline Missed</span>
 {% endif %}
 
 <h4>Summary</h4>

@@ -25,11 +25,14 @@ class PassUserMixin:
 class ReportList(ListView):
     model = Report
 
+    def get_queryset(self):
+        return Report.objects.filter(created_by=self.request.user)
+
     def get_context_data(self, **kwargs):
         context = super(ReportList, self).get_context_data(**kwargs)
         context['impacts'] = Imprint.objects.filter(report__created_by=self.request.user, report__status=0)
-        if Cohort.objects.filter(active_report=True):
-            context['active_report'] = True
+        if years := Cohort.objects.filter(active_report=True).values_list('year',flat=True):
+            context['active_report'] = years
         return context
 
 class ImpactCreate(PassUserMixin, CreateView):

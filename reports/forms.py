@@ -15,7 +15,7 @@ class ImpactForm(forms.ModelForm):
 
     class Meta:
         model = Imprint
-        fields = ('partner','audience','activity','size','demographic','demo_other','impact')
+        fields = ('partner','audience','countries','activity','size','demographic','demo_other','impact')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -35,6 +35,7 @@ class ImpactForm(forms.ModelForm):
                 'audience',
                 'demographic',
                 Field('demo_other', css_class="input"),
+                'countries',
                 css_class="column is-half"
             ),
             Div(

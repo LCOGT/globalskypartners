@@ -64,10 +64,15 @@ class ProposalAdmin(admin.ModelAdmin):
     order_by = ['title','cohort']
     actions = ['generate_pdfs','zip_pdfs','proposal_csv']
 
+class ProposalInline(admin.TabularInline):
+    model = Proposal
+    fields = ['cohort','submitter', 'people', 'institution']
+
 class PartnerAdmin(admin.ModelAdmin):
     list_filter = ['active',]
     list_display = ['name','proposal_code','active']
     order_by = 'name'
+    inlines = [ProposalInline,]
 
 class SemesterInline(admin.TabularInline):
     model = Semester

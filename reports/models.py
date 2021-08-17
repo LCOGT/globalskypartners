@@ -56,6 +56,7 @@ class Report(models.Model):
 
 class Imprint(models.Model):
     size = models.IntegerField()
+    countries = CountryField(multiple=True, blank=True)
     audience = models.PositiveSmallIntegerField(choices=AUDIENCE_CHOICES)
     activity = models.PositiveSmallIntegerField('type of activity',choices=ACTIVITY_CHOICES)
     demographic = models.PositiveSmallIntegerField('audience demographic',choices=DEMOGRAPH_CHOICES)
