@@ -28,4 +28,4 @@ This project is deployed on the LCO Kubernetes Cluster. Please see the
 ## License
 
 This project is licensed under the MIT License. Please see the
-[LICENSE](LICENSE) file for details.
+[LICENSE](LICENSE) file for details. 
