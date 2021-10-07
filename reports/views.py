@@ -22,7 +22,7 @@ class PassUserMixin:
         kwargs['user'] = self.request.user
         return kwargs
 
-class ReportList(ListView):
+class ReportList(LoginRequiredMixin, ListView):
     model = Report
 
     def get_queryset(self):
@@ -35,7 +35,7 @@ class ReportList(ListView):
             context['active_report'] = years
         return context
 
-class ImpactCreate(PassUserMixin, CreateView):
+class ImpactCreate(LoginRequiredMixin, PassUserMixin, CreateView):
     form_class = ImpactForm
     template_name = 'reports/imprint_create.html'
     success_url = reverse_lazy('report-list')
@@ -48,7 +48,7 @@ class ImpactCreate(PassUserMixin, CreateView):
         form.instance.report = report
         return super().form_valid(form)
 
-class ReportCreate(PassUserMixin, CreateView):
+class ReportCreate(LoginRequiredMixin, PassUserMixin, CreateView):
     form_class = ReportForm
     model = Report
     template_name = 'reports/report_create.html'
@@ -66,7 +66,7 @@ class ReportCreate(PassUserMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('report-add-impact', kwargs={'pk':self.object.id})
 
-class ReportAddImpact(PassUserMixin, CreateView):
+class ReportAddImpact(LoginRequiredMixin, PassUserMixin, CreateView):
     form_class = ImpactForm
     model = Imprint
     template_name = 'reports/report_impact_create.html'
@@ -92,13 +92,13 @@ class ReportAddImpact(PassUserMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})
 
-class DeleteImpact(DeleteView):
+class DeleteImpact(LoginRequiredMixin, DeleteView):
     model = Imprint
 
     def get_success_url(self):
         return reverse_lazy('report-view', kwargs={'pk':self.get_object().report.id})
 
-class ReportDetail(DetailView):
+class ReportDetail(LoginRequiredMixin, DetailView):
     model = Report
 
     def get_context_data(self, *args, **kwargs):
@@ -106,7 +106,7 @@ class ReportDetail(DetailView):
         data['impacts'] = Imprint.objects.filter(report=self.get_object())
         return data
 
-class ReportEdit(PassUserMixin, UpdateView):
+class ReportEdit(LoginRequiredMixin, PassUserMixin, UpdateView):
     model = Report
     form_class= ReportForm
 
