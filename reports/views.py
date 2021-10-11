@@ -33,6 +33,8 @@ class ReportList(LoginRequiredMixin, ListView):
         context['impacts'] = Imprint.objects.filter(report__created_by=self.request.user, report__status=0)
         if years := Cohort.objects.filter(active_report=True).values_list('year',flat=True):
             context['active_report'] = years
+        if self.request.user.is_staff:
+            context['all_reports'] = Report.objects.all()
         return context
 
 class ImpactCreate(LoginRequiredMixin, PassUserMixin, CreateView):

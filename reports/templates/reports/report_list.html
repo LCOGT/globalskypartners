@@ -46,6 +46,21 @@
 {% endfor %}
  </tbody>
 </table>
+{% if all_reports %}
+<h2>All Partner Reports</h2>
+<table class="table is-hoverable is-fullwidth">
+   <tbody>
+{% for report in all_reports %}
+<tr>
+  <td>{{report.partner.name}}</td>
+  <td class="{% if report.status == 0%}gold-bg{% else %}green-bg{% endif%}">{{report.get_status_display}}</td>
+  <td>{{report.period.year}}</td>
+  <td><a href="{% url 'report-view' report.id %}">{% if report.status == 0 and report.period.year in active_reports %}edit{% else %}view{% endif%}</a></td>
+</tr>
+{% endfor %}
+ </tbody>
+</table>
+{% endif %}
 </div>
 
 {% endblock %}
