@@ -127,6 +127,16 @@ class ReviewAdmin(admin.ModelAdmin):
     list_filter = ['proposal__cohort', 'verdict']
     actions = ['email_verdict', 'sync_verdict']
 
+class ReportInline(admin.TabularInline):
+    model = Imprint
+    fields = ['size','demographic', 'activity', 'countries']
+
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['partner','period','status']
+    list_filter = ['period','status']
+    ordering = ['-period',]
+    inlines = [ReportInline,]
+
 admin.site.site_header = 'Global Sky Partner admin'
 
 admin.site.register(Semester)
@@ -137,5 +147,5 @@ admin.site.register(Cohort, CohortAdmin)
 admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Membership)
 admin.site.register(Review, ReviewAdmin)
-admin.site.register(Report)
+admin.site.register(Report, ReportAdmin)
 admin.site.register(Imprint)
