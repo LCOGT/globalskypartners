@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block title_head %}Final Report {{year}}{% endblock %}
+{% block title %}Final Report {{year}}{% endblock %}
+
+{% block mainfull %}
+
+{% if graph %}
+<div style="width:600;height:500">
+{{ graph|safe }}
+</div>
+{% endif %}
+
+{% endblock %}

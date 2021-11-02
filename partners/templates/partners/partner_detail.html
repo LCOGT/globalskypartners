@@ -10,8 +10,14 @@
 <p>{{object.summary}}</p>
 
 {% if owner %}
-<p><a href="{% url 'partner-edit' object.proposal_code %}">Edit details</a></p>
+<p><a href="{% url 'partner-edit' object.id %}">Edit details</a></p>
 {% endif %}
+
+<div class="buttons has-addons">
+  {% for report in object.report_set.all %}
+  <a href="{% url 'report-view' report.id %}" class="button">{{report.period.year}}</a>
+  {% endfor %}
+</div>
 
 {% if request.user in object.pi.all %}
 

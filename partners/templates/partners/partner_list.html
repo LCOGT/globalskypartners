@@ -36,11 +36,12 @@
   <th>Partner</th>
   <th>PI</th>
   <th></th>
+  <th>Reports</th>
 </tr>
 
 {% for object in object_list %}
   <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
-    <td><a href="{% url 'partner' object.proposal_code %}">{{object.name}}</a></td>
+    <td><a href="{% url 'partner' object.id %}">{{object.name}}</a></td>
     <td {% if request.user not in object.pi.all %} colspan=2{%endif%}>
       {% for pi in object.pi.all %}{% if pi.username != 'egomez' %}
       {{pi.first_name}} {{pi.last_name}}{%if not forloop.last%},{%endif%}
@@ -50,6 +51,13 @@
     {% if request.user in object.pi.all %}
     <td id="{{object.proposal_code}}" style="width:20%;"></td>
     {% endif %}
+    <td>{% for r in object.report_set.all %}<span class="tag {%if r.status%}is-success white{% endif%}">
+      {% if request.user.is_staff or request.user == object.created_by %}
+      <a href="{% url 'report-view' r.id %}">{{r.period.year}}</a>
+      {% else %}
+      {{r.period.year}}
+      {% endif %}
+    </span>{% endfor %}</td>
   </tr>
 {% endfor %}
 </table>

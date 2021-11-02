@@ -10,7 +10,9 @@ AUDIENCE_CHOICES = (
     (2,'Teachers'),
     (3,'Families'),
     (4,'General Public'),
-    (5, 'Adult learners')
+    (5, 'Adult learners'),
+    (6, 'Undergraduates'),
+    (7, 'Postgraduates')
 )
 
 DEMOGRAPH_CHOICES = (
@@ -40,9 +42,9 @@ STATUS = (
 class Report(models.Model):
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
     period = models.ForeignKey(Cohort, on_delete=models.CASCADE)
-    countries = CountryField(multiple=True)
+    countries = CountryField(multiple=True, blank=True)
     summary = models.TextField('summary of activity')
-    comment = models.TextField('comments')
+    comment = models.TextField('comments', blank=True)
     status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
     created_by = models.ForeignKey(User,
         blank=True, null=True,

@@ -129,12 +129,12 @@ class ReviewAdmin(admin.ModelAdmin):
 
 class ReportInline(admin.TabularInline):
     model = Imprint
-    fields = ['size','demographic', 'activity', 'countries']
+    fields = ['size','demographic', 'audience','activity', 'countries']
 
 class ReportAdmin(admin.ModelAdmin):
     list_display = ['partner','period','status']
     list_filter = ['period','status']
-    ordering = ['-period',]
+    ordering = ['-period','partner']
     inlines = [ReportInline,]
 
 admin.site.site_header = 'Global Sky Partner admin'

@@ -12,6 +12,7 @@ urlpatterns = [
     path('proposal/<int:pk>/edit/',ProposalEdit.as_view(), name='proposal-edit'),
     path('proposal/<int:pk>/submit/',ProposalSubmit.as_view(), name='proposal-submit'),
     path('proposal/<int:pk>/pdf/',ProposalPDFView.as_view(), name='proposal-pdf'),
-    path('<slug:proposal_code>/', PartnerDetail.as_view(), name='partner'),
-    path('<slug:proposal_code>/edit/', PartnerEdit.as_view(), name='partner-edit')
+    path('<int:pk>/', PartnerDetail.as_view(), name='partner'),
+    path('<int:pk>/edit/', PartnerEdit.as_view(), name='partner-edit'),
+    path('cohort/<int:year>/', PartnerList.as_view(), name='partners-year'),
 ]

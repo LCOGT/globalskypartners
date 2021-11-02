@@ -2,6 +2,7 @@ from .models import *
 from .forms import *
 
 from crispy_forms.utils import render_crispy_form
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
@@ -9,11 +10,13 @@ from django.forms.models import model_to_dict
 from django.shortcuts import redirect
 from django.template.context_processors import csrf
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
+from collections import Counter
 
-# import plotly.express as px
+import plotly.express as px
 # import pandas as pd
 
 class PassUserMixin:
@@ -34,7 +37,7 @@ class ReportList(LoginRequiredMixin, ListView):
         if years := Cohort.objects.filter(active_report=True).values_list('year',flat=True):
             context['active_report'] = years
         if self.request.user.is_staff:
-            context['all_reports'] = Report.objects.all()
+            context['all_reports'] = Report.objects.all().order_by('period','partner__name')
         return context
 
 class ImpactCreate(LoginRequiredMixin, PassUserMixin, CreateView):
@@ -128,8 +131,38 @@ class ReportSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         messages.success(request, f'Report for "{obj.partner.name}" in {obj.period.year} submitted')
         return redirect(reverse_lazy('report-list'))
 
+class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    templat_name = 'final_report.html'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request, *args, **kwargs):
+        year = self.kwargs['year']
+        cohort = Cohort.objects.get(year=year)
+        partners = Report.objects.filter(period=c).annotate(total=Sum('imprint__size')).order_by('partner_name')
+        demos = Counter({d:0 for d in DEMOGRAPH_CHOICES})
+        demographics = Imprint.objects.filter(report__period=c)
+        other = demographics.filter(demographic=99)
+        for d in demographics:
+            demos.update({d.get_demographic_display():d.size})
+
+        countries = countries_summary()
+        return render(request, self.template_name,
+                    {
+                    'demographics'  : demos,
+                    'other_demos'   : other,
+                    'total'         : Report.objects.filter(period=cohort).aggregate(total=Sum('imprint__size')),
+                    'partners'      : partners,
+                    'graph'         : audience_map(countries)
+                    })
+
+def countries_summary():
+    return
+
 def audience_map(countries):
-    world_path = Path(DATA_PATH) / 'custom.geo.json'
+    world_path = Path(settings.STATICFILES_DIRS[0]) / 'js' / 'world.geo.json'
     with open(world_path) as f:
        geo_world = json.load(f)
 
@@ -181,4 +214,5 @@ def audience_map(countries):
     )
 
     fig.update(coloraxis_showscale=False)
-    fig.show()
+    graph = fig.to_html(full_html=False, default_height=500, default_width=700)
+    return graph

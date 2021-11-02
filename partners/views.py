@@ -35,21 +35,33 @@ class PartnerList(ListView):
     model = Partner
     queryset = Partner.objects.filter(active=True)
 
-    def get_context_data(self, **kwargs):
+    def get_queryset(self, **kwargs):
+        qs = super().get_queryset(**kwargs)
+        if self.kwargs.get('year', None):
+            cohort = Cohort.objects.get(year=self.kwargs['year'])
+            return Partner.objects.filter(cohorts=cohort)
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        now = datetime.now()
-        semester = Semester.objects.get(start__lte=now, end__gte=now)
-        cohort = Semester.objects.get(start__lte=now, end__gte=now).cohort
-        context['semester'] = semester.code
-        context['semesters'] = list(cohort.semester_set.all().values_list('code', flat=True))
-        context['title'] = "Current Partners"
-        context['proposals'] = list(Partner.objects.filter(active=True).values_list('proposal_code', flat=True))
+        if self.kwargs.get('year', None):
+            cohort = Cohort.objects.get(year=self.kwargs['year'])
+            context['semesters'] = list(cohort.semester_set.all().values_list('code', flat=True))
+            context['title'] = f"{self.kwargs['year']} Partners"
+            context['proposals'] = list(Partner.objects.filter(cohorts=cohort).values_list('proposal_code', flat=True))
+        else:
+            now = datetime.now()
+            semester = Semester.objects.get(start__lte=now, end__gte=now)
+            cohort = Semester.objects.get(start__lte=now, end__gte=now).cohort
+            context['semester'] = semester.code
+            context['semesters'] = list(cohort.semester_set.all().values_list('code', flat=True))
+            context['title'] = "Current Partners"
+            context['proposals'] = list(Partner.objects.filter(active=True).values_list('proposal_code', flat=True))
+
         return context
 
 class PartnerDetail(DetailView):
     model = Partner
-    slug_field = 'proposal_code'
-    slug_url_kwarg = 'proposal_code'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
