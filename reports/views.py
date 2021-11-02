@@ -16,7 +16,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from collections import Counter
 
-import plotly.express as px
+# import plotly.express as px
 # import pandas as pd
 
 class PassUserMixin:
