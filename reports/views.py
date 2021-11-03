@@ -1,23 +1,24 @@
-from .models import *
-from .forms import *
+import csv
+from collections import Counter
 
 from crispy_forms.utils import render_crispy_form
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db import transaction
+from django.db.models import Sum
 from django.forms.models import model_to_dict
-from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.template.context_processors import csrf
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from collections import Counter
+from django_countries import countries
 
-# import plotly.express as px
-# import pandas as pd
+from .models import *
+from .forms import *
 
 class PassUserMixin:
     def get_form_kwargs(self):
@@ -133,7 +134,7 @@ class ReportSubmit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    templat_name = 'final_report.html'
+    template_name = 'reports/final_report.html'
 
     def test_func(self):
         return self.request.user.is_staff
@@ -141,78 +142,47 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         year = self.kwargs['year']
         cohort = Cohort.objects.get(year=year)
-        partners = Report.objects.filter(period=c).annotate(total=Sum('imprint__size')).order_by('partner_name')
-        demos = Counter({d:0 for d in DEMOGRAPH_CHOICES})
-        demographics = Imprint.objects.filter(report__period=c)
+        partners = Report.objects.filter(period=cohort).annotate(total=Sum('imprint__size')).order_by('partner__name')
+        demos = Counter()
+        demographics = Imprint.objects.filter(report__period=cohort)
         other = demographics.filter(demographic=99)
         for d in demographics:
             demos.update({d.get_demographic_display():d.size})
-
-        countries = countries_summary()
+        countries_dict = cohort_countries(year)
         return render(request, self.template_name,
                     {
-                    'demographics'  : demos,
+                    'demographics'  : dict(demos),
                     'other_demos'   : other,
                     'total'         : Report.objects.filter(period=cohort).aggregate(total=Sum('imprint__size')),
                     'partners'      : partners,
-                    'graph'         : audience_map(countries)
+                    'year'          : year,
+                    'country_count' : len(countries_dict)
                     })
 
-def countries_summary():
-    return
+def cohort_countries(year):
+    cohort = Cohort.objects.get(year=year)
+    count = Counter()
+    imprints = Imprint.objects.filter(report__period=cohort).exclude(countries=None).values_list('countries', flat=True)
+    reports = Report.objects.filter(period=cohort).exclude(countries=None).values_list('countries', flat=True)
+    for c in [imprints, reports]:
+        c_list = ",".join(c).split(',')
+        count.update(c_list)
+    return count
 
-def audience_map(countries):
-    world_path = Path(settings.STATICFILES_DIRS[0]) / 'js' / 'world.geo.json'
-    with open(world_path) as f:
-       geo_world = json.load(f)
+def countries_summary(request, year):
+    """
+    For `cohort` find all the countries from
+    """
+    count = cohort_countries(year)
+    # Change index from 2 letter code to Name of country
+    # data = [{'code':countries.alpha3(code=k), 'pop':v} for k,v in count.items()]
+    # return JsonResponse(data, safe=False)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="countries.csv"'
 
-    # Instanciating necessary lists
-    found = []
-    missing = []
-    countries_geo = []
+    writer = csv.writer(response)
+    writer.writerow(['code', 'number'])
+    for k,v in count.items():
+        writer.writerow([k,v])
 
-    # Looping over the custom GeoJSON file
-    for country in geo_world['features']:
-
-        # Country name detection
-        country_name = country['properties']['name']
-
-        # Checking if that country is in the dataset
-        if country_name in countries:
-
-            # Adding country to our "Matched/found" countries
-            found.append(country_name)
-
-            # Getting information from both GeoJSON file and dataFrame
-            geometry = country['geometry']
-
-            # Adding 'id' information for further match between map and data
-            countries_geo.append({
-                'type': 'Feature',
-                'geometry': geometry,
-                'id':country_name
-            })
-
-        # Else, adding the country to the missing countries
-        else:
-            missing.append(country_name)
-
-    # Displaying metrics
-    print(f'Countries found    : {len(found)}')
-    print(f'Countries not found: {len(missing)}')
-    geo_world_ok = {'type': 'FeatureCollection', 'features': countries_geo}
-
-    df = pd.DataFrame({'zone':found, 'count':len(found) * [1]})
-
-    fig = px.choropleth(
-        df,
-        geojson=geo_world_ok,
-        locations='zone',
-        color=df['count'],
-        color_continuous_scale=["red"],
-        coloraxis_showscale=False
-    )
-
-    fig.update(coloraxis_showscale=False)
-    graph = fig.to_html(full_html=False, default_height=500, default_width=700)
-    return graph
+    return response

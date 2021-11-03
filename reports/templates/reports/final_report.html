@@ -1,15 +1,93 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block title_head %}Final Report {{year}}{% endblock %}
 {% block title %}Final Report {{year}}{% endblock %}
 
 {% block mainfull %}
-
-{% if graph %}
-<div style="width:600;height:500">
-{{ graph|safe }}
+<div class="columns">
+  <div class="column is-half">
+    <figure class="image">
+      <svg id="my_dataviz" width="600" height="400"></svg>
+    </figure>
+  </div>
+  <div class="column is-half">
+    <h2>Headlines</h2>
+    <table class="table">
+      <tr>
+        <th>Total Individuals</th>
+        <td>{{total.total}}</td>
+      </tr>
+      {% for k,v in demographics.items %}
+      <tr>
+        <th>{{k}}</th>
+        <td>{{v}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th>Number of Countries</th>
+        <td>{{country_count}}</td>
+      </tr>
+    </table>
+  </div>
 </div>
-{% endif %}
+
+{% endblock %}
+
+{% block script-content %}
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+<!-- Create an element where the map will take place -->
+
+<script>
+
+// The svg
+var svg = d3.select("svg"),
+  width = +svg.attr("width"),
+  height = +svg.attr("height");
+
+// Map and projection
+var path = d3.geoPath();
+var projection = d3.geoNaturalEarth()
+    .scale(width / 1.5 / Math.PI)
+    .translate([width / 2, height / 2])
+
+// Data and color scale
+var data = d3.map();
+var colorScale = d3.scaleThreshold()
+  .domain([1, 2, 5, 10, 50])
+  .range(d3.schemeBlues[7]);
+
+// Load external data and boot
+d3.queue()
+  .defer(d3.json,"{% static 'js/world.geo.json' %}")
+  .defer(d3.csv, "{% url 'cohort_countries' year %}", function(d) { data.set(d.code, +d.number);})
+  .await(ready);
+
+key = Legend(chart.scales.color, {title: "Number of programs"})
+
+function ready(error, topo) {
+
+  // Draw the map
+  svg.append("g")
+    .selectAll("path")
+    .data(topo.features)
+    .enter()
+    .append("path")
+      // draw each country
+      .attr("d", d3.geoPath()
+        .projection(projection)
+      )
+      // set the color of each country
+      .attr("fill", function (d) {
+        d.total = data.get(d.id) || 0;
+        return colorScale(d.total);
+      });
+    }
+
+</script>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import ReportCreate, ReportList, ImpactCreate, ReportEdit, \
-    ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit, FinalReport
+    ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit, FinalReport, countries_summary
 
 urlpatterns = [
     path('impact/', ImpactCreate.as_view(), name='report-impact'),
@@ -12,5 +12,7 @@ urlpatterns = [
     path('<int:pk>/impact/delete/', DeleteImpact.as_view(), name='impact-delete'),
     path('<int:pk>/', ReportDetail.as_view(), name='report-view'),
     path('list/', ReportList.as_view(), name='report-list'),
-    path('final/<int:year>/', FinalReport.as_view(), name="final-report")
+    path('final/<int:year>/', FinalReport.as_view(), name="final-report"),
+    path('countries/<int:year>/', countries_summary, name="cohort_countries")
+
 ]
