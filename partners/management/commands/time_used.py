@@ -2,7 +2,9 @@ import sys
 import csv
 import requests
 from datetime import datetime
+from collections import Counter
 
+from django.db.models import Min, Max
 from django.core.management.base import CommandError, BaseCommand
 from django.conf import settings
 
@@ -12,10 +14,10 @@ from reports.models import Report
 
 class Command(BaseCommand):
     """
-    Import old report spreadsheets
+    Time used by partners
     """
 
-    help = 'Import old report spreadsheets'
+    help = 'Time used by partners'
     def add_arguments(self, parser):
         parser.add_argument("-c", "--cohort", dest="cohort",help='reporting year/cohort', type=str)
         parser.add_argument("-p", "--proposal", dest="proposal",help='proposal code for partner', type=str)
@@ -34,37 +36,33 @@ class Command(BaseCommand):
             partners = Partner.objects.filter(proposal=options.get('proposal'))
         else:
             partners = cohort.partner_set.all()
+
+        proposal_codes = partners.values_list('proposal_code',flat=True)
+        semesters = cohort.semester_set.all().values_list('code',flat=True)
+
+        totals = get_all_proposal_times(proposal_codes, semesters)
         for partner in partners:
-            pid = partner.proposal
-            query_params = "proposals/{}/".format(pid)
-            data = submit_portal_request(query_params)
-            user_count = membership_total(partner.proposal)
+
+            user_count = membership_total(partner.proposal_code)
             total_users += user_count
 
-            print("# {}".format(data['title']))
-            timeused, allocation = year_data(data,year)
+            start = cohort.semester_set.aggregate(Min('start'))['start__min']
+            end = cohort.semester_set.aggregate(Max('end'))['end__max']
 
-            start = datetime(int(year), 1, 1)
-            end = datetime(int(year)+1, 1, 1)
+            print(".", end =' ', flush = True)
 
-            self.stdout.write("{},{:.2f},{:.1f},{}".format(pid, timeused, allocation, user_count))
-
-            req_total = request_stats(pid, start.isoformat(" "), end.isoformat(" "))
-            total_timeused[pid] = {'timeused' : timeused,
-                                    'allocation' : allocation,
-                                    'requests_num' : req_total,
+            req_total = request_stats(partner.proposal_code, start.strftime("%Y-%m-%dT%H:%M:%S"), end.strftime("%Y-%m-%dT%H:%M:%S"))
+            total_timeused[partner.proposal_code] = {'requests_num' : req_total,
                                     'user_count' : user_count}
-
+        self.stdout.write("\n")
         failed = 0
         complete = 0
-        total = 0
         for k,v in total_timeused.items():
             failed += v['requests_num']['failed']
             complete += v['requests_num']['complete']
-            total += v['timeused']
         self.stdout.write(f"Total users {total_users}")
         self.stdout.write(f"Success rate: {failed} / {complete} => {(1-failed/complete)*100:.1f}")
-        self.stdout.write(f"Time used {total:.2f}")
+        self.stdout.write(f"Total Hours: {totals['total']:.2f} / {totals['used']:.2f}")
 
 
 def submit_portal_request(query_params):
@@ -73,7 +71,7 @@ def submit_portal_request(query_params):
     '''
     headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
     url = "{}{}".format(settings.API_URL, query_params)
-    # print('Request info on {}'.format(query_params))
+
     try:
         r = requests.get(url, headers=headers, timeout=20.0)
     except requests.exceptions.Timeout:
@@ -120,3 +118,21 @@ def year_data(data, year=None):
             allocation += ta["std_allocation"]
 
     return time_used, allocation
+
+def get_all_proposal_times(proposal_codes, semesters):
+    query_params = 'proposals/?active=True&public=True&limit=100'
+    resp = submit_portal_request(query_params)
+
+    totals = Counter()
+
+    for proposal in resp['results']:
+        if proposal['id'] in proposal_codes:
+            for timeset in proposal['timeallocation_set']:
+                if timeset['semester'] in semesters and '0M4-SCICAM-SBIG' in timeset['instrument_types']:
+                  totals.update(total= timeset['std_allocation'])
+                  totals.update(total= timeset['rr_allocation'])
+                  totals.update(total= timeset['tc_allocation'])
+                  totals.update(used = timeset['std_time_used'])
+                  totals.update(used = timeset['rr_time_used'])
+                  totals.update(used = timeset['tc_time_used'])
+    return dict(totals)

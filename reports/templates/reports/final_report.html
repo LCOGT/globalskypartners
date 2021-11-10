@@ -4,34 +4,98 @@
 {% block title_head %}Final Report {{year}}{% endblock %}
 {% block title %}Final Report {{year}}{% endblock %}
 
+{% block extra_css%}
+<link rel="stylesheet" href="{% static 'css/flags.css' %}">
+{% endblock %}
+
 {% block mainfull %}
 <div class="columns">
   <div class="column is-half">
     <figure class="image">
-      <svg id="my_dataviz" width="600" height="400"></svg>
+      <svg id="globe" width="600" height="400"></svg>
+      <img src="{% url 'partner-map' year %}" />
     </figure>
   </div>
   <div class="column is-half">
-    <h2>Headlines</h2>
-    <table class="table">
-      <tr>
-        <th>Total Individuals</th>
-        <td>{{total.total}}</td>
-      </tr>
+    <h2>Audience Size</h2>
+      <table class="table">
       {% for k,v in demographics.items %}
       <tr>
         <th>{{k}}</th>
         <td>{{v}}</td>
       </tr>
       {% endfor %}
+      <thead>
       <tr>
-        <th>Number of Countries</th>
-        <td>{{country_count}}</td>
+        <th>Total Individuals</th>
+        <td>{{total.total}}</td>
       </tr>
+      </thead>
     </table>
+    <p class="has-text-grey">* - {{other_demos}}</p>
   </div>
 </div>
 
+<h2>Number of Partner Programs</h2>
+<div class="columns">
+
+  <div class="column is-one-quarter">
+    <table class="table">
+      <tr>
+        <th>Countries with an active partner</th>
+        <td>{{country_count}}</td>
+      </tr>
+      {% for region in regions %}
+      <tr>
+        <td>{{region.name}}</td>
+        <td>{{region.number}}</td>
+      </tr>
+      {% endfor %}
+      </table>
+  </div>
+  {% for title,data in partner_data.items %}
+  <div class='column'>
+    <h4>{{title|capfirst}}</h4>
+    <table class="table">
+    {% for row in data %}
+    <tr>
+      <th>{{row.name}}</th>
+      <td>{{row.number}}<br/>{{row.percent}}%</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endfor %}
+</div>
+<p class="has-text-grey">Some partners serve multiple audience types and demographics.</p>
+
+<div class="content">
+{% for report in reports %}
+  <h3>{{report.partner.name}}</h3>
+    <div class="flags">
+    {% for country in report.countries %}
+    <i class="{{ country.flag_css }}" aria-label="{{ country.name }} flag"></i>
+    {% endfor %}
+    </div>
+      <h4>Summary</h4>
+      <p>{{report.summary}}</p>
+      {% if report.imprint_set.all %}
+      <h4>Impact Reports</h4>
+      {% endif %}
+      {% for impact in report.imprint_set.all %}
+        <div class="flags">
+        {% for country in impact.countries %}
+        <i class="{{ country.flag_css }}"
+        aria-label="{{ country.name }} flag"></i>
+        {% endfor %}
+        </div>
+        <p>
+          {{impact.impact}}
+        </p>
+      {% endfor %}
+      <hr/>
+      {% endfor %}
+      </div>
 {% endblock %}
 
 {% block script-content %}
@@ -64,10 +128,8 @@ var colorScale = d3.scaleThreshold()
 // Load external data and boot
 d3.queue()
   .defer(d3.json,"{% static 'js/world.geo.json' %}")
-  .defer(d3.csv, "{% url 'cohort_countries' year %}", function(d) { data.set(d.code, +d.number);})
+  .defer(d3.csv, "", function(d) { data.set(d.code, +d.number);})
   .await(ready);
-
-key = Legend(chart.scales.color, {title: "Number of programs"})
 
 function ready(error, topo) {
 
@@ -86,8 +148,18 @@ function ready(error, topo) {
         d.total = data.get(d.id) || 0;
         return colorScale(d.total);
       });
-    }
 
+      // Download SVG of map
+      // var svgData = $("#globe")[0].outerHTML;
+      // var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+      // var svgUrl = URL.createObjectURL(svgBlob);
+      // var downloadLink = document.createElement("a");
+      // downloadLink.href = svgUrl;
+      // downloadLink.download = "choropleth.svg";
+      // document.body.appendChild(downloadLink);
+      // downloadLink.click();
+      // document.body.removeChild(downloadLink);
+}
 </script>
 
 {% endblock %}

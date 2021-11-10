@@ -137,6 +137,17 @@ class ReportAdmin(admin.ModelAdmin):
     ordering = ['-period','partner']
     inlines = [ReportInline,]
 
+class ImprintAdmin(admin.ModelAdmin):
+    @admin.display()
+    def partner(self, obj):
+        return obj.report.partner.name
+    @admin.display()
+    def year(self, obj):
+        return obj.report.period.year
+
+    list_filter = ['demographic','activity','audience']
+    list_display = ['partner','year', 'size','demographic','audience','activity']
+
 admin.site.site_header = 'Global Sky Partner admin'
 
 admin.site.register(Semester)
@@ -148,4 +159,4 @@ admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Membership)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Report, ReportAdmin)
-admin.site.register(Imprint)
+admin.site.register(Imprint, ImprintAdmin)

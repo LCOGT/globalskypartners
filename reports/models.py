@@ -19,6 +19,7 @@ DEMOGRAPH_CHOICES = (
     (0, 'Under-served or under-represented'),
     (1, 'Developing world'),
     (2, 'Well served communities'),
+    (3, 'Mixed representation'),
     (99,'Other')
 )
 

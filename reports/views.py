@@ -5,7 +5,7 @@ from crispy_forms.utils import render_crispy_form
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -19,6 +19,7 @@ from django_countries import countries
 
 from .models import *
 from .forms import *
+from .plots import cohort_countries, get_partner_counts, breakdown_per_partner
 
 class PassUserMixin:
     def get_form_kwargs(self):
@@ -142,47 +143,24 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         year = self.kwargs['year']
         cohort = Cohort.objects.get(year=year)
-        partners = Report.objects.filter(period=cohort).annotate(total=Sum('imprint__size')).order_by('partner__name')
+        reports = Report.objects.filter(period=cohort).annotate(total=Sum('imprint__size')).order_by('partner__name')
+        total = reports.count()
         demos = Counter()
         demographics = Imprint.objects.filter(report__period=cohort)
-        other = demographics.filter(demographic=99)
+        other = demographics.filter(demographic=99).exclude(demo_other__isnull=True).values_list('demo_other', flat=True)
         for d in demographics:
             demos.update({d.get_demographic_display():d.size})
-        countries_dict = cohort_countries(year)
+        countries_dict, regions_dict = cohort_countries(year)
+        partner_data = get_partner_counts(reports, total)
         return render(request, self.template_name,
                     {
                     'demographics'  : dict(demos),
-                    'other_demos'   : other,
+                    'other_demos'   : ", ".join(other),
                     'total'         : Report.objects.filter(period=cohort).aggregate(total=Sum('imprint__size')),
-                    'partners'      : partners,
+                    'reports'       : reports,
                     'year'          : year,
-                    'country_count' : len(countries_dict)
+                    'country_count' : len(countries_dict),
+                    'regions'       : regions_dict,
+                    'partner_data'  : partner_data,
+                    'total_partners': Partner.objects.filter(cohorts=cohort).count()
                     })
-
-def cohort_countries(year):
-    cohort = Cohort.objects.get(year=year)
-    count = Counter()
-    imprints = Imprint.objects.filter(report__period=cohort).exclude(countries=None).values_list('countries', flat=True)
-    reports = Report.objects.filter(period=cohort).exclude(countries=None).values_list('countries', flat=True)
-    for c in [imprints, reports]:
-        c_list = ",".join(c).split(',')
-        count.update(c_list)
-    return count
-
-def countries_summary(request, year):
-    """
-    For `cohort` find all the countries from
-    """
-    count = cohort_countries(year)
-    # Change index from 2 letter code to Name of country
-    # data = [{'code':countries.alpha3(code=k), 'pop':v} for k,v in count.items()]
-    # return JsonResponse(data, safe=False)
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="countries.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['code', 'number'])
-    for k,v in count.items():
-        writer.writerow([k,v])
-
-    return response
