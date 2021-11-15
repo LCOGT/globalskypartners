@@ -2,7 +2,8 @@ from django.urls import path, include
 
 from .views import ReportCreate, ReportList, ImpactCreate, ReportEdit, \
     ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit, FinalReport
-from .plots import choropleth_map
+
+from .plots import demographics_plot
 
 urlpatterns = [
     path('impact/', ImpactCreate.as_view(), name='report-impact'),
@@ -15,5 +16,5 @@ urlpatterns = [
     path('list/', ReportList.as_view(), name='report-list'),
     path('final/<int:year>/', FinalReport.as_view(), name="final-report"),
     # path('countries/<int:year>/', countries_summary, name="cohort_countries"),
-    path('map/<int:year>/', choropleth_map, name="partner-map")
+    path('final/<int:year>/demo/<str:plotname>/', demographics_plot, name="demo_plot")
 ]

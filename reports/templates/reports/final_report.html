@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static markdown_extras %}
 
 {% block title_head %}Final Report {{year}}{% endblock %}
 {% block title %}Final Report {{year}}{% endblock %}
@@ -11,10 +11,11 @@
 {% block mainfull %}
 <div class="columns">
   <div class="column is-half">
-    <figure class="image">
-      <svg id="globe" width="600" height="400"></svg>
-      <img src="{% url 'partner-map' year %}" />
-    </figure>
+    {% if map %}
+      {{ map|safe }}
+      {% else %}
+      <p>No graph was provided.</p>
+    {% endif %}
   </div>
   <div class="column is-half">
     <h2>Audience Size</h2>
@@ -72,13 +73,21 @@
 <div class="content">
 {% for report in reports %}
   <h3>{{report.partner.name}}</h3>
+  <div class="tags has-addons">
+    <span class="tag">Audience</span>
+    <span class="tag is-primary">{{report.subtotal}}</span>
+  </div>
     <div class="flags">
     {% for country in report.countries %}
     <i class="{{ country.flag_css }}" aria-label="{{ country.name }} flag"></i>
     {% endfor %}
     </div>
       <h4>Summary</h4>
-      <p>{{report.summary}}</p>
+      <p>{{report.summary | markdown | safe }}</p>
+      {% if report.comment %}
+      <h4>Comments</h4>
+      <p>{{report.comment | markdown | safe }}</p>
+      {% endif %}
       {% if report.imprint_set.all %}
       <h4>Impact Reports</h4>
       {% endif %}
@@ -96,70 +105,4 @@
       <hr/>
       {% endfor %}
       </div>
-{% endblock %}
-
-{% block script-content %}
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
-<!-- Create an element where the map will take place -->
-
-<script>
-
-// The svg
-var svg = d3.select("svg"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
-
-// Map and projection
-var path = d3.geoPath();
-var projection = d3.geoNaturalEarth()
-    .scale(width / 1.5 / Math.PI)
-    .translate([width / 2, height / 2])
-
-// Data and color scale
-var data = d3.map();
-var colorScale = d3.scaleThreshold()
-  .domain([1, 2, 5, 10, 50])
-  .range(d3.schemeBlues[7]);
-
-// Load external data and boot
-d3.queue()
-  .defer(d3.json,"{% static 'js/world.geo.json' %}")
-  .defer(d3.csv, "", function(d) { data.set(d.code, +d.number);})
-  .await(ready);
-
-function ready(error, topo) {
-
-  // Draw the map
-  svg.append("g")
-    .selectAll("path")
-    .data(topo.features)
-    .enter()
-    .append("path")
-      // draw each country
-      .attr("d", d3.geoPath()
-        .projection(projection)
-      )
-      // set the color of each country
-      .attr("fill", function (d) {
-        d.total = data.get(d.id) || 0;
-        return colorScale(d.total);
-      });
-
-      // Download SVG of map
-      // var svgData = $("#globe")[0].outerHTML;
-      // var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
-      // var svgUrl = URL.createObjectURL(svgBlob);
-      // var downloadLink = document.createElement("a");
-      // downloadLink.href = svgUrl;
-      // downloadLink.download = "choropleth.svg";
-      // document.body.appendChild(downloadLink);
-      // downloadLink.click();
-      // document.body.removeChild(downloadLink);
-}
-</script>
-
 {% endblock %}

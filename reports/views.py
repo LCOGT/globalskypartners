@@ -19,7 +19,8 @@ from django_countries import countries
 
 from .models import *
 from .forms import *
-from .plots import cohort_countries, get_partner_counts, breakdown_per_partner
+from .plots import cohort_countries, get_partner_counts, breakdown_per_partner, choropleth_map
+
 
 class PassUserMixin:
     def get_form_kwargs(self):
@@ -143,15 +144,14 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         year = self.kwargs['year']
         cohort = Cohort.objects.get(year=year)
-        reports = Report.objects.filter(period=cohort).annotate(total=Sum('imprint__size')).order_by('partner__name')
-        total = reports.count()
+        reports = Report.objects.filter(period=cohort).annotate(subtotal=Sum('imprint__size')).order_by('partner__name')
         demos = Counter()
         demographics = Imprint.objects.filter(report__period=cohort)
         other = demographics.filter(demographic=99).exclude(demo_other__isnull=True).values_list('demo_other', flat=True)
         for d in demographics:
             demos.update({d.get_demographic_display():d.size})
         countries_dict, regions_dict = cohort_countries(year)
-        partner_data = get_partner_counts(reports, total)
+        partner_data = get_partner_counts(reports)
         return render(request, self.template_name,
                     {
                     'demographics'  : dict(demos),
@@ -162,5 +162,6 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
                     'country_count' : len(countries_dict),
                     'regions'       : regions_dict,
                     'partner_data'  : partner_data,
-                    'total_partners': Partner.objects.filter(cohorts=cohort).count()
+                    'total_partners': Partner.objects.filter(cohorts=cohort).count(),
+                    'map'           : choropleth_map(year)
                     })

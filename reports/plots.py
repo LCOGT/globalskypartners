@@ -1,20 +1,41 @@
-import pandas as pd
-import numpy as np
-import geopandas as gpd
-import matplotlib.pyplot as plt
 import io
 from collections import Counter
-from pathlib import Path
 
-from django.db.models import Count
+import pandas as pd
+import plotly.express as px
+from django.db.models import Count, Sum
 from django.conf import settings
 from django.http import HttpResponse
+import squarify
+import matplotlib.pyplot as plt
 
 from .countries import REGIONS
 from .models import DEMOGRAPH_CHOICES, AUDIENCE_CHOICES, ACTIVITY_CHOICES, Imprint, Report, Cohort
 
 
-def get_partner_counts(reports, total):
+def get_partner_sum(year):
+
+    choices = {'demographic': DEMOGRAPH_CHOICES,
+                'audience': AUDIENCE_CHOICES,
+                'activity': ACTIVITY_CHOICES}
+    aggregates = {}
+    totals = []
+
+    imprints = Imprint.objects.filter(report__period__year=year, activity=7)
+
+    for plotname in ['demographic','audience','activity']:
+        count = Counter()
+        for i in imprints.values_list(plotname,'size'):
+            count.update({i[0]:i[1]})
+        opts = {d[0]:d[1] for d in choices[plotname]}
+        total = sum(count.values())
+        totals.append(total)
+        aggregates[plotname] = [{'name':opts[k], 'number':v,'percent':f"{v/total*100:.0f}"} for k, v in dict(count).items()]
+
+    return aggregates, max(totals)
+
+def get_partner_counts(reports):
+    total = reports.count()
     demos = reports.annotate(count=Count('imprint__demographic')).values_list('imprint__demographic','count')
     audience = reports.annotate(count=Count('imprint__audience')).values_list('imprint__audience','count')
     activity = reports.annotate(count=Count('imprint__activity')).values_list('imprint__activity','count')
@@ -33,16 +54,19 @@ def breakdown_per_partner(data, total):
         aggregates[datum['id']] = [{'name':k, 'number':v,'percent':f"{v/total*100:.0f}"} for k, v in dict(counts).items()]
     return aggregates
 
+
 def cohort_countries(year):
     cohort = Cohort.objects.get(year=year)
     count = Counter()
     regions_count = Counter()
-    imprints = Imprint.objects.filter(report__period=cohort).exclude(countries=None).values_list('countries', flat=True)
-    reports = Report.objects.filter(period=cohort).exclude(countries=None).values_list('countries', flat=True)
-    for c in [imprints, reports]:
-        c_list = ",".join(c).split(',')
-        count.update(c_list)
-    for c in reports:
+    imprints = Imprint.objects.filter(report__period=cohort).exclude(countries=None)
+    icountries = [c.alpha3 for i in imprints for c in i.countries]
+    reports = Report.objects.filter(period=cohort).exclude(countries=None)
+    rcountries = [c.alpha3 for i in reports for c in i.countries]
+    for c in [icountries, rcountries]:
+        count.update(c)
+
+    for c in reports.values_list('countries', flat=True):
         ccodes = c.split(',')
         regions = set([REGIONS[code]['region'] for code in ccodes])
         regions_count.update(regions)
@@ -67,33 +91,27 @@ def countries_summary(request, year):
 
     return response
 
-def choropleth_map(request, year):
+def choropleth_map(year):
     count, regions = cohort_countries(year)
-    filename = Path(settings.STATICFILES_DIRS[0]) / "js" / "world.geo.json"
-    df = gpd.read_file(filename)
-    c_data = pd.DataFrame.from_dict({'countries':dict(count).keys(),'number':dict(count).values()})
-    merged = df.merge(c_data, how='left', left_on="id", right_on="countries")
-    final = merged.replace(np.nan,0)
+    countries = pd.DataFrame([[k,v]for k,v in count.items()],columns=['code','number'])
 
-    fig, ax = plt.subplots(1, figsize=(25, 10))
-    ax.axis('off')
-    ax.set_title('# partners per country', fontdict={'fontsize': '25', 'fontweight' : '3'})
-    sm = plt.cm.ScalarMappable(cmap='Blues', norm=plt.Normalize(vmin=1, vmax=37))
-    fig.colorbar(sm, orientation="horizontal", fraction=0.036, pad=0.1, aspect = 30)
-    final.plot(column='number', cmap='Blues', linewidth=0.8, ax=ax, edgecolor='0.8', norm=plt.Normalize(vmin=1, vmax=37))
+    fig = px.choropleth(countries, locations="code",
+        color="number", # lifeExp is a column of gapminder
+        color_continuous_scale=px.colors.sequential.Mint)
+    return fig.to_html(full_html=False, default_height=500)
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png')
-    buf.seek(0)
-    return HttpResponse(buf.read(),content_type="image/png")
+def demographics_plot(request, year, plotname):
+    reports = Report.objects.filter(period__year=year)
+    data = get_partner_counts(reports)
+    if plotname not in data.keys():
+        return Http404
 
-def demographics_plot(request,):
-    breakdown_per_partner
-    sizes=[50, 25, 12, 6]
-    label=["50", "25", "12", "6"]
+    sizes = [d['number'] for d in data[plotname]]
+    label = [d['name'].replace(' ','\n') for d in data[plotname]]
     squarify.plot(sizes=sizes, label=label, alpha=0.6 )
     plt.axis('off')
     buf = io.BytesIO()
-    fig.savefig(buf, format='png')
+    plt.savefig(buf, format='png')
     buf.seek(0)
+    plt.close()
     return HttpResponse(buf.read(),content_type="image/png")
