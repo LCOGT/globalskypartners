@@ -57,6 +57,7 @@
   {% for title,data in partner_data.items %}
   <div class='column'>
     <h4>{{title|capfirst}}</h4>
+    <img src="{% url 'demo_plot' year title %}" title="{{title}} treemap"/>
     <table class="table">
     {% for row in data %}
     <tr>
@@ -83,10 +84,10 @@
     {% endfor %}
     </div>
       <h4>Summary</h4>
-      <p>{{report.summary | markdown | safe }}</p>
+      {{report.summary | markdown | safe }}
       {% if report.comment %}
       <h4>Comments</h4>
-      <p>{{report.comment | markdown | safe }}</p>
+      {{report.comment | markdown | safe }}
       {% endif %}
       {% if report.imprint_set.all %}
       <h4>Impact Reports</h4>
@@ -98,9 +99,7 @@
         aria-label="{{ country.name }} flag"></i>
         {% endfor %}
         </div>
-        <p>
-          {{impact.impact}}
-        </p>
+          {{impact.impact| markdown | safe }}
       {% endfor %}
       <hr/>
       {% endfor %}

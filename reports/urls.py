@@ -16,5 +16,5 @@ urlpatterns = [
     path('list/', ReportList.as_view(), name='report-list'),
     path('final/<int:year>/', FinalReport.as_view(), name="final-report"),
     # path('countries/<int:year>/', countries_summary, name="cohort_countries"),
-    path('final/<int:year>/demo/<str:plotname>/', demographics_plot, name="demo_plot")
+    path('final/<int:year>/demo/<str:plotname>.png', demographics_plot, name="demo_plot")
 ]
