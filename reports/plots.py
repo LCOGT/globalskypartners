@@ -21,7 +21,8 @@ def get_partner_sum(year):
     aggregates = {}
     totals = []
 
-    imprints = Imprint.objects.filter(report__period__year=year, activity=7)
+    # Imprints not including citizen science
+    imprints = Imprint.objects.filter(report__period__year=year).exclude(activity=7)
 
     for plotname in ['demographic','audience','activity']:
         count = Counter()
@@ -98,6 +99,7 @@ def choropleth_map(year):
     fig = px.choropleth(countries, locations="code",
         color="number", # lifeExp is a column of gapminder
         color_continuous_scale=px.colors.sequential.Mint)
+    fig.update_layout(coloraxis_colorbar_x=-0.15)
     return fig.to_html(full_html=False, default_height=500)
 
 def demographics_plot(request, year, plotname):

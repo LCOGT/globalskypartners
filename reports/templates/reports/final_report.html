@@ -56,8 +56,6 @@
   </div>
   {% for title,data in partner_data.items %}
   <div class='column'>
-    <h4>{{title|capfirst}}</h4>
-    <img src="{% url 'demo_plot' year title %}" title="{{title}} treemap"/>
     <table class="table">
     {% for row in data %}
     <tr>
@@ -70,6 +68,22 @@
 {% endfor %}
 </div>
 <p class="has-text-grey">Some partners serve multiple audience types and demographics.</p>
+
+<h2>Individuals not involved in Citizen Science</h2>
+<div class="columns">
+  {% for title,data in partner_counts.0.items %}
+  <div class='column'>
+    <table class="table">
+    {% for row in data %}
+    <tr>
+      <th>{{row.name}}</th>
+      <td>{{row.number}}<br/>{{row.percent}}%</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endfor %}
+</div>
 
 <div class="content">
 {% for report in reports %}
