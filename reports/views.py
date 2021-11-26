@@ -20,7 +20,7 @@ from django_countries import countries
 from .models import *
 from .forms import *
 from .plots import cohort_countries, get_partner_counts, breakdown_per_partner, \
-    choropleth_map, get_partner_sum
+    choropleth_map, get_partner_sum, meta_plot
 
 
 class PassUserMixin:

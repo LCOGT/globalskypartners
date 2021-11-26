@@ -6,7 +6,7 @@ import plotly.express as px
 from django.db.models import Count, Sum
 from django.conf import settings
 from django.http import HttpResponse
-import squarify
+from pywaffle import Waffle
 import matplotlib.pyplot as plt
 
 from .countries import REGIONS
@@ -102,16 +102,19 @@ def choropleth_map(year):
     fig.update_layout(coloraxis_colorbar_x=-0.15)
     return fig.to_html(full_html=False, default_height=500)
 
-def demographics_plot(request, year, plotname):
+def meta_plot(request, year,plotname):
     reports = Report.objects.filter(period__year=year)
     data = get_partner_counts(reports)
-    if plotname not in data.keys():
-        return Http404
-
-    sizes = [d['number'] for d in data[plotname]]
-    label = [d['name'].replace(' ','\n') for d in data[plotname]]
-    squarify.plot(sizes=sizes, label=label, alpha=0.6 )
-    plt.axis('off')
+    data_dict = {a['name']:a['number']for a in data[plotname]}
+    fig = plt.figure(
+        FigureClass=Waffle,
+        rows=5,
+        values=data_dict,
+        labels=["{0}".format(k) for k, v in data_dict.items()],
+        legend={ 'loc': 'upper left', 'bbox_to_anchor': (1, 1)},
+        block_arranging_style='snake',
+        figsize=(11.1, 5)
+    )
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)

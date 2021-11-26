@@ -33,7 +33,9 @@
       </tr>
       </thead>
     </table>
-    <p class="has-text-grey">* - {{other_demos}}</p>
+    {% if other_demos %}
+    <p class="has-text-grey">* {{other_demos}}</p>
+    {% endif %}
   </div>
 </div>
 
@@ -64,6 +66,7 @@
     </tr>
     {% endfor %}
   </table>
+  <a href="{% url 'meta_plot' year title %}" target="_blank">Download {{title}} plot</a>
 </div>
 {% endfor %}
 </div>
@@ -73,6 +76,7 @@
 <div class="columns">
   {% for title,data in partner_counts.0.items %}
   <div class='column'>
+    <h3>{{title|capfirst}}</h3>
     <table class="table">
     {% for row in data %}
     <tr>

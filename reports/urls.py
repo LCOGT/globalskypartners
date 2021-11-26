@@ -3,7 +3,7 @@ from django.urls import path, include
 from .views import ReportCreate, ReportList, ImpactCreate, ReportEdit, \
     ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit, FinalReport
 
-from .plots import demographics_plot
+from .plots import meta_plot
 
 urlpatterns = [
     path('impact/', ImpactCreate.as_view(), name='report-impact'),
@@ -16,5 +16,5 @@ urlpatterns = [
     path('list/', ReportList.as_view(), name='report-list'),
     path('final/<int:year>/', FinalReport.as_view(), name="final-report"),
     # path('countries/<int:year>/', countries_summary, name="cohort_countries"),
-    path('final/<int:year>/demo/<str:plotname>.png', demographics_plot, name="demo_plot")
+    path('final/<int:year>/demo/<str:plotname>.png', meta_plot, name="meta_plot")
 ]
