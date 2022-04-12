@@ -169,3 +169,9 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
                     'total_partners': Partner.objects.filter(cohorts=cohort).count(),
                     'map'           : choropleth_map(year)
                     })
+
+
+def countries_summary_view(request, year):
+    countries_dict, regions_dict = cohort_countries(year)
+    countries_dict = {countries.name(code=k): countries_dict[k] for k in sorted(countries_dict)}
+    return render(request,'reports/countries.html', {'countries':countries_dict})
