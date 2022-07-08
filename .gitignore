@@ -5,3 +5,4 @@ local_settings.py
 *.pyo
 
 .env-local
+sent_emails/*

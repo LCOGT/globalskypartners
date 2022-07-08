@@ -13,6 +13,15 @@ from reports.models import Report, Imprint
 
 
 class ProposalAdmin(admin.ModelAdmin):
+    @admin.action(description="Port to reviews")
+    def port_to_reviews(self, request, queryset):
+        total = 0
+        for obj in queryset:
+            rev, c = Review.objects.get_or_create(proposal=obj)
+            if c:
+                total += 1
+        messages.info(request, f"Ported {total}/{queryset.count()} proposals to reviews")
+
     @admin.action(description='Download CSV')
     def proposal_csv(self, request, queryset):
         fieldnames = ['id','partner__name','time']
@@ -62,7 +71,7 @@ class ProposalAdmin(admin.ModelAdmin):
     list_filter = ['status','cohort']
     list_display = ['title','submitter','time','colour_status','cohort']
     order_by = ['title','cohort']
-    actions = ['generate_pdfs','zip_pdfs','proposal_csv']
+    actions = ['generate_pdfs','zip_pdfs','proposal_csv','port_to_reviews']
 
 class ProposalInline(admin.TabularInline):
     model = Proposal

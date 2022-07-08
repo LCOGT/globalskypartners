@@ -253,16 +253,18 @@ class Proposal(models.Model):
             )
 
 class Review(models.Model):
+    PENDING = 3
     REJECTED = 0
     ACCEPTED = 1
     QUESTIONS = 2
     VERDICT = (
+        (PENDING,'Verdict Pending'),
         (REJECTED, 'Rejected'),
         (ACCEPTED, 'Accepted'),
         (QUESTIONS, 'Further Questions'),
     )
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
-    verdict = models.PositiveSmallIntegerField(choices=VERDICT, default=0)
+    verdict = models.PositiveSmallIntegerField(choices=VERDICT, default=3)
     hours = models.FloatField(help_text='hours awarded', default=0.0)
     emailed = models.DateTimeField(blank=True, null=True)
     comments = models.TextField(blank=True)
@@ -270,6 +272,8 @@ class Review(models.Model):
     def __str__(self):
         if self.verdict in [0,1]:
             verb = 'was'
+        elif self.verdict == 3:
+            verb = 'is'
         else:
             verb = 'has'
         return f'{self.proposal.partner.name} in {self.proposal.cohort.year} {verb} {self.verdict}'
