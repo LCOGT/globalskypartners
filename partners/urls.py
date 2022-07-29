@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from .views import PartnerList, PartnerDetail, ProposalCreate, ProposalList, ProposalDetail, \
-    ProposalEdit, ProposalSubmit, PartnerEdit, ProposalPDFView
+    ProposalEdit, ProposalSubmit, PartnerEdit, ProposalPDFView, UploadUserView
 
 urlpatterns = [
     path('', PartnerList.as_view(), name='partners'),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('proposal/<int:pk>/pdf/',ProposalPDFView.as_view(), name='proposal-pdf'),
     path('<int:pk>/', PartnerDetail.as_view(), name='partner'),
     path('<int:pk>/edit/', PartnerEdit.as_view(), name='partner-edit'),
+    path('user/upload/', UploadUserView.as_view(), name='user-upload'),
     path('cohort/<int:year>/', PartnerList.as_view(), name='partners-year'),
 ]

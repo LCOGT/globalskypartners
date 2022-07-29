@@ -4,15 +4,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic.list import ListView
 
 from .models import Partner, Semester, Cohort, Proposal
-from .forms import ProposalForm, PartnerForm
+from .forms import ProposalForm, PartnerForm, BulkUploadUsers
 
 @login_required
 def home(request):
@@ -202,12 +203,28 @@ class ProposalPDFView(LoginRequiredMixin, UserPassesTestMixin,  DetailView):
     def render_to_response(self, context, **kwargs):
         context['pdf'] = True
         pdf_response = HttpResponse(content_type='application/pdf')
-        # response = super().render_to_response(context, **kwargs)
-        # print(response)
-        # response.render()
         pdf = self.object.generate_pdf()
 
         pdf_response.write(pdf)
         filename = f"proposal-{self.object.id}.pdf"
         pdf_response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return pdf_response
+
+class UploadUserView(FormView):
+    template_name = 'partners/user_upload.html'
+    form_class = BulkUploadUsers
+    success_url = reverse_lazy('user-upload')
+
+    def get_form_kwargs(self):
+        kwargs = super(UploadUserView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        kwargs['token'] = self.request.session['token']
+        return kwargs
+
+    def form_valid(self, form):
+        error = None
+        try:
+            form.upload_to_portal()
+        except ValidationError as e:
+            error = e
+        return render(self.request, self.template_name,{'error':error,'form':form, 'users':form.users})

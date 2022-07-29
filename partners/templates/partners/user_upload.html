@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title_head %}Upload Users{% endblock %}
+{% block title %}Upload Users{% endblock %}
+
+
+{% block main_span_size %}is-two-thirds{% endblock %}
+
+{% block main %}
+<div class="content">
+<p>Create user accounts for your proposal.</p>
+<ul>
+  <li>You are responsible for providing usernames for each user</li>
+  <li>1 user per row, comma separate the values in the format: <strong>username, first name, last name, email, institution</strong></li>
+</ul>
+</div>
+{% if error %}
+<div class="notification is-warning">
+  {% for e in error%}
+    {{e}}
+  {% endfor %}
+</div>
+{% endif %}
+<form action="" method="post">
+  {% csrf_token %}
+
+  {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+  {% endfor %}
+
+{% if form.errors %}
+  <div class="has-text-danger">{{ form.non_field_errors.as_ul }}</div>
+{% endif %}
+
+{% for field in form %}
+<div class="field">
+  <label class="label">{{field.label|capfirst}}</label>
+  <span class="has-text-danger">{{ field.errors.as_ul }}</span>
+  <div class="control">
+  {{field}}
+  </div>
+{% if field.help_text %}
+<p class="help has-text-grey">{{field.help_text}}</p>
+{% endif %}
+</div>
+{% endfor %}
+
+<div class="field is-grouped">
+  <div class="control">
+    <input type="submit" class="button is-link" value="Upload" />
+  </div>
+  <div class="control">
+    <a class="button is-link is-light" href="{% url 'partners' %}">Exit</a>
+  </div>
+</div>
+</form>
+
+{% endblock %}
+
+{% block right_panel %}
+{% if users %}
+<div class="column">
+  <p>The following usernames and passwords were created</p>
+  <table class="table">
+    <tr>
+      <th>Username</th>
+      <th>Password</th>
+    </tr>
+  {% for user in users %}
+  <tr>
+   <td>{{user.username}}</td>
+   <td>{{user.password}}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}

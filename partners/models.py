@@ -66,6 +66,8 @@ class Cohort(models.Model):
     call = models.URLField(blank=True)
     proposalfile = models.FileField(upload_to='proposals', blank=True)
     active_report = models.BooleanField(default=False)
+    call_id = models.CharField("ID of call in obs portal", max_length=20, blank=True, null=True)
+
 
     def __str__(self):
         if self.active_call:

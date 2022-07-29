@@ -94,6 +94,8 @@ def countries_summary(request, year):
 
 def choropleth_map(year):
     count, regions = cohort_countries(year)
+    if not regions:
+        return None
     countries = pd.DataFrame([[k,v]for k,v in count.items()],columns=['code','number'])
 
     fig = px.choropleth(countries, locations="code",

@@ -1,7 +1,68 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 
 from .models import Proposal, Partner
+from .utils import create_portal_users, user_submission_format, invite_users_to_proposal, parse_api_error, filter_existing_users
+
+import csv
+
+class BulkUploadUsers(forms.Form):
+    proposalid = forms.ChoiceField(label="Proposal")
+    data = forms.CharField(label="List of users", widget=forms.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        self.token = kwargs.pop('token')
+        super().__init__(*args, **kwargs)
+        # This is required for create mode when there are no existing.
+
+        projects = Partner.objects.filter(pi=self.user, active=True)
+        if projects.count() > 1:
+            choices = [(u'', u'-- Select Project --'),]
+            choices.extend([ (p.id, p.name) for p in projects])
+            self.fields['proposalid'].choices = choices
+        else:
+            self.initial['proposalid'] = projects[0].proposal_code
+        self.fields['data'].widget.attrs.update({'class': 'textarea'})
+        self.fields['proposalid'].widget.attrs.update({'class': 'select'})
+
+    def upload_to_portal(self):
+        errors = []
+        users = user_submission_format(self.cleaned_data['data'])
+        self.users = users
+        try:
+            proposal_code = Partner.objects.get(id=self.cleaned_data['proposalid']).proposal_code
+        except Partner.DoesNotExist:
+             raise ValidationError(f"Proposal ID {self.cleaned_data['proposalid']} does not exist")
+
+        success, msg = create_portal_users(users, self.token)
+        if not success:
+            users_created = filter_existing_users(msg['users'], users)
+            self.users = users_created
+            error = parse_api_error(msg['users'], users)
+            errors.append(ValidationError(mark_safe(error)))
+
+        emails = [r['email'] for r in users]
+        success, msg = invite_users_to_proposal(emails, proposal_code, self.token)
+        if not success:
+            invite_error = ". ".join(msg['emails'])
+            errors.append(ValidationError(mark_safe(invite_error)))
+
+        if errors:
+            raise ValidationError(errors)
+        return
+
+    def clean_data(self):
+        data = self.cleaned_data['data']
+        user_data = []
+        for row in data.split('\n'):
+            user = row.split(',')
+            if len(user) != 5:
+                raise ValidationError(f"Problem with {user[0]}. Each row must have 5 fields, separated by commas; username, first name, last name, email, institution")
+            user_data.append(user)
+        return user_data
+
 
 class PartnerForm(forms.ModelForm):
     class Meta:
