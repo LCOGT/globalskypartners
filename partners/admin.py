@@ -78,10 +78,14 @@ class ProposalInline(admin.TabularInline):
     fields = ['cohort','submitter', 'people', 'institution']
 
 class PartnerAdmin(admin.ModelAdmin):
-    list_filter = ['active',]
-    list_display = ['name','proposal_code','active']
+    list_filter = ['active','cohorts']
+    list_display = ['name','proposal_code','cohort_list','active']
     order_by = 'name'
     inlines = [ProposalInline,]
+
+    @admin.display(description='Cohorts')
+    def cohort_list(self, obj):
+        return [c.year for c in obj.cohorts.all()]
 
 class SemesterInline(admin.TabularInline):
     model = Semester
@@ -146,6 +150,10 @@ class ReportAdmin(admin.ModelAdmin):
     ordering = ['-period','partner']
     inlines = [ReportInline,]
 
+class MembershipAdmin(admin.ModelAdmin):
+    search_fields = ['user__username']
+    ordering = ['user','partner']
+
 class ImprintAdmin(admin.ModelAdmin):
     @admin.display()
     def partner(self, obj):
@@ -165,7 +173,7 @@ admin.site.register(Region)
 admin.site.register(ProgramType)
 admin.site.register(Cohort, CohortAdmin)
 admin.site.register(Proposal, ProposalAdmin)
-admin.site.register(Membership)
+admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Report, ReportAdmin)
 admin.site.register(Imprint, ImprintAdmin)
