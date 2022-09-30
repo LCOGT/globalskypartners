@@ -99,10 +99,19 @@ def choropleth_map(year):
     countries = pd.DataFrame([[k,v]for k,v in count.items()],columns=['code','number'])
 
     fig = px.choropleth(countries, locations="code",
-        color="number", # lifeExp is a column of gapminder
+        color="number",
         color_continuous_scale=px.colors.sequential.Mint)
     fig.update_layout(coloraxis_colorbar_x=-0.15)
-    return fig.to_html(full_html=False, default_height=500)
+    config = {
+          'toImageButtonOptions': {
+            'format': 'png', # one of png, svg, jpeg, webp
+            'filename': f"partners-{year}",
+            'height': 1500,
+            'width': 2100,
+            'scale':12 # Multiply title/legend/axis/canvas sizes by this factor
+          }
+        }
+    return fig.to_html(full_html=False, default_height=500, config=config)
 
 def meta_plot(request, year,plotname):
     reports = Report.objects.filter(period__year=year)
@@ -115,7 +124,7 @@ def meta_plot(request, year,plotname):
         labels=["{0}".format(k) for k, v in data_dict.items()],
         legend={ 'loc': 'upper left', 'bbox_to_anchor': (1, 1)},
         block_arranging_style='snake',
-        figsize=(11.1, 5)
+        figsize=(12, 5)
     )
     buf = io.BytesIO()
     plt.savefig(buf, format='png')

@@ -167,7 +167,8 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
                     'partner_data'  : get_partner_counts(reports),
                     'partner_counts': get_partner_sum(year),
                     'total_partners': Partner.objects.filter(cohorts=cohort).count(),
-                    'map'           : choropleth_map(year)
+                    'map'           : choropleth_map(year),
+                    'cit_science'   : Imprint.objects.filter(report__period__year=year, activity=7).aggregate(total=Sum('size'))
                     })
 
 

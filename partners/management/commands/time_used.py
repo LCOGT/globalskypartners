@@ -120,19 +120,23 @@ def year_data(data, year=None):
     return time_used, allocation
 
 def get_all_proposal_times(proposal_codes, semesters):
-    query_params = 'proposals/?active=True&public=True&limit=100'
+    query_params = 'proposals/?tag=LCOEPO&limit=200'
     resp = submit_portal_request(query_params)
 
     totals = Counter()
-
+    proposal_num = 0
     for proposal in resp['results']:
         if proposal['id'] in proposal_codes:
+            proposal_num += 1
+            # print(f"{proposal['title']} - {proposal['id']}")
             for timeset in proposal['timeallocation_set']:
                 if timeset['semester'] in semesters and '0M4-SCICAM-SBIG' in timeset['instrument_types']:
-                  totals.update(total= timeset['std_allocation'])
-                  totals.update(total= timeset['rr_allocation'])
-                  totals.update(total= timeset['tc_allocation'])
-                  totals.update(used = timeset['std_time_used'])
-                  totals.update(used = timeset['rr_time_used'])
-                  totals.update(used = timeset['tc_time_used'])
+                    # print(f"{timeset['std_time_used']:.2f} - {timeset['semester']}")
+                    totals.update(total= timeset['std_allocation'])
+                    totals.update(total= timeset['rr_allocation'])
+                    totals.update(total= timeset['tc_allocation'])
+                    totals.update(used = timeset['std_time_used'])
+                    totals.update(used = timeset['rr_time_used'])
+                    totals.update(used = timeset['tc_time_used'])
+    # print(f"Number of proposals {len(proposal_codes)} vs {proposal_num}")
     return dict(totals)

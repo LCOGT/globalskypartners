@@ -1,6 +1,7 @@
 from django import forms
-from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory
+from django.utils import timezone
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, Div, HTML
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
@@ -130,8 +131,15 @@ class ReportForm(forms.ModelForm):
 
         if projects := Partner.objects.filter(pi=self.user):
             choices = [(u'', u'-- Select Project --'),]
-            choices.extend([ (p.id, p.name) for p in projects])
+            choices.extend([ (p.id, f"{p}") for p in projects])
             self.fields['partner'].choices = choices
+
+    def clean(self):
+        data = super().clean()
+        cohort = Cohort.objects.filter(active_report=True)[0]
+        reports = Report.objects.filter(partner=data['partner'], period=cohort)
+        if reports:
+            raise ValidationError(f"There is a draft report for {cohort} for {data['partner']}")
 
 class ReportEditForm(forms.ModelForm):
     class Meta:

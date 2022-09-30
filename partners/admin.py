@@ -91,7 +91,23 @@ class SemesterInline(admin.TabularInline):
     model = Semester
 
 class CohortAdmin(admin.ModelAdmin):
+
+    @admin.display(
+        boolean=True,
+        description='Active Call?',
+    )
+    def is_active_call(self, obj):
+        return obj.active_call
+
+    @admin.display(
+        boolean=True,
+        description='Final Report?',
+    )
+    def is_active_report(self, obj):
+        return obj.active_report
+
     inlines = [SemesterInline,]
+    list_display = ['year','is_active_call','is_active_report']
 
 def trans_status(state):
     state_dict = {Review.ACCEPTED : 2,

@@ -6,3 +6,5 @@ local_settings.py
 
 .env-local
 sent_emails/*
+*.json.gz
+db.old
