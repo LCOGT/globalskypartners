@@ -43,7 +43,7 @@ class ProposalAdmin(admin.ModelAdmin):
             return HttpResponse(
                 obj.generate_pdf(),
                 content_type='application/pdf',
-                headers = {'Content-Disposition' : f'attachment; filename="proposal-{obj.id}.pdf"'}
+                headers = {'Content-Disposition' : f'attachment; filename="gsp-{obj.code}.pdf"'}
             )
 
     @admin.action(description='Generate Proposal Zip')

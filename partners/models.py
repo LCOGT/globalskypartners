@@ -177,7 +177,7 @@ class Proposal(models.Model):
         # give the proposal a code if it doesn't have one
         if not self.code:
             self.code = self.generate_code()
-            super(Proposal, self).save(*args, **kwargs)
+        super(Proposal, self).save(*args, **kwargs)
     
     def generate_code(self):
         cohort = self.cohort.year
@@ -221,7 +221,6 @@ class Proposal(models.Model):
 
     def generate_pdf(self, no_trans=False):
         context = {
-            'id' : f"EPO-{self.cohort.year}-{self.id}",
             'object': self,
             'pdf': True,
             'no_trans' : no_trans,
