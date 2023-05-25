@@ -168,9 +168,21 @@ class Proposal(models.Model):
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
+    code = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return f"{self.partner} {self.cohort}"
+
+    def save(self, *args, **kwargs):
+        # give the proposal a code if it doesn't have one
+        if not self.code:
+            self.code = self.generate_code()
+            super(Proposal, self).save(*args, **kwargs)
+    
+    def generate_code(self):
+        cohort = self.cohort.year
+        number = Proposal.objects.filter(cohort=self.cohort).count() + 1
+        return f"{cohort}-{number}"
 
     @property
     def title(self):

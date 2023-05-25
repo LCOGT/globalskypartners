@@ -2,28 +2,16 @@
 
 Django app to for GSP to submit proposals, reports and manage users.
 
-## Configuration
 
-Environment variables needed for production:
+### Get snapshot of live site:
 
-| Name         | Description                             | Default Value |
-|:-------------|:----------------------------------------|:--------------|
-| `SECRET_KEY` | Django Secret Key (required)            | N/A           |
-| `DEBUG`      | Enable Django Debug mode                | `False`       |
-| `DB_HOST`    | PostgreSQL Database Hostname (required) | N/A           |
-| `DB_NAME`    | PostgreSQL Database Name (required)     | N/A           |
-| `DB_USER`    | PostgreSQL Database Username (required) | N/A           |
-| `DB_PASS`    | PostgreSQL Database Password (required) | N/A           |
+```
+kubectl exec -it <pod-name> -n prod -c backend -- python manage.py dumpdata  -e sessions -e admin --natural-foreign --natural-primary | gzip > fullsite.json.gz
+```
 
-## Build
-
-This project is built automatically by the [LCO Jenkins Server](http://jenkins.lco.gtn/).
-Please see the [Jenkinsfile](Jenkinsfile) for details.
-
-## Production Deployment
-
-This project is deployed on the LCO Kubernetes Cluster. Please see the
-[LCO Helm Charts Repository](https://github.com/LCOGT/helm-charts) for details.
+Read data into local sandbox with:
+```
+./manage.py migrate; ./manage.py loaddata fullsite.json.gz
 
 ## License
 

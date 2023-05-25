@@ -1,4 +1,5 @@
-{% load static %}
+{% load static markdownify %}
+
 <!DOCTYPE html>
 
 <html lang="en" dir="ltr">
@@ -19,7 +20,7 @@
       <section class="section">
 
           <div class="title">
-            <p class="small">Global Sky Partner Application - {{id}}</p>
+            <p class="small">Global Sky Partner Application - {{code}}</p>
             <h2>{{object.partner.name}}</h2>
             <p>{{object.partner.summary}}</p>
           </div>
@@ -30,7 +31,7 @@
             {% for field in proposal %}
             <p>
             <strong>{{field.label|title}}</strong>{% if field.name == 'size' or field.name == 'time'%}&nbsp;{% else %}<br/>{% endif %}
-            {{field.value|safe}} {% if field.name == 'time' %} hours {%endif %}
+            {{field.value|safe|markdownify}} {% if field.name == 'time' %} hours {%endif %}
           </p>
             {% endfor %}
           </div>
