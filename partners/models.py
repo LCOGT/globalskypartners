@@ -1,4 +1,5 @@
 import io
+import re
 from pathlib import Path
 from datetime import timedelta
 
@@ -8,10 +9,11 @@ from django.contrib.staticfiles import finders
 from django.core.mail import send_mail
 from django.db import models, transaction
 from django.forms.models import model_to_dict
+from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 from django.utils import timezone
 from weasyprint import HTML, CSS
-import markdown
+import markdown_deux
 
 
 REGION_CHOICES = (
@@ -205,11 +207,11 @@ class Proposal(models.Model):
                     value = None
 
             # only display fields with values and skip some fields entirely
-            if f.editable and value and f.name not in ('id', 'status', 'partner', 'cohort','submitter') :
+            if f.editable and value and f.name not in ('id', 'status', 'partner', 'cohort','submitter', 'code','hours') :
                 if f.name in ('time','size'):
                     val = value
                 else:
-                    val = markdown.markdown(value)
+                    val = mark_safe(markdown_deux.markdown(value))
                 fields.append(
                   {
                    'label':f.verbose_name,

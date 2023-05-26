@@ -1,4 +1,4 @@
-{% load static markdownify %}
+{% load static %}
 
 <!DOCTYPE html>
 
@@ -30,8 +30,8 @@
           </p>
             {% for field in proposal %}
             <p>
-            <strong>{{field.label|title}}</strong>{% if field.name == 'size' or field.name == 'time'%}&nbsp;{% else %}<br/>{% endif %}
-            {{field.value|safe|markdownify}} {% if field.name == 'time' %} hours {%endif %}
+            <strong>{{field.label|upper}}</strong>{% if field.name == 'size' or field.name == 'time'%}&nbsp;{% else %}<br/>{% endif %}
+            {{field.value}} {% if field.name == 'time' %} hours {%endif %}
           </p>
             {% endfor %}
           </div>

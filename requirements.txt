@@ -7,11 +7,9 @@ requests==2.25.1
 gunicorn[gevent]==20.0.4
 #gunicorn[gevent]~=19.9.0
 #uwsgi==2.0.19.1
-WeasyPrint==52.5
-django-markdownify==0.9.2
+WeasyPrint==59.0
+django-markdown-deux==1.0.6
 django-crispy-forms==1.12.0
 matplotlib
 pywaffle==0.6.3
-django-weasyprint==1.1.0
-cairo
-pango
+django-weasyprint==2.2.0
