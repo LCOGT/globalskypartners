@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 from django.utils import timezone
 from weasyprint import HTML, CSS
-import markdown_deux
+import markdown
 
 
 REGION_CHOICES = (
@@ -212,7 +212,7 @@ class Proposal(models.Model):
                 if f.name in ('time','size'):
                     val = value
                 else:
-                    val = mark_safe(markdown_deux.markdown(value))
+                    val = mark_safe(markdown.markdown(value))
                 fields.append(
                   {
                    'label':f.verbose_name,

@@ -6,7 +6,7 @@ psycopg2==2.8.5
 requests==2.31.0
 gunicorn[gevent]==20.0.4
 WeasyPrint==59.0
-django-markdown-deux==1.0.6
+markdown==2.4.8
 django-crispy-forms==1.12.0
 matplotlib
 pywaffle==0.6.3
