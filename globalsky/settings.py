@@ -172,7 +172,7 @@ if ast.literal_eval(os.environ.get('USE_S3', 'False')):
 EMAIL_USE_TLS       = True
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          =  587
-EMAIL_FROM  = 'Las Cumbres Observatory <portal@lco.global>'
+EMAIL_FROM  = 'Las Cumbres Observatory <no-reply-lco@lco.global>'
 EMAIL_HOST_USER = os.environ.get('EMAIL_USERNAME', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 

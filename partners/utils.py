@@ -89,7 +89,7 @@ def create_portal_users(users, token):
 
     if r.status_code in [200,201]:
         logging.debug('Uploaded users')
-        return True, [req['id'] for req in r.json()['requests']]
+        return True, r.json()['users']
     else:
         logging.error("Could not send request: {}".format(r.content))
         return False, r.json()
@@ -117,43 +117,63 @@ def invite_users_to_proposal(emails, proposal_code, token):
         logging.error("Could not send request: {}".format(r.content))
         return False, r.json()
 
-class MyModelView(DetailView):
-    # vanilla Django DetailView
-    model = Proposal
-    template_name = 'partners/proposal_print.html'
+def create_science_application(payload):
+    '''
+    Send the user data and the authentication token to the Portal API
+    '''
+    headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
 
-class CustomWeasyTemplateResponse(WeasyTemplateResponse):
-    # customized response class to change the default URL fetcher
-    def get_url_fetcher(self):
-        # disable host and certificate check
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-        return functools.partial(django_url_fetcher, ssl_context=context)
+    url = f"https://observe.lco.global/api/scienceapplications/"
+    logging.debug('Invite users to proposal')
+    try:
+        r = requests.post(url, json=payload, headers=headers, timeout=20.0)
+    except requests.exceptions.Timeout:
+        msg = "Observing portal API timed out"
+        logging.error(msg)
+        params['error_msg'] = msg
+        return False, msg
+
+    if r.status_code in [200,201]:
+        logging.debug('Created science application')
+        return True, r.json()
+    else:
+        logging.error("Could not send request: {}".format(r.content))
+        return False, r.json()
 
 def upload_science_application(queryset):
-    return
-
-def sciapplication_payload(queryset):
-    data = []
+    # Change the instrument type when Delta Rhos are added
+    success = []
     for obj in queryset:
+        review = obj.review_set.all()
+        if review.count() == 0:
+            continue
+        review = review.first()
         datum = {
             "title": obj.partner.name,
-            "abstract": obj.description,
-            "status": "string",
-            "tac_rank": "",
+            "abstract": obj.description[0:500],
+            "status": "SUBMITTED",
             "call_id": obj.cohort.call_id,
             "pi": obj.submitter.email,
             "pi_first_name": obj.submitter.first_name,
             "pi_last_name": obj.submitter.last_name,
+            "pi_institution": obj.institution,
             "timerequest_set": [
-                {"semester": "string",
-                "std_time": 2147483647,
-                "rr_time": 2147483647,
-                "tc_time": 2147483647,
+                {"semester": obj.cohort.semester_set.first().code,
+                "std_time": review.hours,
                 "instrument_types": [
-                0
+                 9
                 ]}
             ]
         }
-    return
+        if review.rank:
+            datum['tac_rank'] = review.rank
+        else:
+            datum['tac_rank'] = 0
+
+        # POST the data to portal API
+        status, msg = create_science_application(datum)
+        if status:
+            success.append(obj.partner.name)
+            obj.status = 4 # Synced
+            obj.save()
+    return success

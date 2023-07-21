@@ -5,11 +5,13 @@ import io
 import csv
 
 from django.contrib import admin, messages
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.utils.html import format_html
+from django.shortcuts import render
 
 from .models import Partner, Region, ProgramType, Semester, Cohort, Proposal, Membership, Review
 from reports.models import Report, Imprint
+from .utils import upload_science_application
 
 
 class ProposalAdmin(admin.ModelAdmin):
@@ -24,7 +26,7 @@ class ProposalAdmin(admin.ModelAdmin):
 
     @admin.action(description='Download CSV')
     def proposal_csv(self, request, queryset):
-        fieldnames = ['id','partner__name','time']
+        fieldnames = ['code','partner__name','time']
 
         response = HttpResponse(
             content_type='text/csv',
@@ -51,7 +53,7 @@ class ProposalAdmin(admin.ModelAdmin):
         tmp = io.BytesIO()
         with zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as archive:
             for item in queryset:
-                fileNameInZip = f'proposal-{item.id}.pdf'
+                fileNameInZip = f'gsp-{item.code}.pdf'
                 archive.writestr(fileNameInZip, item.generate_pdf())
         tmp.seek(0)
         return FileResponse(
@@ -68,10 +70,25 @@ class ProposalAdmin(admin.ModelAdmin):
             colours.get(obj.status,'000000'),
             obj.get_status_display()
         )
+    
+
+    @admin.display(description='Sync with Observing Portal')
+    def push_to_portal(self, request, queryset):
+        if 'apply' in request.POST:
+            success = upload_science_application(queryset)
+            self.message_user(request,
+                             f"Synced {len(success)} / {queryset.count()} partners with Observation Portal")
+            return HttpResponseRedirect(request.get_full_path())
+                        
+        return render(request,
+                      'admin/order_intermediate.html',
+                      context={'partners':queryset})
+
     list_filter = ['status','cohort']
     list_display = ['title','submitter','time','colour_status','cohort']
     order_by = ['title','cohort']
-    actions = ['generate_pdfs','zip_pdfs','proposal_csv','port_to_reviews']
+    actions = ['generate_pdfs','zip_pdfs','proposal_csv','port_to_reviews','push_to_portal']
+    
 
 class ProposalInline(admin.TabularInline):
     model = Proposal

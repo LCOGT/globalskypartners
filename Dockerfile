@@ -5,6 +5,7 @@ COPY requirements.txt /app/requirements.txt
 
 RUN apt-get update && \
     apt-get install gettext python3-cffi  \
+    python3-pip python3-brotli libpango-1.0-0 libpangoft2-1.0-0 \
     gcc g++ \
     libjpeg62-turbo-dev zlib1g-dev \
     postgresql-11 libpq-dev \

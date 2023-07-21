@@ -46,7 +46,8 @@ STATUS = (
     (0, 'Draft'),
     (1, 'Submitted'),
     (2, 'Accepted'),
-    (3, 'Rejected')
+    (3, 'Rejected'),
+    (4, 'Synced to Portal')
 )
 
 class Region(models.Model):
@@ -268,10 +269,10 @@ class Proposal(models.Model):
             )
 
 class Review(models.Model):
-    PENDING = 3
     REJECTED = 0
     ACCEPTED = 1
     QUESTIONS = 2
+    PENDING = 3
     VERDICT = (
         (PENDING,'Verdict Pending'),
         (REJECTED, 'Rejected'),
@@ -283,6 +284,7 @@ class Review(models.Model):
     hours = models.FloatField(help_text='hours awarded', default=0.0)
     emailed = models.DateTimeField(blank=True, null=True)
     comments = models.TextField(blank=True)
+    rank = models.PositiveSmallIntegerField(blank=True, null=True)
 
     def __str__(self):
         if self.verdict in [0,1]:
