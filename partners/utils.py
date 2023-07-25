@@ -100,7 +100,7 @@ def invite_users_to_proposal(emails, proposal_code, token):
     '''
     headers = {'Authorization': 'Token {}'.format(token)}
 
-    url = f"https://observe.lco.global/api/proposals/{proposal_code}/invite/"
+    url = settings.PROPOSAL_INVITE_URL.format(proposal_code)
     logging.debug('Invite users to proposal')
     try:
         r = requests.post(url, json={'emails': emails}, headers=headers, timeout=20.0)
@@ -123,7 +123,7 @@ def create_science_application(payload):
     '''
     headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
 
-    url = f"https://observe.lco.global/api/scienceapplications/"
+    url = settings.SCIAPPLICATION_URL
     logging.debug('Invite users to proposal')
     try:
         r = requests.post(url, json=payload, headers=headers, timeout=20.0)

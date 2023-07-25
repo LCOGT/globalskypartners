@@ -117,7 +117,12 @@ class ReportDetail(LoginRequiredMixin, DetailView):
 
 class ReportEdit(LoginRequiredMixin, PassUserMixin, UpdateView):
     model = Report
-    form_class= ReportForm
+    form_class= ReportEditForm
+
+    def get_context_data(self, *args, **kwargs):
+        data = super(ReportEdit, self).get_context_data(**kwargs)
+        data['partner'] = self.get_object().partner
+        return data
 
     def get_success_url(self):
         return reverse_lazy('report-add-impact', kwargs={'pk':self.get_object().id})

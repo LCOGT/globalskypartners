@@ -131,6 +131,8 @@ PORTAL_REQUEST_API = PORTAL_API_URL + 'requestgroups/'
 PORTAL_TOKEN_URL   = PORTAL_API_URL + 'api-token-auth/'
 PROFILE_URL = PORTAL_API_URL + 'profile/'
 PROPOSALS_URL = PORTAL_API_URL + 'proposals/?active=True&public=true&limit=50'
+SCIAPPLICATION_URL = PORTAL_API_URL + 'scienceapplications/'
+PROPOSAL_INVITE_URL = PORTAL_API_URL + '/proposals/{}/invite/'
 
 LOGIN_REDIRECT_URL = '/'
 

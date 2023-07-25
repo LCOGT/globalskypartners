@@ -148,33 +148,25 @@ class ReportEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
-
+        print(kwargs['instance'].partner)
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-        Div(
             Div(
-                'partner',
+                Field('partner', type="hidden", value=kwargs['instance'].partner.id),
                 Field('countries', css_class="is-multiple"),
                 css_class="column is-half"
             ),
             Div(
                 'summary',
                 'comment',
-            css_class="column is-half"),
-        css_class="columns"),
-        Div(
-            Fieldset('Add Impact',
-                    Formset('impacts')),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button is-success')
-            ),
-        css_class="container"),
+                ButtonHolder(
+                    Submit('submit', 'Save &amp; Continue', css_class='button is-success')
+                ),
+                css_class="column is-half"),
         )
+        # self.fields['partner'].widget = forms.HiddenInput()
+        # self.fields['partner'].value = self.instance.partner.id
         self.helper.form_method = 'post'
+        self.helper.form_class = 'columns'
         self.helper.form_action = ''
-
-        if projects := Partner.objects.filter(pi=self.user):
-            choices = [(u'', u'-- Select Project --'),]
-            choices.extend([ (p.id, p.name) for p in projects])
-            self.fields['partner'].choices = choices
