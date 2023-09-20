@@ -1,15 +1,10 @@
 import csv
 from collections import Counter
 
-from crispy_forms.utils import render_crispy_form
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Sum, Count
-from django.forms.models import model_to_dict
-from django.http import HttpResponse
+from django.db.models import Sum
 from django.shortcuts import redirect, render
-from django.template.context_processors import csrf
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView
@@ -19,8 +14,7 @@ from django_countries import countries
 
 from .models import *
 from .forms import *
-from .plots import cohort_countries, get_partner_counts, breakdown_per_partner, \
-    choropleth_map, get_partner_sum, meta_plot
+from .plots import cohort_countries, get_partner_counts, choropleth_map, get_partner_sum
 
 
 class PassUserMixin:
@@ -159,13 +153,16 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
 
         other = demographics.filter(demographic=99).exclude(demo_other__isnull=True).values_list('demo_other', flat=True)
         countries_dict, regions_dict = cohort_countries(year)
+        total_teachers = Imprint.objects.filter(audience=2, report__period__year=year).aggregate(Sum('size'))
+        total_size = Report.objects.filter(period=cohort).aggregate(total=Sum('imprint__size'))['total']
 
         return render(request, self.template_name,
                     {
                     'demographics'  : dict(demos),
                     'other_demos'   : ", ".join(other),
-                    'total'         : Report.objects.filter(period=cohort).aggregate(total=Sum('imprint__size')),
+                    'total'         : total_size,
                     'reports'       : reports,
+                    'num_reports'   : reports.count(),
                     'year'          : year,
                     'country_count' : len(countries_dict),
                     'regions'       : regions_dict,
@@ -173,7 +170,10 @@ class FinalReport(LoginRequiredMixin, UserPassesTestMixin, View):
                     'partner_counts': get_partner_sum(year),
                     'total_partners': Partner.objects.filter(cohorts=cohort).count(),
                     'map'           : choropleth_map(year),
-                    'cit_science'   : Imprint.objects.filter(report__period__year=year, activity=7).aggregate(total=Sum('size'))
+                    'cit_science'   : Imprint.objects.filter(report__period__year=year, activity=7).aggregate(total=Sum('size')),
+                    'total_teachers' : total_teachers['size__sum'],
+                    'total_students' : total_teachers['size__sum']*20,
+                    'total_size'     : total_teachers['size__sum']*20 + total_size
                     })
 
 

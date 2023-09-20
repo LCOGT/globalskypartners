@@ -5,7 +5,7 @@ from django_countries.fields import CountryField
 from partners.models import Partner, Cohort
 
 AUDIENCE_CHOICES = (
-    (0,'Elementary school students'),
+    (0,'Elementary students'),
     (1,'High school students'),
     (2,'Teachers'),
     (3,'Families'),

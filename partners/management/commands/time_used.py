@@ -70,7 +70,7 @@ def submit_portal_request(query_params):
     Send the observation parameters and the authentication cookie to the Scheduler API
     '''
     headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
-    url = "{}{}".format(settings.API_URL, query_params)
+    url = "{}{}".format(settings.PORTAL_API_URL, query_params)
 
     try:
         r = requests.get(url, headers=headers, timeout=20.0)

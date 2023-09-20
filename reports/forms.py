@@ -148,7 +148,7 @@ class ReportEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
-        print(kwargs['instance'].partner)
+
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -165,8 +165,6 @@ class ReportEditForm(forms.ModelForm):
                 ),
                 css_class="column is-half"),
         )
-        # self.fields['partner'].widget = forms.HiddenInput()
-        # self.fields['partner'].value = self.instance.partner.id
         self.helper.form_method = 'post'
         self.helper.form_class = 'columns'
         self.helper.form_action = ''

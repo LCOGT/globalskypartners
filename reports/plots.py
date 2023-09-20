@@ -7,6 +7,9 @@ from django.db.models import Count, Sum
 from django.conf import settings
 from django.http import HttpResponse
 from pywaffle import Waffle
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 
 from .countries import REGIONS
@@ -52,7 +55,7 @@ def breakdown_per_partner(data, total):
     for datum in data:
         opts = {d[0]:d[1] for d in datum['choices']}
         counts = Counter([opts[d[0]] for d in datum['source'] if d[0] != None])
-        aggregates[datum['id']] = [{'name':k, 'number':v,'percent':f"{v/total*100:.0f}"} for k, v in dict(counts).items()]
+        aggregates[datum['id']] = [{'name':k, 'number':v,'percent':f"{v/total*100:.0f}"} for k, v in counts.most_common()]
     return aggregates
 
 

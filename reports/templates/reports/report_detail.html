@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load static crispy_forms_tags  %}
+{% load static crispy_forms_tags markdown_extras %}
 
 {% block title_head %}Final Report{% endblock %}
 {% block title %}Final Report Preview{% endblock %}
@@ -22,11 +22,12 @@
 <span class="tag is-warning">Submission Deadline Missed</span>
 {% endif %}
 
+<div class="content">
 <h4>Summary</h4>
-{{object.summary}}
+{{object.summary|markdown|safe}}
 
 <h4>Comments</h4>
-{{object.comment}}
+{{object.comment|markdown|safe}}
 
 <h4>Countries</h4>
 {% for country in object.countries %}
@@ -61,5 +62,5 @@
 {% endfor %}
 </table>
 {% endif %}
-
+</div>
 {% endblock %}
