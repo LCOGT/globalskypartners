@@ -40,12 +40,12 @@ class Command(BaseCommand):
             pdfs.append(proposal.save_pdf(path=path))
             self.stdout.write(f'Saved {proposal.partner.name}')
 
-        zipfilename = f"proposals-{cohort.year}.zip"
-        fileobj = io.BytesIO()
-        with ZipFile(fileobj, 'w') as zippdfs:
-            for pdffile in pdfs:
-                zippdfs.write(pdffile, arcname=pdffile.name)
+        # zipfilename = f"proposals-{cohort.year}.zip"
+        # fileobj = io.BytesIO()
+        # with ZipFile(fileobj, 'w') as zippdfs:
+        #     for pdffile in pdfs:
+        #         zippdfs.write(pdffile, arcname=pdffile.name)
 
-        cohort.proposalfile.delete(save=False)
-        cohort.proposalfile.save(zipfilename, ContentFile(fileobj.getvalue()))
-        cohort.save()
+        # cohort.proposalfile.delete(save=False)
+        # cohort.proposalfile.save(zipfilename, ContentFile(fileobj.getvalue()))
+        # cohort.save()

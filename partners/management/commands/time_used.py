@@ -130,7 +130,8 @@ def get_all_proposal_times(proposal_codes, semesters):
             proposal_num += 1
             # print(f"{proposal['title']} - {proposal['id']}")
             for timeset in proposal['timeallocation_set']:
-                if timeset['semester'] in semesters and '0M4-SCICAM-SBIG' in timeset['instrument_types']:
+                insts = timeset['instrument_types']
+                if timeset['semester'] in semesters and ('0M4-SCICAM-SBIG' in insts or '0M4-SCICAM-QHY600' in insts):
                     # print(f"{timeset['std_time_used']:.2f} - {timeset['semester']}")
                     totals.update(total= timeset['std_allocation'])
                     totals.update(total= timeset['rr_allocation'])

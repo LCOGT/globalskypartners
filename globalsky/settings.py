@@ -134,6 +134,8 @@ PROPOSALS_URL = PORTAL_API_URL + 'proposals/?active=True&public=true&limit=50'
 SCIAPPLICATION_URL = PORTAL_API_URL + 'scienceapplications/'
 PROPOSAL_INVITE_URL = PORTAL_API_URL + '/proposals/{}/invite/'
 
+ADMIN_PORTAL_TOKEN = os.getenv('PORTAL_TOKEN', '')
+
 LOGIN_REDIRECT_URL = '/'
 
 # Internationalization

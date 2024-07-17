@@ -243,7 +243,7 @@ class Proposal(models.Model):
         return pdf
 
     def save_pdf(self, path=''):
-        name = f"EPO-{self.cohort.year}-{self.id}.pdf"
+        name = f"GSP-{self.cohort.year}-{self.code}.pdf"
         filepath = Path(path) / name
         fileobj = self.generate_pdf()
         with open(filepath, 'wb') as fp:

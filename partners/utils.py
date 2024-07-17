@@ -121,7 +121,7 @@ def create_science_application(payload):
     '''
     Send the user data and the authentication token to the Portal API
     '''
-    headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
+    headers = {'Authorization': 'Token {}'.format(settings.ADMIN_PORTAL_TOKEN)}
 
     url = settings.SCIAPPLICATION_URL
     logging.debug('Invite users to proposal')
