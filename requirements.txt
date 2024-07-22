@@ -3,7 +3,7 @@ django-countries==7.2.1
 plotly==4.14.3
 pandas==1.2.2
 psycopg2==2.8.5
-requests==2.31.0
+requests==2.32.0
 gunicorn[gevent]==20.0.4
 WeasyPrint==59.0
 markdown==3.4.3
