@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -34,21 +35,22 @@ class LoginViewCustom(LoginView):
 
 class PartnerList(ListView):
     model = Partner
-    queryset = Partner.objects.filter(active=True)
+    queryset = Partner.objects.filter(active=True).order_by('name')
 
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        if self.kwargs.get('year', None):
-            cohort = Cohort.objects.get(year=self.kwargs['year'])
-            return Partner.objects.filter(cohorts=cohort)
+        if year := self.request.GET.get('year', None):
+            cohort = Cohort.objects.get(year=year)
+            qs = Partner.objects.filter(cohorts=cohort).order_by('name').annotate(num_reports=Count('report',filter=Q(report__period=cohort)))
+            return qs
         return qs
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.kwargs.get('year', None):
-            cohort = Cohort.objects.get(year=self.kwargs['year'])
+        if year := self.request.GET.get('year', None):
+            cohort = Cohort.objects.get(year=year)
             context['semesters'] = list(cohort.semester_set.all().values_list('code', flat=True))
-            context['title'] = f"{self.kwargs['year']} Partners"
+            context['title'] = f"{year} Partners"
             context['proposals'] = list(Partner.objects.filter(cohorts=cohort).values_list('proposal_code', flat=True))
         else:
             now = datetime.now()

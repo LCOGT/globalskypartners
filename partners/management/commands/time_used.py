@@ -1,11 +1,9 @@
 import sys
-import csv
 import requests
-from datetime import datetime
 from collections import Counter
 
 from django.db.models import Min, Max
-from django.core.management.base import CommandError, BaseCommand
+from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from partners.models import Cohort, Partner
@@ -21,6 +19,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("-c", "--cohort", dest="cohort",help='reporting year/cohort', type=str)
         parser.add_argument("-p", "--proposal", dest="proposal",help='proposal code for partner', type=str)
+        parser.add_argument("-f", "--full", dest="full", help='full information about failures and completed', action='store_true')
 
     def handle(self, **options):
         total_users = 0
@@ -33,7 +32,7 @@ class Command(BaseCommand):
 
         year = cohort.year
         if options.get("proposal",None):
-            partners = Partner.objects.filter(proposal=options.get('proposal'))
+            partners = Partner.objects.filter(proposal__code=options.get('proposal'))
         else:
             partners = cohort.partner_set.all()
 
@@ -41,27 +40,28 @@ class Command(BaseCommand):
         semesters = cohort.semester_set.all().values_list('code',flat=True)
 
         totals = get_all_proposal_times(proposal_codes, semesters)
-        for partner in partners:
+        if options.get("full",False):
+            for partner in partners:
 
-            user_count = membership_total(partner.proposal_code)
-            total_users += user_count
+                user_count = membership_total(partner.proposal_code)
+                total_users += user_count
 
-            start = cohort.semester_set.aggregate(Min('start'))['start__min']
-            end = cohort.semester_set.aggregate(Max('end'))['end__max']
+                start = cohort.semester_set.aggregate(Min('start'))['start__min']
+                end = cohort.semester_set.aggregate(Max('end'))['end__max']
 
-            print(".", end =' ', flush = True)
+                print(".", end =' ', flush = True)
 
-            req_total = request_stats(partner.proposal_code, start.strftime("%Y-%m-%dT%H:%M:%S"), end.strftime("%Y-%m-%dT%H:%M:%S"))
-            total_timeused[partner.proposal_code] = {'requests_num' : req_total,
-                                    'user_count' : user_count}
-        self.stdout.write("\n")
-        failed = 0
-        complete = 0
-        for k,v in total_timeused.items():
-            failed += v['requests_num']['failed']
-            complete += v['requests_num']['complete']
-        self.stdout.write(f"Total users {total_users}")
-        self.stdout.write(f"Success rate: {failed} / {complete} => {(1-failed/complete)*100:.1f}")
+                req_total = request_stats(partner.proposal_code, start.strftime("%Y-%m-%dT%H:%M:%S"), end.strftime("%Y-%m-%dT%H:%M:%S"))
+                total_timeused[partner.proposal_code] = {'requests_num' : req_total,
+                                        'user_count' : user_count}
+            self.stdout.write("\n")
+            failed = 0
+            complete = 0
+            for k,v in total_timeused.items():
+                failed += v['requests_num']['failed']
+                complete += v['requests_num']['complete']
+            self.stdout.write(f"Total users {total_users}")
+            self.stdout.write(f"Success rate: {failed} / {complete} => {(1-failed/complete)*100:.1f}%")
         self.stdout.write(f"Total Hours: {totals['total']:.2f} / {totals['used']:.2f}")
 
 
@@ -69,7 +69,7 @@ def submit_portal_request(query_params):
     '''
     Send the observation parameters and the authentication cookie to the Scheduler API
     '''
-    headers = {'Authorization': 'Token {}'.format(settings.TOKEN)}
+    headers = {'Authorization': 'Token {}'.format(settings.ADMIN_PORTAL_TOKEN)}
     url = "{}{}".format(settings.PORTAL_API_URL, query_params)
 
     try:
@@ -128,16 +128,17 @@ def get_all_proposal_times(proposal_codes, semesters):
     for proposal in resp['results']:
         if proposal['id'] in proposal_codes:
             proposal_num += 1
-            # print(f"{proposal['title']} - {proposal['id']}")
+            sys.stdout.write(f"{proposal['id']}, {proposal['title']}, ")
             for timeset in proposal['timeallocation_set']:
                 insts = timeset['instrument_types']
                 if timeset['semester'] in semesters and ('0M4-SCICAM-SBIG' in insts or '0M4-SCICAM-QHY600' in insts):
-                    # print(f"{timeset['std_time_used']:.2f} - {timeset['semester']}")
+                    sys.stdout.write(f"{timeset['std_time_used']:.2f},")
                     totals.update(total= timeset['std_allocation'])
                     totals.update(total= timeset['rr_allocation'])
                     totals.update(total= timeset['tc_allocation'])
                     totals.update(used = timeset['std_time_used'])
                     totals.update(used = timeset['rr_time_used'])
                     totals.update(used = timeset['tc_time_used'])
-    # print(f"Number of proposals {len(proposal_codes)} vs {proposal_num}")
+            sys.stdout.write("\n")
+    sys.stdout.write(f"Number of proposals {len(proposal_codes)} vs {proposal_num}\n")
     return dict(totals)

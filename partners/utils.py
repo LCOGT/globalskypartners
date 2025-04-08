@@ -84,7 +84,6 @@ def create_portal_users(users, token):
     except requests.exceptions.Timeout:
         msg = "Observing portal API timed out"
         logging.error(msg)
-        params['error_msg'] = msg
         return False, msg
 
     if r.status_code in [200,201]:
@@ -161,9 +160,10 @@ def upload_science_application(queryset):
                 {"semester": obj.cohort.semester_set.first().code,
                 "std_time": review.hours,
                 "instrument_types": [
-                 9
+                 77
                 ]}
-            ]
+            ],
+            "pdf" : ".",
         }
         if review.rank:
             datum['tac_rank'] = review.rank
@@ -176,4 +176,6 @@ def upload_science_application(queryset):
             success.append(obj.partner.name)
             obj.status = 4 # Synced
             obj.save()
+        else:
+            logger.error(f"Could not upload {obj.partner.name}: {msg}")
     return success

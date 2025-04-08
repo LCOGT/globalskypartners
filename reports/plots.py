@@ -103,7 +103,8 @@ def choropleth_map(year):
 
     fig = px.choropleth(countries, locations="code",
         color="number",
-        color_continuous_scale=px.colors.sequential.Mint)
+        color_continuous_scale=px.colors.sequential.Mint
+        )
     fig.update_layout(coloraxis_colorbar_x=-0.15)
     config = {
           'toImageButtonOptions': {
@@ -114,6 +115,7 @@ def choropleth_map(year):
             'scale':12 # Multiply title/legend/axis/canvas sizes by this factor
           }
         }
+    fig.write_image(f"partners-map-{year}.png", scale=12)
     return fig.to_html(full_html=False, default_height=500, config=config)
 
 def meta_plot(request, year,plotname):

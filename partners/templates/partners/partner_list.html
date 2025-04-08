@@ -40,7 +40,7 @@
 </tr>
 
 {% for object in object_list %}
-  <tr {%if not object.active %}class="has-background-grey-lighter"{%endif%}>
+  <tr {%if object.num_reports == 0 %}class="has-background-grey-lighter"{%endif%}>
     <td><a href="{% url 'partner' object.id %}">{{object.name}}</a></td>
     <td {% if request.user not in object.pi.all %} colspan=2{%endif%}>
       {% for pi in object.pi.all %}{% if pi.username != 'egomez' %}

@@ -26,7 +26,7 @@ class ProposalAdmin(admin.ModelAdmin):
 
     @admin.action(description='Download CSV')
     def proposal_csv(self, request, queryset):
-        fieldnames = ['code','partner__name','time']
+        fieldnames = ['code','submitter__email', 'partner__name','time']
 
         response = HttpResponse(
             content_type='text/csv',

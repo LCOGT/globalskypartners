@@ -4,7 +4,7 @@ from .views import ReportCreate, ReportList, ImpactCreate, ReportEdit, \
     ReportDetail, ReportAddImpact, DeleteImpact, ReportSubmit, FinalReport, \
     countries_summary_view
 
-from .plots import meta_plot
+from .plots import meta_plot, choropleth_map
 
 urlpatterns = [
     path('impact/', ImpactCreate.as_view(), name='report-impact'),
@@ -16,6 +16,7 @@ urlpatterns = [
     path('<int:pk>/', ReportDetail.as_view(), name='report-view'),
     path('list/', ReportList.as_view(), name='report-list'),
     path('final/<int:year>/', FinalReport.as_view(), name="final-report"),
+    path('countries/<int:year>/map/', choropleth_map, name="countries_map"),
     path('countries/<int:year>/', countries_summary_view, name="cohort_countries"),
-    path('final/<int:year>/demo/<str:plotname>.png', meta_plot, name="meta_plot")
+    path('final/<int:year>/demo/<str:plotname>.png', meta_plot, name="meta_plot"),
 ]
