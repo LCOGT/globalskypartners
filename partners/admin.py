@@ -169,7 +169,7 @@ class ReviewAdmin(admin.ModelAdmin):
             obj.get_verdict_display()
         )
 
-    list_display = ['partner_name','cohort','emailed','colour_verdict']
+    list_display = ['partner_name','hours','cohort','emailed','colour_verdict']
     list_filter = ['proposal__cohort', 'verdict']
     actions = ['email_verdict', 'sync_verdict']
 

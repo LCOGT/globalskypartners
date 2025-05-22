@@ -264,7 +264,7 @@ class Proposal(models.Model):
         send_mail(
                 f'Global Sky Partners submission {self.cohort.year}',
                 msg,
-                'portal@lco.global',
+                'no-reply-lco@lco.global',
                 [self.submitter.email],
             )
 
